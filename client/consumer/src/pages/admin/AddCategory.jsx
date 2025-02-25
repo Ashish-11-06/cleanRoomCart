@@ -1,0 +1,157 @@
+import { Card, Modal, Input, Button } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./AddCategory.css";
+
+const AddCategory = () => {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState({
+    name: "",
+    shortDescription: "",
+    detailedDescription: "",
+    image: null,
+  });
+  const [editingCategory, setEditingCategory] = useState(null);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  // Fetch Categories
+  const fetchCategories = () => {
+    axios
+      .get("http://localhost:5001/api/category/get")
+      .then((response) => setCategories(response.data))
+      .catch((error) => console.error("Error fetching categories:", error));
+  };
+
+  const toggleForm = () => setIsFormOpen(!isFormOpen);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setCategory({ ...category, [name]: value });
+  };
+
+  const handleFileChange = (e) => {
+    setCategory({ ...category, image: e.target.files[0] });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (category.name.trim() === "") {
+      alert("Category Name is required!");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", category.name);
+    formData.append("shortDescription", category.shortDescription);
+    formData.append("detailedDescription", category.detailedDescription);
+    formData.append("image", category.image);
+
+    axios
+      .post("http://localhost:5001/api/category/add", formData)
+      .then(() => {
+        fetchCategories(); // Refresh the list after adding
+        setCategory({ name: "", shortDescription: "", detailedDescription: "", image: null });
+        setIsFormOpen(false);
+      })
+      .catch((error) => console.error("Error adding category:", error));
+  };
+
+  const handleEdit = (id) => {
+    const selectedCategory = categories.find((cat) => cat._id === id);
+    if (selectedCategory) {
+      setEditingCategory(selectedCategory);
+      setIsEditModalOpen(true);
+    }
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditingCategory({ ...editingCategory, [name]: value });
+  };
+
+  const handleUpdate = () => {
+    axios
+      .put(`http://localhost:5001/api/category/update/${editingCategory._id}`, editingCategory)
+      .then(() => {
+        fetchCategories(); // Refresh the list
+        setIsEditModalOpen(false);
+        setEditingCategory(null);
+      })
+      .catch((error) => console.error("Error updating category:", error));
+  };
+
+  const handleDelete = (id) => {
+    axios
+      .delete(`http://localhost:5001/api/category/delete/${id}`)
+      .then(() => {
+        fetchCategories();
+      })
+      .catch((error) => console.error("Error deleting category:", error));
+  };
+
+  return (
+    <div>
+      <div className="header">
+        <h1>Categories</h1>
+        <button className="add-btn" onClick={toggleForm}>Add Category</button>
+      </div>
+
+      {isFormOpen && (
+        <div className="form-container">
+          <h2>Add Category</h2>
+          <form onSubmit={handleSubmit}>
+            <label>Category Name</label>
+            <input type="text" name="name" value={category.name} onChange={handleChange} required />
+            <label>Short Description</label>
+            <textarea name="shortDescription" value={category.shortDescription} onChange={handleChange}></textarea>
+            <label>Detailed Description</label>
+            <textarea name="detailedDescription" value={category.detailedDescription} onChange={handleChange}></textarea>
+            <label>Category Image</label>
+            <input type="file" onChange={handleFileChange} />
+            <button type="submit" className="save-btn">Save Category</button>
+          </form>
+        </div>
+      )}
+
+      <h1 className="list-header">List of Categories</h1>
+      <ul className="category-list">
+        {categories.map((category) => (
+          <li key={category._id} className="category-item">
+            <span className="category-name">{category.name}</span>
+            <div className="icons">
+              <EditOutlined className="edit-icon" onClick={() => handleEdit(category._id)} />
+              <DeleteOutlined className="delete-icon" onClick={() => handleDelete(category._id)} />
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      {/* Edit Category Modal */}
+      <Modal 
+        title="Edit Category" 
+        open={isEditModalOpen} 
+        onOk={handleUpdate} 
+        onCancel={() => setIsEditModalOpen(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setIsEditModalOpen(false)}>Cancel</Button>,
+          <Button key="update" type="primary" onClick={handleUpdate}>Update</Button>
+        ]}
+      >
+        <label>Category Name</label>
+        <Input type="text" name="name" value={editingCategory?.name || ""} onChange={handleEditChange} />
+        <label>Short Description</label>
+        <Input.TextArea name="shortDescription" value={editingCategory?.shortDescription || ""} onChange={handleEditChange} />
+        <label>Detailed Description</label>
+        <Input.TextArea name="detailedDescription" value={editingCategory?.detailedDescription || ""} onChange={handleEditChange} />
+      </Modal>
+    </div>
+  );
+};
+
+export default AddCategory;
