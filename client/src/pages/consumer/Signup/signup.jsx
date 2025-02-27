@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './signup.css';
 import { signupApi } from '../../../utils/api';   // Import the signup function
+import { UserAddOutlined } from "@ant-design/icons";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -49,7 +50,10 @@ const Signup = () => {
   return (
     <div className="container">
       <form className='form' onSubmit={handleSubmit}>
-        <h2 className='h2'>New Account</h2>
+        <h2 className='h2'>
+        <UserAddOutlined style={{ marginRight: "8px", fontSize: "22px" }} />
+        New Account
+        </h2>
         <div className='div'>
           <label 
           className='label'>

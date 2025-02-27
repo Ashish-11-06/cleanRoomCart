@@ -1,39 +1,94 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { Layout, Menu, Input, Button } from 'antd'
-import { MailOutlined, PhoneOutlined, SearchOutlined } from '@ant-design/icons'
+// import { Link } from 'react-router-dom'
+import { Layout, Menu, Input} from 'antd'
+import { MailOutlined, PhoneOutlined, SearchOutlined, ShoppingCartOutlined  } from '@ant-design/icons'
 import './Navbar.css'
 import logo from '../../assets/logo.png'
+import { Link, useNavigate } from "react-router-dom";
+import { Button, message } from "antd";
+import { useEffect, useState } from "react";
+import { useCart } from "../../context/CartContext.jsx"; 
+import { Badge } from "antd";
+
 
 const { Header } = Layout
 
 const Navbar = () => {
-    const isAuthenticated = localStorage.getItem("token"); // Check if token exists
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('');
+  const { cartItems } = useCart();
 
-    const handleLogout = () => {
-        localStorage.removeItem("token"); // Remove token from storage
-        window.location.reload(); // Refresh the page to reflect changes
-    };
+  useEffect(() => {
+    const token = localStorage.getItem("userToken");
+    const storedUserName = localStorage.getItem('userName');
+    setIsLoggedIn(!!token);
+    if (storedUserName) {
+      setUserName(storedUserName);
+    } // Convert token existence to a boolean
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("userToken"); // Remove token
+    localStorage.removeItem('userName'); 
+    message.success("Logged out successfully");
+    setIsLoggedIn(false);
+    setUserName('');
+    navigate("/login"); // Redirect to login page
+  };
+    // const isAuthenticated = localStorage.getItem("token"); // Check if token exists
+
+    // const handleLogout = () => {
+    //     localStorage.removeItem("token"); // Remove token from storage
+    //     window.location.reload(); // Refresh the page to reflect changes
+    // };
 
     return (
       <Layout className="navbar">
         <Header className="navbar-top" >
           {/* <div className="navbar-certification">Clean Room Cart</div> */}
           <div className="navbar-contact">
-            <Link style={{textDecoration: 'none'}} to="/contact_form"><span>Contact Us</span></Link>
+              
+            <Link style={{textDecoration: 'none', marginBottom:'10px'}} to="/contact_form"><span>Contact Us</span></Link>
             <span> | </span>
-            {/* {isAuthenticated ? (
-                <button onClick={handleLogout} style={{ textDecoration: "none", cursor: "pointer" }}>
-                    Logout
-                </button>
-            ) : (
+            {isLoggedIn ? (
+              <>
+              {/* <span style={{marginRight: '150px' }}>
+                Hello , {userName} !!
+              </span>
+              */}
+                <span style={{ cursor: "pointer" }} onClick={handleLogout}>Logout</span>
+                </>
+              ) : (
                 <Link style={{ textDecoration: "none" }} to="/login">
-                    <span>Login</span>
+                  <span>Login</span>
                 </Link>
-            )} */}
-            <Link style={{textDecoration: 'none'}} to="/login"><span>Login</span></Link>
+              )}
             <span> | </span>
-            <Link style={{textDecoration: 'none'}} to= "/cart"><span>My Cart</span></Link>
+            {/* <Link style={{ textDecoration: 'none', paddingRight:'5px', marginRight:'5px'}} to="/cart">
+              <span>My Cart</span>
+             // <ShoppingCartOutlined style={{ fontSize: '18px' }} />
+              <Badge style={{backgroundColor:'#40476D'}} count={cartItems.length} showZero>
+                <ShoppingCartOutlined style={{ fontSize: '18px' }} />
+              </Badge>
+            </Link> */}
+            <Link style={{ textDecoration: 'none', paddingRight: '5px', marginRight: '5px', position: 'relative' }} to="/cart">
+            <span style={{ marginLeft: "5px" }}>My Cart</span>
+              <ShoppingCartOutlined style={{ fontSize: '22px' }} />
+              {cartItems.length > 0 && (
+                <span style={{ 
+                  position: 'absolute', 
+                  top: '-32px', 
+                  right: '-3px', 
+                  color: 'red', 
+                  fontSize: '14px', 
+                  fontWeight: 'bold' 
+                }}>
+                  {cartItems.length}
+                </span>
+              )}
+             
+            </Link>
           </div>
         </Header>
         <Header className="navbar-main" style={{ backgroundColor: '#f0f0f0',marginTop: '10px' }}>
@@ -63,7 +118,7 @@ const Navbar = () => {
           <Menu.Item key="lab-supplies"><a href="#lab-supplies">Lab Supplies</a></Menu.Item>
           <Menu.Item key="safety-supplies"><a href="#safety-supplies">Safety Supplies</a></Menu.Item>
           <Menu.Item key="esd-equipment"><a href="#esd-equipment">ESD Equipment</a></Menu.Item>
-          <Menu.Item key="faqs"><a href="#faqs">FAQs</a></Menu.Item>
+          {/* <Menu.Item key="faqs"><a href="#faqs">FAQs</a></Menu.Item> */}
         </Menu>
       </Layout>
     );

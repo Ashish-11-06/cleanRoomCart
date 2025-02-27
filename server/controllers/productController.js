@@ -3,7 +3,7 @@ const Product = require("../models/ProductModel");
 
 exports.addProduct = async (req, res) => {
   try {
-      const { category, subcategory, productName, price, productCode, description, size, image } = req.body;
+      let { category, subcategory, productName, price, productCode, description, size, image } = req.body;
 
       console.log("Received Data:", req.body);  
 
