@@ -9,7 +9,10 @@ const categoryRoutes = require('./routes/categoryRoutes2');
 const subCategoryRoutes = require('./routes/subCategoryRoutes');
 const productRoutes = require('./routes/productRoutes');
 const contactRoutes = require('./routes/contactRoutes');
-const subProductRoutes = require('./routes/subProductRoutes');  // 🔥 Add this line
+const cartRoutes = require('./routes/cartRoutes');
+const interestedUsersRoutes = require('./routes/interestedUsersRoutes');
+const contactRoutes = require('./routes/contactRoutes');
+const subProductRoutes = require('./routes/subProductRoutes'); // 🔥 Add this line
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -34,6 +37,9 @@ app.use('/api/consumer', consumerRoutes);
 app.use('/api/category', categoryRoutes);
 app.use('/api/subcategory', subCategoryRoutes);
 app.use('/api/product', productRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api/cart', cartRoutes);
+app.use("/api/interested-users", interestedUsersRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/subproduct', subProductRoutes); // 🔥 Register Subproduct Routes
 

@@ -1,8 +1,8 @@
-
 import { Link, useNavigate } from 'react-router-dom';
 import { Form, Input, Button, message } from 'antd';
 import { loginApi } from '../../../utils/api'; // Ensure this function is correctly implemented
 import './login.css';
+import { LoginOutlined } from "@ant-design/icons";
 
 const Login = () => {
   const navigate = useNavigate(); // Navigation after login
@@ -25,16 +25,19 @@ const Login = () => {
   };
 
   return (
-    <div className="container">
+    <div style={{padding:'', margin:'0px'}} className="container">
       <Form onFinish={handleSubmit}> {/* Ensure this is present */}
-        <h2>Login</h2>
+      <h2>
+        <LoginOutlined style={{ marginRight: "8px", fontSize: "22px" }} />
+        Login
+      </h2>
         <Form.Item name="email" style={{paddingLeft:'10px', paddingRight:'10px'}} rules={[{ required: true, message: 'Please input your email!' }]}>
           <Input placeholder="Email" />
         </Form.Item>
         <Form.Item name="password" style={{paddingLeft:'10px', paddingRight:'10px'}} rules={[{ required: true, message: 'Please input your password!' }]}>
           <Input.Password placeholder="Password" />
         </Form.Item>
-        <Button type="primary" htmlType="submit">Login</Button>
+        <Button style={{backgroundColor:'#40476D'}} type="primary" htmlType="submit">Login</Button>
         <p style={{paddingLeft:'99px'}}>Don't have an account? <Link to="/signup">Create account</Link></p>
       </Form>
     </div>

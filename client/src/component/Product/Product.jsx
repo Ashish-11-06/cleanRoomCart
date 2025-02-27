@@ -2,17 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Row, Col, Typography, Button, Radio, InputNumber, Image, Spin } from "antd";
 import axios from "axios";
+import { useCart } from "../../context/CartContext";
 
 const { Title, Text } = Typography;
 
 const Product = () => {
   const { id } = useParams();
-  console.log("Extracted Product ID:", id);
+  // console.log("Extracted Product ID:", id);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState(null);
   // const [selectedColor, setSelectedColor] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart(); 
 
 
   useEffect(() => {
@@ -40,21 +42,52 @@ const Product = () => {
   if (loading) return <Spin size="large" style={{ display: "block", margin: "20px auto" }} />;
   if (!product) return <h2 style={{ color: "red", textAlign: "center" }}>⚠ Product Not Found</h2>;
 
-  const handleCartClick = () => {
-    const cartItem = {
-      name: product.productName,
-      price: product.price * quantity,
-      size: selectedSize,
-      color: selectedColor,
-      quantity,
-    };
-    console.log("Cart Item:", cartItem);
-    alert("Item added to the cart!");
+  // import { useAuth } from "../../context/AuthContext"; // Import authentication context
+
+const handleCartClick = async () => {
+  const { user } = useAuth(); // Get the logged-in user dynamically
+
+  if (!user) {
+    alert("Please log in to add items to the cart!");
+    return;
+  }
+
+  const userDetails = {
+    userName: user.name, // Assuming 'name' is stored in auth context
+    email: user.email,
+    phone: user.phone || "N/A", // Handle cases where phone might be missing
+    date: new Date().toLocaleString(),
   };
+
+  const cartItem = {
+    key: `${product._id}-${selectedSize}`,
+    name: product.productName,
+    price: product.price * quantity,
+    size: selectedSize,
+    quantity,
+  };
+
+  // Add item to cart
+  addToCart(cartItem);
+
+  // Send interested user details to backend
+  try {
+    await fetch("http://localhost:5001/api/interested-users/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...userDetails, product: product.productName }),
+    });
+
+    alert("Item added to the cart!");
+  } catch (error) {
+    console.error("Error adding interested user:", error);
+  }
+};
+
 
   return (
     <div>
-      <div style={{ padding: "20px", backgroundColor:'pink' }}>
+      <div style={{ padding: "20px", backgroundColor:'white', marginRight:'20px' }}>
         <Row gutter={24}>
           <Col span={12}>
             <Image
@@ -123,7 +156,7 @@ const Product = () => {
               style={{ backgroundColor: "#40476D" }}
               type="primary"
               onClick={handleCartClick}
-              disabled={!selectedSize || !selectedColor}
+              disabled={!selectedSize }
             >
               I'm Interested
             </Button>

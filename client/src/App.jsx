@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import AntdLayout from "./component/Layout/Layout"; // ✅ Consumer Layout
-import Home from "./pages/consumer/Home/home";
+import Home from "./pages/consumer/Home/Home";
 import CartPage from "./pages/consumer/Carts";
 import ContactForm from "./component/Contact_Form/Contact_Form";
 import ProductList from "./component/ProductList/ProductList";
@@ -14,13 +14,15 @@ import Dashboard from "./pages/admin/Dashboard";
 import Users from "./pages/admin/Users";
 import Orders from "./pages/admin/Orders";
 import InterestedUsers from "./pages/admin/InterestedUsers";
-import Login from "./pages/consumer/Login/login";
-import Signup from "./pages/consumer/Signup/signup";
+// import Login from "./pages/consumer/Login/login";
+// import Signup from "./pages/consumer/Signup/signup";
 import AddCategory from "./pages/admin/AddCategory";
 import AddSubcategory from "./pages/admin/AddSubcategory";
 import AddProduct from "./pages/admin/AddProduct";
 import Inquiry from "./pages/admin/Inquiry";
 import SubcategoryPage from "./component/SubcategoryPage/SubcategoryPage";
+import Login from "./pages/consumer/Login/login";
+import Signup from "./pages/consumer/Signup/signup";
 import Subproduct from "./pages/admin/Subproduct"; // ✅ Import the Subproduct Page
 
 // Authentication Protection
@@ -65,6 +67,9 @@ const App = () => {
           <Route path="/category/:id" element={<Category />} />
           <Route path="/product/:id" element={<Product />} />
           <Route path="/subcategory/:id" element={<SubcategoryPage />} /> 
+          {/* <Route path="/login" element={<Login/>} /> */}
+          {/* <Route path="/signup" element={<Signup/>}/> */}
+
 
           {/* ✅ Catch-All Route for Consumer Inside AntdLayout */}
           {/* <Route path="*" element={<Navigate to="/login" />} /> */}
