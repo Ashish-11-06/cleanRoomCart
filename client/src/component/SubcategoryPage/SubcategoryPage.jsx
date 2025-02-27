@@ -56,7 +56,7 @@ const SubcategoryPage = () => {
 
       {/* Product List */}
       {products.length > 0 ? (
-        <Row gutter={[16, 16]} justify="center">
+        <Row style={{justifyContent: 'flex-start'}} gutter={[16, 16]} justify="center">
           {products.map((product) => (
             <Col key={product._id} xs={24} sm={12} md={8} lg={6} style={{ paddingTop: "20px" }}>
               <Card
@@ -64,8 +64,8 @@ const SubcategoryPage = () => {
                 style={{ width: "100%", maxWidth: "230px", margin: "auto" }}
                 cover={
                   <img
-                    alt={product.productName}
-                    src={`http://localhost:5001/uploads/${product.image}`} // Fixed Image Path
+                    alt={product.image}
+                    src={`http://localhost:5000/uploads/${product.image}`} // Fixed Image Path
                     style={{
                       height: "150px",
                       width: "100%",

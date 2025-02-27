@@ -1,5 +1,6 @@
 const express = require("express");
 const Cart = require("../models/CartModel");
+const { message } = require("statuses");
 
 const router = express.Router();
 
@@ -25,17 +26,23 @@ exports.addCart =  async (req, res) => {
   }
 };
 
-// ✅ Get cart items for a user
-exports.getCart =  async (req, res) => {
-  try {
-    const cart = await Cart.findOne({ userId: req.params.userId }).populate("items.productId");
-    if (!cart) return res.status(404).json({ message: "Cart not found" });
 
-    res.status(200).json(cart);
+// Get user's cart items
+exports.getCart = async (req, res) => {
+  try {
+      const { userId } = req.params;
+
+      if (!userId) return res.status(400).json({ message: "User ID is required" });
+
+      const cartItems = await Cart.find({ user: userId }).populate("product"); // Populate product details
+      return res.status(200).json(cartItems);
+
   } catch (error) {
-    res.status(500).json({ message: error.message });
+      console.error("Error fetching cart items:", error);
+      return res.status(500).json({ message: "Server error" });
   }
 };
+
 
 // ✅ Remove item from cart
 exports.deleteCart =  async (req, res) => {
@@ -48,7 +55,7 @@ exports.deleteCart =  async (req, res) => {
     cart.items = cart.items.filter(item => item.productId.toString() !== productId);
     await cart.save();
 
-    res.status(200).json({ success: true, cart });
+    res.status(200).json({ success: true, cart, message:'Delete cart ite Successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

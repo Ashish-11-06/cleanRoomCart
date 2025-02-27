@@ -1,44 +1,38 @@
 const Product = require("../models/productModel");
+const express = require('express');
+const router = express.Router();
+const upload = require('../config/multerConfig'); // Import multer configuration
 
-exports.addProduct = async(req, res) => {
+
+exports.addProduct = async (req, res) => {
     try {
-        let { category, subcategory, productName, price, productCode, description, size, image } = req.body;
-
-        // Ensure `size` is an array
-        if (!Array.isArray(size)) {
-            size = typeof size === "string" ? size.split(",").map(s => s.trim()).filter(Boolean) : [];
-        } else {
-            size = size.filter(s => s.trim() !== "");
-        }
-
-        const newProduct = new Product({
-            category,
-            subcategory,
-            productName,
-            price,
-            productCode,
-            description,
-            size,
-            image
-        });
-
-        await newProduct.save();
-        res.status(201).json({ success: true, newProduct, message: "Product added successfully" });
+      const { category, subcategory, productName, price, productCode, description, size } = req.body;
+  
+      let sizeArray = [];
+      if (size) {
+        sizeArray = typeof size === "string" ? size.split(",").map(s => s.trim()).filter(Boolean) : size.filter(s => s.trim() !== "");
+      }
+  
+      const imagePath = req.image ? req.image.path : null;
+  console.log(req.body);
+      const newProduct = new Product({
+        category,
+        subcategory,
+        productName,
+        price,
+        productCode,
+        description,
+        size: sizeArray,
+        image: imagePath
+      });
+  
+      const addedProduct = await newProduct.save();
+      res.status(201).json({ success: true, addedProduct, message: "Product added successfully" });
     } catch (error) {
-        console.error("Error adding product:", error);
-        res.status(500).json({ success: false, message: "Error adding product" });
+      console.error("Error adding product:", error);
+      res.status(500).json({ success: false, message: "Error adding product" });
     }
-};
-
-
-
-
-
-
-
-
-
-
+  };
 
 // Get all products with optional filtering by category or subcategory
 exports.getProducts = async(req, res) => {

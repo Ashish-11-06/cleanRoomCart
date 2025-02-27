@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Consumer = require('../models/Consumer');
 const { message } = require('statuses');
+const InterestedUser = require('../models/InterestedUser');
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -72,9 +73,21 @@ const registerAdmin = async (req, res) => {
   }
 };
 
+const getInterestedUsers = async (req, res) => {
+  try {
+    const interestedUsers = InterestedUser.find().lean;
+    console.log(interestedUsers);
+    res.status(200).json(interestedUsers); 
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
+
 module.exports = {
   loginAdmin,
   registerAdmin,
+  getInterestedUsers
 };
 
 

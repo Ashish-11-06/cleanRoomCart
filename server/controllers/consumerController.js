@@ -54,7 +54,7 @@ exports.loginConsumer = async(req, res) => {
         }
 
         const token = jwt.sign({ id: consumer._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-        return res.status(200).json({ token, message: 'Consumer Login successfully' });
+        return res.status(200).json({ token, message: 'Consumer Login successfully', user: consumer });
 
     } catch (error) {
         console.error('Login Error:', error);
@@ -78,3 +78,15 @@ exports.getConsumers = async(req, res) => {
         return res.status(500).json({ message: 'Server error' });
     }
 };
+
+exports.getConsumerProfile = async (req, res) => {
+    try {
+      const user = await Consumer.findById(req.user.id).select("-password");
+        if (!user) return res.status(404).json({ message: "User not found" });
+  
+      res.json({ user });
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  };
+  

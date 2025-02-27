@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Table, Card } from 'antd';
-
+import { Table, Card, Spin } from 'antd';
 
 const InterestedUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  // const userId = "67b6ffcadd55f21e9666ac95"; 
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/interested-users")
-      .then((response) => response.json())
+  const response =  fetch("http://localhost:5001/api/admin/interested-users")
+      // .then(response)
       .then((data) => {
         setUsers(data);
         setLoading(false);
@@ -18,6 +18,26 @@ const InterestedUsers = () => {
         setLoading(false);
       });
   }, []);
+  const userId = localStorage.getItem("userId");
+  // useEffect(() => {
+  //   if (!userId) {
+  //     console.error("User ID is not available");
+  //     setLoading(false);
+  //     return;
+  //   }
+
+  //   fetch(`http://localhost:5001/api/cart/get`)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setUsers(data);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching cart items:", error);
+  //       setUsers([]); 
+  //       setLoading(false);
+  //     });
+  // }, [userId]); 
 
   const columns = [
     {
@@ -51,7 +71,8 @@ const InterestedUsers = () => {
 
   return (
     <Card title="Interested Users">
-      {loading ? <Spin size="large" /> : <Table columns={columns} dataSource={users} />}
+      {loading ? <Spin size="large" /> : 
+      <Table columns={columns} dataSource={users ? users: data} />}
     </Card>
   );
 };

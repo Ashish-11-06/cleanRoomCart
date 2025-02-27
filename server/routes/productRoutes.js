@@ -13,8 +13,8 @@ const router = express.Router();
 
 router.post("/add", addProduct);
 router.get("/get", getProducts);
-router.get("/subcategory/:id", getProductBySubId);
-router.get("/product/:productId", getById);
+router.get("/get/:id", getProductBySubId);
+router.get("/get-by/:productId", getById);
 router.delete("/delete/:id", deleteProduct);
 router.put("/update/:id", updateProduct);
 router.get("/search", getProductsForTable); // New route for searching products

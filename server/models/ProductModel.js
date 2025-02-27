@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema({
     productCode: { type: String, required: true, unique: true },
     description: { type: String, required: true },
     size: { type: [String], default: [] }, // Default empty array
-    image: { type: String, required: [true, "Product image is required"] }, // Error message if missing
+    image: { type: String }, // Error message if missing
 }, { timestamps: true });
 
 module.exports = mongoose.model("Product", productSchema);

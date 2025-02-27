@@ -75,7 +75,7 @@ const Navbar = () => {
             <Link style={{ textDecoration: 'none', paddingRight: '5px', marginRight: '5px', position: 'relative' }} to="/cart">
             <span style={{ marginLeft: "5px" }}>My Cart</span>
               <ShoppingCartOutlined style={{ fontSize: '22px' }} />
-              {cartItems.length > 0 && (
+              {cartItems.length >= 0 && (
                 <span style={{ 
                   position: 'absolute', 
                   top: '-32px', 
@@ -113,7 +113,7 @@ const Navbar = () => {
         </Header>
         <Menu style={{backgroundColor:''}} mode="horizontal" className="navbar-links">
           <Menu.Item key="home"><a href="/">Home</a></Menu.Item>
-          <Menu.Item key="cleanroom-supplies"><a href="#cleanroom-supplies">Cleanroom Supplies</a></Menu.Item>
+          <Menu.Item key="cleanroom-supplies"><a href="#cleanroom-supplies">Cleanroom Apparel</a></Menu.Item>
           <Menu.Item key="cleanroom-equipment"><a href="#cleanroom-equipment">Cleanroom Equipment</a></Menu.Item>
           <Menu.Item key="lab-supplies"><a href="#lab-supplies">Lab Supplies</a></Menu.Item>
           <Menu.Item key="safety-supplies"><a href="#safety-supplies">Safety Supplies</a></Menu.Item>
