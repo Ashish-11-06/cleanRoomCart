@@ -1,10 +1,12 @@
 const express = require('express');
-const { registerConsumer, loginConsumer } = require('../controllers/consumerController');
+const { registerConsumer, loginConsumer, getConsumers } = require('../controllers/consumerController');
 
 const router = express.Router();
 
-//only for the consumer side routes of the application
 router.post('/signup', registerConsumer);
 router.post('/login', loginConsumer);
+router.get('/list', getConsumers); // ✅ New route to fetch consumers
 
 module.exports = router;
+
+

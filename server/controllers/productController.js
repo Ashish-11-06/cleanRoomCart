@@ -1,166 +1,164 @@
-const { message } = require("statuses");
-const Product = require("../models/ProductModel");
+const Product = require("../models/productModel");
 
-exports.addProduct = async (req, res) => {
-  try {
-      const { category, subcategory, productName, price, productCode, description, size, image } = req.body;
-
-      console.log("Received Data:", req.body);  
-
-      if (!category || !subcategory || !productName || !price || !productCode || !description || !image) {
-          return res.status(400).json({ message: "All required fields must be filled" });
-      }
-
-      if (!Array.isArray(size)) {
-        size = typeof size === "string" ? size.split(",").map(s => s.trim()).filter(Boolean) : [];
-    } else {
-        size = size.filter(s => s.trim() !== "");
-    }
-
-      const newProduct = new Product({
-          category,
-          subcategory,
-          productName,
-          price,
-          productCode,
-          description,
-          size,
-          image,
-          // message: 'Product added successfully'
-      });
-
-      await newProduct.save();
-      res.status(201).json({ message: "Product added successfully", product: newProduct });
-
-  } catch (error) {
-      console.error("Error adding product:", error);
-      res.status(500).json({ message: "Server error, please try again later" });
-  }
-};
-
-
-
-exports.getProducts = async (req, res) => {
-  try {
-      const { categoryId, subcategoryId } = req.body;  // Use query instead of body
-
-      if (!categoryId || !subcategoryId) {
-          return res.status(400).json({ error: "Category ID and Subcategory ID are required" });
-      }
-
-      const products = await Product.find({ category: categoryId, subcategory: subcategoryId });
-
-      return res.status(200).json({
-          products,
-          message: "Products fetched successfully",
-      });
-
-  } catch (error) {
-      console.error("Error fetching products:", error);
-      return res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-// exports.getProductsBySubcategory = async (req, res) => {
-//     try {
-//       const { subcategory } = req.params;
-      
-//       // Find products linked to this subcategory
-//       const products = await Product.find({ subcategory });
-
-//       if (!products.length) {
-//         return res.status(404).json({ message: "No products found for this subcategory" });
-//       }
-
-//       res.json(products);
-//     } catch (error) {
-//       console.error("Error fetching products:", error);
-//       res.status(500).json({ message: "Error fetching products", error });
-//     }
-//   };
-
-exports.getProductBySubId = async (req, res) =>{
-        try {
-          const subcategoryId = req.params.id; // Get subcategory ID from URL parameter
-
-
-          if (!subcategoryId) {
-              return res.status(400).json({ message: "Subcategory ID is required" });
-          }
-          
-           const products = await Product.find({ subcategory: subcategoryId });
-
-          console.log("Fetched Products:", products);
-
-          res.status(200).json({ 
-            success: true, 
-            products,
-            message:"Product Fetch Successfully",
-           });
-      } catch (error) {
-          console.error("Error fetching products:", error);
-          res.status(500).json({ success: false, message: "Server error" });
-      }
-  }
-
-exports.getById = async (req, res) => {
+// Add a new product
+exports.addProduct = async(req, res) => {
     try {
-        const { productId } = req.params; // Get product ID from URL
-        console.log("Received Product ID:", productId); 
-  
-        const product = await Product.findById(productId); // Find by product ID
-        // let sizes = Array.isArray(product.size) ? product.size : product.size?.split(",").map(s => s.trim()) || [];
-        console.log("Fetched Product from DB:", product); 
-  
-        if (!product) {
-            return res.status(404).json({ 
-                success: false, 
-                message: "Product not found" 
-            });
+        let { category, subcategory, productName, price, productCode, description, size, image } = req.body;
+
+        // Ensure `size` is an array
+        if (!Array.isArray(size)) {
+            size = typeof size === "string" ? size.split(",").map(s => s.trim()).filter(Boolean) : [];
+        } else {
+            size = size.filter(s => s.trim() !== "");
         }
-  
-        res.status(200).json({ 
-            success: true, 
-            product,  
-            message: "Product Fetch Successfully" 
+
+        const newProduct = new Product({
+            category,
+            subcategory,
+            productName,
+            price,
+            productCode,
+            description,
+            size,
+            image
         });
+
+        await newProduct.save();
+        res.status(201).json({ success: true, newProduct, message: "Product added successfully" });
+    } catch (error) {
+        console.error("Error adding product:", error);
+        res.status(500).json({ success: false, message: "Error adding product" });
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+// Get all products with optional filtering by category or subcategory
+exports.getProducts = async(req, res) => {
+    try {
+        const { categoryId, subcategoryId } = req.query;
+        let filter = {};
+
+        if (categoryId) filter.category = categoryId;
+        if (subcategoryId) filter.subcategory = subcategoryId;
+
+        const products = await Product.find(filter);
+        res.status(200).json({ success: true, products, message: "Products fetched successfully" });
+    } catch (error) {
+        console.error("Error fetching products:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
+
+// Get products by subcategory ID
+exports.getProductBySubId = async(req, res) => {
+    try {
+        const { id: subcategoryId } = req.params;
+        if (!subcategoryId.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ message: "Invalid Subcategory ID" });
+        }
+
+        const products = await Product.find({ subcategory: subcategoryId });
+        if (!products.length) {
+            return res.status(404).json({ message: "No products found for this subcategory" });
+        }
+
+        res.status(200).json({ success: true, products, message: "Products fetched successfully" });
+    } catch (error) {
+        console.error("Error fetching products:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+// Get product by ID
+exports.getById = async(req, res) => {
+    try {
+        const { productId } = req.params;
+        if (!productId.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ success: false, message: "Invalid Product ID" });
+        }
+
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        res.status(200).json({ success: true, product, message: "Product fetched successfully" });
     } catch (error) {
         console.error("Error fetching product:", error);
         res.status(500).json({ success: false, message: "Server error" });
     }
-  };
-  
+};
 
-exports.deleteProduct = async (req, res) => {
-  try {
-    const productId = req.params.id;
-    const deletedProduct = await Product.findByIdAndDelete(productId);
-
-    if (!deletedProduct) {
-        return res.status(404).json({ message: "Product not found" });
-    }
-
-    res.status(200).json({ message: "Product deleted successfully" });
-  } catch (error) {
-      console.error("Error deleting product:", error);
-      res.status(500).json({ message: "Internal Server Error" });
-  }
-}
-
-exports.updateProduct = async (req, res) => {
+// Delete a product
+exports.deleteProduct = async(req, res) => {
     try {
-      const productId = req.params.id;
-      const updatedProduct = await Product.findByIdAndUpdate(productId, req.body, { new: true });
+        const { id: productId } = req.params;
+        if (!productId.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ message: "Invalid Product ID" });
+        }
 
-      if (!updatedProduct) {
-          return res.status(404).json({ message: "Product not found" });
-      }
+        const deletedProduct = await Product.findByIdAndDelete(productId);
+        if (!deletedProduct) {
+            return res.status(404).json({ message: "Product not found" });
+        }
 
-      res.status(200).json({
-        updatedProduct,
-        message: "Product updated successfully",
-      
-      });
+        res.status(200).json({ message: "Product deleted successfully" });
     } catch (error) {
+        console.error("Error deleting product:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+// Update a product
+exports.updateProduct = async(req, res) => {
+    try {
+        const { id: productId } = req.params;
+        let updateData = req.body;
+
+        if (!productId.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ message: "Invalid Product ID" });
+        }
+
+        if (updateData.size && typeof updateData.size === "string") {
+            updateData.size = updateData.size.split(",").map(s => s.trim()).filter(Boolean);
+        }
+
+        const updatedProduct = await Product.findByIdAndUpdate(productId, updateData, { new: true });
+        if (!updatedProduct) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        res.status(200).json({ success: true, updatedProduct, message: "Product updated successfully" });
+    } catch (error) {
+        console.error("Error updating product:", error);
         res.status(500).json({ message: "Error updating product", error });
     }
-}
+};
+
+exports.getProductsForTable = async(req, res) => {
+    try {
+        const { name } = req.query; // Get product name from query parameters
+        let filter = {};
+
+        if (name) {
+            filter.productName = { $regex: name, $options: "i" }; // Case-insensitive search
+        }
+
+        // Fetch only productName, price, and productCode
+        const products = await Product.find(filter).select("productName price productCode");
+
+        res.status(200).json({ success: true, products, message: "Products fetched successfully" });
+    } catch (error) {
+        console.error("Error fetching products:", error);
+        res.status(500).json({ message: "Error fetching products", error });
+    }
+};

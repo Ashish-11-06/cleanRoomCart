@@ -102,35 +102,57 @@ const AddCategory = () => {
         <button className="add-btn" onClick={toggleForm}>Add Category</button>
       </div>
 
+
+
+
       {isFormOpen && (
-        <div className="form-container">
-          <h2>Add Category</h2>
-          <form onSubmit={handleSubmit}>
-            <label>Category Name</label>
-            <input type="text" name="name" value={category.name} onChange={handleChange} required />
-            <label>Short Description</label>
-            <textarea name="shortDescription" value={category.shortDescription} onChange={handleChange}></textarea>
-            <label>Detailed Description</label>
-            <textarea name="detailedDescription" value={category.detailedDescription} onChange={handleChange}></textarea>
-            <label>Category Image</label>
-            <input type="file" onChange={handleFileChange} />
-            <button type="submit" className="save-btn">Save Category</button>
-          </form>
-        </div>
-      )}
+    <div className="form-container">
+      <span className="close-icon" onClick={() => setIsFormOpen(false)}>❎</span>
+      <h2>Add Category</h2>
+      <form onSubmit={handleSubmit}>
+        <label>Category Name</label>
+        <input type="text" name="name" value={category.name} onChange={handleChange} required />
+        <label>Short Description</label>
+        <textarea name="shortDescription" value={category.shortDescription} onChange={handleChange}></textarea>
+        <label>Detailed Description</label>
+        <textarea name="detailedDescription" value={category.detailedDescription} onChange={handleChange}></textarea>
+        <label>Category Image</label>
+        <input type="file" onChange={handleFileChange} />
+        <button type="submit" className="save-btn">Save Category</button>
+      </form>
+    </div>
+)}
+
+
+
+
+
 
       <h1 className="list-header">List of Categories</h1>
       <ul className="category-list">
-        {categories.map((category) => (
-          <li key={category._id} className="category-item">
-            <span className="category-name">{category.name}</span>
-            <div className="icons">
-              <EditOutlined className="edit-icon" onClick={() => handleEdit(category._id)} />
-              <DeleteOutlined className="delete-icon" onClick={() => handleDelete(category._id)} />
-            </div>
-          </li>
-        ))}
-      </ul>
+  {categories.map((category) => (
+    <li key={category._id} className="category-item" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0" }}>
+      <span className="category-name" style={{ fontWeight: "bold", fontSize: "16px" }}>{category.name}</span>
+      <div className="buttons" style={{ display: "flex", gap: "8px" }}>
+        <button 
+          className="edit-button" 
+          style={{ backgroundColor: "#4CAF50", color: "white", border: "none", padding: "6px 12px", cursor: "pointer", borderRadius: "4px", fontSize: "14px", fontWeight: "bold" }} 
+          onClick={() => handleEdit(category._id)}
+        >
+          Edit
+        </button>
+        <button 
+          className="delete-button" 
+          style={{ backgroundColor: "#E74C3C", color: "white", border: "none", padding: "6px 12px", cursor: "pointer", borderRadius: "4px", fontSize: "14px", fontWeight: "bold" }} 
+          onClick={() => handleDelete(category._id)}
+        >
+          Delete
+        </button>
+      </div>
+    </li>
+  ))}
+</ul>
+
 
       {/* Edit Category Modal */}
       <Modal 

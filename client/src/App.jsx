@@ -21,6 +21,7 @@ import AddSubcategory from "./pages/admin/AddSubcategory";
 import AddProduct from "./pages/admin/AddProduct";
 import Inquiry from "./pages/admin/Inquiry";
 import SubcategoryPage from "./component/SubcategoryPage/SubcategoryPage";
+import Subproduct from "./pages/admin/Subproduct"; // ✅ Import the Subproduct Page
 
 // Authentication Protection
 const ProtectedRoute = ({ children, role }) => {
@@ -79,6 +80,7 @@ const App = () => {
           <Route path="/admin/orders" element={<Orders />} />
           <Route path="/admin/interested" element={<InterestedUsers />} />
           <Route path="/admin/inquiries" element={<Inquiry />} />
+          <Route path="/admin/subproduct" element={<Subproduct />} /> {/* ✅ Added Subproduct */}
         </Route>
       </Routes>
     </Router>
@@ -86,6 +88,3 @@ const App = () => {
 };
 
 export default App;
-
-
-

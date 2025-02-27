@@ -19,16 +19,19 @@ const AddProduct = () => {
   const [loading, setLoading] = useState(false); // Show loader while fetching
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  
+
 
   useEffect(() => {
     axios.get("http://localhost:5001/api/category/get")
-        .then((response) => {
-            setCategories(response.data);
-        })
-        .catch((error) => {
-            console.error("Error fetching categories:", error);
-        });
+      .then((response) => {
+        setCategories(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
+      });
   }, []);
+  
 
   // Fetch subcategories based on selected category
   useEffect(() => {
@@ -36,9 +39,13 @@ const AddProduct = () => {
       axios
         .get(`http://localhost:5001/api/subcategory/get?categoryId=${selectedCategory}`)
         .then((response) => {
-           if (response.data && Array.isArray(response.data.subCategories)) {
-          setSubcategories(response.data.subCategories);
-              
+          if (response.data.subCategories && Array.isArray(response.data.subCategories)) {
+            // 🔥 Filter Subcategories based on Selected Category
+            const filtered = response.data.subCategories.filter(
+              (sub) => sub.categoryId === selectedCategory
+            );
+  
+            setSubcategories(filtered); // ✅ Set Filtered Subcategories
           } else {
             console.error("Unexpected response format:", response.data);
             setSubcategories([]);
@@ -49,9 +56,12 @@ const AddProduct = () => {
           setSubcategories([]);
         });
     } else {
-      setSubcategories([]); // Clear subcategories when no category is selected
+      setSubcategories([]); // Reset when no category is selected
     }
   }, [selectedCategory]);
+  
+  
+  
 //   useEffect(() => {
 //     if (selectedCategory) {
 //         axios.get(http://localhost:5001/api/subcategory/get?categoryId=${selectedCategory})
@@ -67,20 +77,17 @@ const AddProduct = () => {
    // Handle Category Selection
    const handleCategoryChange = (categoryId) => {
     setSelectedCategory(categoryId);
-    
-    // Filter subcategories based on selected category
-    const filteredSubcategories = allSubcategories.filter(sub => sub.categoryId === categoryId);
-    setSubcategories(filteredSubcategories);
-
-    // Reset selected subcategory when changing category
-    setSelectedSubcategory(null);
-};
+    setSelectedSubcategory(null); // Reset subcategory when category changes
+  };
+  
+  
 
 
   // Handle Subcategory Selection
   const handleSubcategoryChange = (value) => {
     setSelectedSubcategory(value);
   };
+  
 
   const handleUpdateProduct = async (values, productId) => {
     try {
@@ -96,6 +103,10 @@ const AddProduct = () => {
     }
   };
 
+
+
+
+
   const handleSeeProducts = async () => {
     if (!selectedCategory || !selectedSubcategory) return;
 
@@ -103,16 +114,31 @@ const AddProduct = () => {
     try {
         const response = await axios.get(
             `http://localhost:5001/api/product/get?categoryId=${selectedCategory}&subcategoryId=${selectedSubcategory}`
-            
         );
-        console.log("Fetched Products:", response.data); // Debugging line
-        // setProducts(response.data); // Store products in state
-        setProducts(response.data); // Store products in state
+
+        console.log("Fetched Products:", response.data);
+        if (Array.isArray(response.data)) {
+            setProducts([...response.data]); // Ensure new reference
+        } else if (response.data.products) {
+            setProducts([...response.data.products]); // If products are nested
+        } else {
+            setProducts([]);
+        }
     } catch (error) {
         console.error("Error fetching products:", error);
     }
     setLoading(false);
-  };
+};
+
+useEffect(() => {
+    console.log("Updated Products State:", products);
+}, [products]);
+
+
+
+
+
+
 
   // Handle Form Submission
   const onFinish = async (values) => {
@@ -140,6 +166,9 @@ const AddProduct = () => {
         alert("Failed to add product. Please try again.");
     }
   };
+
+
+  
 
 
     // Toggle Form Visibility
@@ -176,66 +205,65 @@ const AddProduct = () => {
         
         {/* Form for selecting Category and Subcategory */}
         <div style={{ marginTop: "20px", padding: "10px", background: "#fff", borderRadius: "10px" }}>
-                <h2 style={{paddingLeft:'0px'}}>Select Category and Subcategory</h2>
-                <Form style={{ backgroundColor: '#d8e4f2', alignItems: 'center', Width:'500px', margin: "auto", padding: "inherit"  }}>
-                    {/* Category Dropdown */}
-                    <Form.Item 
-                    style={{padding:'20px 0px 0px 0px',height: '80px'}} 
-                    label="Select Category">
-                        <Select 
-                            style={{ width: '100%' }}
-                            value={selectedCategory}  
-                            onChange={handleCategoryChange}
-                            placeholder="Select a Category"
-                        >
-                            {categories.map((category) => (
-                                <Select.Option key={category._id} value={category._id}>
-                                    {category.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
+  <h2 style={{ paddingLeft: '0px' }}>Select Category and Subcategory</h2>
 
-                    {/* Subcategory Dropdown */}
-                    <Form.Item 
-                    style={{padding:'0px 0px 0px 0px',height: '60px'}}
-                    label="Select Subcategory">
-                        <Select
-                            style={{ width: '100%' }}
-                            value={selectedSubcategory}
-                            onChange={handleSubcategoryChange}
-                            placeholder="Select a Subcategory"
-                            disabled={!selectedCategory} // Disable subcategory dropdown if no category selected
-                        >
-                            {subcategories.map((subcategory) => (
-                                <Select.Option key={subcategory._id} value={subcategory._id}>
-                                    {subcategory.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
+  <Form style={{ backgroundColor: '#d8e4f2', alignItems: 'center', width: '500px', margin: "auto", padding: "inherit" }}>
+    {/* Category Dropdown */}
+    <Form.Item label="Select Category" style={{ padding: '20px 0px 0px 0px', height: '80px' }}>
+      <Select
+        style={{ width: '100%' }}
+        value={selectedCategory}
+        onChange={handleCategoryChange}
+        placeholder="Select a Category"
+      >
+        {categories.map((category) => (
+          <Select.Option key={category._id} value={category._id}>
+            {category.name}
+          </Select.Option>
+        ))}
+      </Select>
+    </Form.Item>
 
-                    {/* Action Buttons */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Button
-                            type="primary"
-                            onClick={toggleForm}                            
-                            style={{ width: '48%',backgroundColor:'#40476D' }}
-                            disabled={!selectedCategory || !selectedSubcategory}
-                        >
-                          {isFormVisible ? "Close Form" : "Add Product"} 
-                        </Button>
-                        <Button
-                            type="default"
-                            onClick={handleSeeProducts}
-                            style={{ width: '48%' }}
-                            disabled={!selectedCategory || !selectedSubcategory}
-                        >
-                            See Products
-                        </Button>
-                    </div>
-                </Form>
-            </div>
+    {/* Subcategory Dropdown */}
+    <Form.Item label="Select Subcategory" style={{ padding: '0px 0px 0px 0px', height: '60px' }}>
+      <Select
+        style={{ width: '100%' }}
+        value={selectedSubcategory}
+        onChange={handleSubcategoryChange}
+        placeholder="Select a Subcategory"
+        disabled={!selectedCategory} // Disable if no category selected
+      >
+        {subcategories.map((subcategory) => (
+          <Select.Option key={subcategory._id} value={subcategory._id}>
+            {subcategory.name}
+          </Select.Option>
+        ))}
+      </Select>
+    </Form.Item>
+
+    {/* Buttons */}
+    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Button
+        type="primary"
+        onClick={toggleForm}
+        style={{ width: '48%', backgroundColor: '#40476D' }}
+        disabled={!selectedCategory || !selectedSubcategory}
+      >
+        {isFormVisible ? "Close Form" : "Add Product"}
+      </Button>
+
+      <Button
+        type="default"
+        onClick={handleSeeProducts}
+        style={{ width: '48%' }}
+        disabled={!selectedCategory || !selectedSubcategory}
+      >
+        See Products
+      </Button>
+    </div>
+  </Form>
+</div>
+
             
               <Modal
                   title="Edit Product"
@@ -277,6 +305,19 @@ const AddProduct = () => {
                       </Form>
                   )}
               </Modal>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
             {isFormVisible && (
@@ -370,27 +411,48 @@ const AddProduct = () => {
                                     <td style={{ padding: "10px" }}>₹{product.price}</td>
                                     <td style={{ padding: "10px" }}>{product.description}</td>
                                     <td style={{ padding: "10px" }}>{product.size || "N/A"}</td>
-                                    <td style={{ padding: "10px" }}>
-                                        <Button 
-                                            type="link" 
-                                            
-                                            icon={<EditOutlined style={{fontSize: "20px" }}/>} 
-                                            style={{ color: "blue", marginRight: "10px" }} 
-                                            onClick={() => handleEdit(product)}
-                                        />
-                                        <Button 
-                                            type="link" 
-                                            icon={<DeleteOutlined style={{fontSize: "20px" }}/>} 
-                                            style={{ color: "red" }} 
-                                            onClick={() => handleDelete(product._id)}
-                                        />
-                                    </td>
+                                    <td style={{ padding: "10px", display: "flex", flexDirection: "column", gap: "5px" }}>
+    <div style={{ display: "flex", gap: "5px" }}>
+        {/* Edit Button - Green */}
+        <Button 
+            style={{ backgroundColor: "green", color: "white", border: "none", fontSize: "12px", padding: "3px 8px" }} 
+            onClick={() => handleEdit(product)}
+        >
+            Edit
+        </Button>
+
+        {/* Delete Button - Red */}
+        <Button 
+            style={{ backgroundColor: "red", color: "white", border: "none", fontSize: "12px", padding: "3px 8px" }} 
+            onClick={() => handleDelete(product._id)}
+        >
+            Delete
+        </Button>
+    </div>
+
+    {/* Add Subproduct Button - Orange (Placed Below) */}
+    <Button 
+        style={{ backgroundColor: "#E16A54", color: "white", border: "none", fontSize: "12px", padding: "3px 8px" }} 
+        onClick={() => handleAddSubproduct(product)}
+    >
+        Add Subproduct
+    </Button>
+</td>
+
+
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
             )}
+
+
+
+
+
+
+
     </div>
   )
 }

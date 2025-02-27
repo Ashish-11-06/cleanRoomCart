@@ -11,6 +11,7 @@ import {
   AppstoreOutlined,
   FolderOpenOutlined,
   ShoppingOutlined,
+  BranchesOutlined, // Added icon for Subproduct
 } from "@ant-design/icons";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 
@@ -18,7 +19,7 @@ const { Header, Sider, Content } = Layout;
 
 const MainLayout = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // Get the current route
+  const location = useLocation();
   const isAuthenticated = localStorage.getItem("adminToken");
 
   const handleLogout = () => {
@@ -56,17 +57,25 @@ const MainLayout = () => {
       onClick: () => navigate("/admin/product"),
     },
     {
+      key: "/admin/subproduct",
+      icon: <BranchesOutlined />, // Icon for subproduct
+      label: "Subproduct",
+      onClick: () => navigate("/admin/subproduct"),
+    },
+    {
       key: "/admin/users",
       icon: <UserOutlined />,
       label: "Users",
       onClick: () => navigate("/admin/users"),
     },
-    {
+
+   /* {
       key: "/admin/orders",
       icon: <ShoppingCartOutlined />,
       label: "Orders History",
       onClick: () => navigate("/admin/orders"),
-    },
+    },*/
+    
     {
       key: "/admin/interested",
       icon: <HistoryOutlined />,
@@ -106,13 +115,27 @@ const MainLayout = () => {
         <Menu
           theme="dark"
           mode="inline"
-          selectedKeys={[location.pathname]} // Dynamically set active menu item
-          items={menuItems}
+          selectedKeys={[location.pathname]}
           style={{
             background: "#7C444F",
-            color: "#F5F5F5",
+            color: "#FFFFFF",
           }}
-        />
+        >
+          {menuItems.map((item) => (
+            <Menu.Item
+              key={item.key}
+              icon={item.icon}
+              onClick={item.onClick}
+              style={{
+                color: "#FFFFFF",
+                background: location.pathname === item.key ? "#E16A54" : "transparent",
+                fontWeight: location.pathname === item.key ? "bold" : "normal",
+              }}
+            >
+              {item.label}
+            </Menu.Item>
+          ))}
+        </Menu>
       </Sider>
       <Layout>
         <Header

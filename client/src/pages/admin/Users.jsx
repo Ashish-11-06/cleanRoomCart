@@ -1,42 +1,46 @@
-import React from 'react';
-import { Table, Card } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Table, Card, Statistic } from 'antd';
+import axios from 'axios';
 
 const Users = () => {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:5001/api/consumer/list')
+      .then(response => {
+        setUsers(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching consumers:', error);
+      });
+  }, []);
+
   const columns = [
     {
-      title: 'First Name',
-      dataIndex: 'firstName',
-      key: 'firstName',
+      title: 'S.No.',
+      key: 'serialNo',
+      render: (text, record, index) => index + 1,
     },
     {
-      title: 'Last Name',
-      dataIndex: 'lastName',
-      key: 'lastName',
+      title: 'Full Name',
+      dataIndex: 'fullName',
+      key: 'fullName',
     },
     {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-    },
-    {
-      title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
     }
   ];
 
-  const data = []; // Will be populated from API
-
   return (
     <Card title="User Information">
-      <Table columns={columns} dataSource={data} />
+      {/* ✅ Display Total Users Count */}
+      <Statistic title="Total Users" value={users.length} style={{ marginBottom: 16 }} />
+      
+      <Table columns={columns} dataSource={users} rowKey="_id" />
     </Card>
   );
 };
 
-export default Users; 
+export default Users;

@@ -35,18 +35,7 @@ const AddSubcategory = () => {
         fetchSubcategories();
     }, []);
 
-    // Fetch subcategories from DB
-    // const fetchSubcategories = (categoryId) => {
-    //     axios.get(http://localhost:5001/api/subcategory/get/${categoryId})
-    //         .then((response) => {
-    //             console.log("Fetched subcategories:", response.data);
-    //             setSubcategories(response.data);
-    //         })
-    //         .catch((error) => {
-    //             console.error("Error fetching subcategories:", error);
-    //             setSubcategories([]);
-    //         });
-    // };
+   
     
     const fetchSubcategories = () => {
         axios.get("http://localhost:5001/api/subcategory/get")
@@ -65,10 +54,7 @@ const AddSubcategory = () => {
         });
     };
 
-    // const handleCategoryChange = (categoryId) => {
-    //     const filteredSubcategories = allSubcategories.filter(sub => sub.categoryId === categoryId);
-    //     setSubcategories(filteredSubcategories);
-    // };
+   
 
     // Handle Input Change
     const handleChange = (e) => {
@@ -123,23 +109,7 @@ const AddSubcategory = () => {
         setSelectedSubcategory(subcategoryToEdit);
     };
 
-    // const handleUpdate = () => {
-    //     axios.put(http://localhost:5001/api/subcategory/update/${selectedSubcategory._id}, selectedSubcategory)
-    //         .then(response => {
-    //             console.log("Subcategory updated:", response.data);
-    //             setIsEditModalOpen(false); // Close the modal
-    //             fetchSubcategories(); // Refresh subcategories after update
-    //         })
-    //         .catch(error => {
-    //             console.error("Error updating subcategory:", error);
-    //         });
-    // };
    
-   
-    // const handleEditChange = (e) => {
-    //     const { name, value } = e.target;
-    //     setEditingSubcategory((prev) => ({ ...prev, [name]: value }));
-    // };
 
     const handleModalSubmit = () => {
         console.log("Updated Subcategory: ", selectedSubcategory); // Log data before submitting
@@ -165,99 +135,140 @@ const AddSubcategory = () => {
             });
     };
 
-    // Group subcategories by categoryId
-    // const groupedSubcategories = categories.map(category => ({
-    //     ...category,
-    //     subcategories: subcategories.filter(sub => sub.categoryId === category._id)
-    // }));
+   
 
     return (
         <div>
-            <div style={{display:'flex', justifyContent:'space-between',paddingRight:'20px', paddingLeft:'20px', backgroundColor:'#d8e4f2', borderRadius:'10px'}}>
-                <h1>Sub-Categories</h1>
-                <button style={{width:'200px', height:'50px', marginTop:'13px'}} onClick={toggleForm}>Add Subcategory</button>
+            <div style={{display:'flex', justifyContent:'space-between',paddingRight:'20px', paddingLeft:'20px', backgroundColor:'#F39E60', borderRadius:'10px'}}>
+                <h1 style={{color:'#7C444F'}}>Subcategories</h1>
+                <button style={{width:'200px', height:'50px', marginTop:'13px', backgroundColor:'#E16A54', color:'#fff', border:'none', borderRadius:'5px', cursor:'pointer'}} onClick={toggleForm}>Add Subcategory</button>
             </div>
 
+
             {isFormOpen && (
-                <div style={{ marginTop: "20px", padding: "10px", background: "#fff", borderRadius: "10px" }}>
-                    <h2>Add Subcategory</h2>
-                    <form style={{backgroundColor:'#d8e4f2', alignItems:'center'}} onSubmit={handleSubmit}>
-                        <label style={{ padding: '0px 0px 8px 0px' }}>Select Category</label>
-                        <select style={{padding:'5px 0px 5px 0px', borderRadius:'5px', width:'100%'}} name="categoryId" value={subcategory.categoryId} onChange={handleChange} required>
-                            <option value="">-- Select a Category --</option>
-                            {categories.map((cat) => (
-                                <option key={cat._id} value={cat._id}>{cat.name}</option>
-                            ))}
-                        </select>
-                        <br />
-                        <label style={{padding:'18px 0px 8px 0px'}}>Subcategory Name</label>
-                        <input type="text" name="name" value={subcategory.name} onChange={handleChange} placeholder="Enter Subcategory name" required />
-                        <br />
-                        <label style={{padding:'10px 0px 8px 0px'}}>Short Description</label>
-                        <textarea name="shortDescription" value={subcategory.shortDescription} onChange={handleChange} placeholder="Enter a short description"></textarea>
-                        <br />
-                        <label style={{padding:'10px 0px 8px 0px'}}>Detailed Description</label>
-                        <textarea name="detailedDescription" value={subcategory.detailedDescription} onChange={handleChange} placeholder="Enter detailed description"></textarea>
-                        <br />
-                        <label style={{padding:'10px 0px 8px 0px'}}>Subcategory Image</label>
-                        <input style={{padding:'0px 0px 20px 0px'}} type="file" onChange={handleFileChange} />
-                        <br />
-                        <button type="submit" style={{ background: "#40476D", color: "#fff", padding: "10px 20px", border: "none", cursor: "pointer" }}>
-                            Save Subcategory
-                        </button>
-                    </form>
-                </div>
-            )}
+    <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        background: 'white',
+        padding: '20px',
+        borderRadius: '10px',
+        boxShadow: '0px 0px 15px rgba(0, 0, 0, 0.2)',
+        width: '500px',
+        zIndex: '9999'
+    }}>
+        {/* Cross Icon */}
+        <span style={{
+            position: 'absolute',
+            top: '10px',
+            right: '15px',
+            fontSize: '24px',
+            color: '#7C444F',
+            cursor: 'pointer',
+            transition: '0.3s'
+        }} onClick={() => setIsFormOpen(false)}>❎</span>
+
+        <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#7C444F' }}>Add Subcategory</h2>
+
+        <form onSubmit={handleSubmit} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <label style={{ color: '#9F5255' }}>Select Category</label>
+            <select name="categoryId" value={subcategory.categoryId} onChange={handleChange} required style={{ padding: '10px', borderRadius: '5px', width: '100%', border: '1px solid #9F5255' }}>
+                <option value="">-- Select a Category --</option>
+                {categories.map((cat) => (
+                    <option key={cat._id} value={cat._id}>{cat.name}</option>
+                ))}
+            </select>
+
+            <label style={{ color: '#9F5255' }}>Subcategory Name</label>
+            <input type="text" name="name" value={subcategory.name} onChange={handleChange} placeholder="Enter Subcategory Name" required style={{ padding: '10px', borderRadius: '5px', border: '1px solid #9F5255' }} />
+
+            <label style={{ color: '#9F5255' }}>Short Description</label>
+            <textarea name="shortDescription" value={subcategory.shortDescription} onChange={handleChange} placeholder="Enter Short Description" style={{ padding: '10px', borderRadius: '5px', border: '1px solid #9F5255' }}></textarea>
+
+            <label style={{ color: '#9F5255' }}>Detailed Description</label>
+            <textarea name="detailedDescription" value={subcategory.detailedDescription} onChange={handleChange} placeholder="Enter Detailed Description" style={{ padding: '10px', borderRadius: '5px', border: '1px solid #9F5255' }}></textarea>
+
+            <label style={{ color: '#9F5255' }}>Subcategory Image</label>
+            <input type="file" onChange={handleFileChange} style={{ padding: '10px', border: '1px solid #9F5255' }} />
+
+            <button type="submit" style={{
+                background: '#E16A54',
+                color: '#fff',
+                padding: '10px 20px',
+                border: 'none',
+                cursor: 'pointer',
+                marginTop: '10px',
+                borderRadius: '5px'
+            }}>
+                Save Subcategory
+            </button>
+        </form>
+    </div>
+)}
+
 
             {/* Display Categories and Subcategories */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-                {categories.map(category => (
-                    <div key={category._id} style={{
-                        background: '#fff',
-                        borderRadius: '10px',
-                        boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-                        width: '300px'
-                    }}>
-                        {/* Category Header */}
-                        <div style={{
-                            backgroundColor: '#40476D',
-                            color: '#fff',
-                            padding: '10px',
-                            textAlign: 'center',
-                            borderTopLeftRadius: '10px',
-                            borderTopRightRadius: '10px',
-                            fontWeight: 'bold'
-                        }}>
-                            {category.name}
-                        </div>
 
-                        {/* Subcategories List */}
-                        <div style={{ padding: '10px' }}>
-                            {subcategories.filter(sub => sub.categoryId === category._id).map((sub)=> (
-                                <div key={sub._id} style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    padding: '5px 0',
-                                    borderBottom: '1px solid #40476D'
-                                }}>
-                                    <span>{sub.name}</span>
-                                    <div>
-                                        <EditOutlined 
-                                            style={{ cursor: 'pointer', marginRight: '10px', color: '#1890ff' }} 
-                                            onClick={() => handleEdit(sub._id)} 
-                                        />
-                                        <DeleteOutlined 
-                                            style={{ cursor: 'pointer', color: 'red' }} 
-                                            onClick={() => handleDelete(sub._id)} 
-                                        />
-                                    </div>
-                                </div>
-                            ))}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+    {categories.map(category => (
+        <div key={category._id} style={{
+            background: '#fff',
+            borderRadius: '10px',
+            boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+            width: '300px'
+        }}>
+            {/* Category Header */}
+            <div style={{
+                backgroundColor: '#7C444F',
+                color: '#fff',
+                padding: '10px',
+                textAlign: 'center',
+                borderTopLeftRadius: '10px',
+                borderTopRightRadius: '10px',
+                fontWeight: 'bold'
+            }}>
+                {category.name}
+            </div>
+
+            {/* Subcategories List */}
+            <div style={{ padding: '10px' }}>
+                {subcategories.filter(sub => sub.categoryId === category._id).map((sub) => (
+                    <div key={sub._id} style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '5px 0',
+                        borderBottom: '1px solid #9F5255',
+                        fontWeight: 'bold'
+
+                    }}>
+                        <span style={{ color: '#E16A54' }}>{sub.name}</span>
+                        <div>
+                            <EditOutlined 
+                                style={{ cursor: 'pointer', marginRight: '10px', color: '#F39E60' }} 
+                                onClick={() => handleEdit(sub._id)} 
+                            />
+                            <DeleteOutlined 
+                                style={{ cursor: 'pointer', color: '#7C444F' }} 
+                                onClick={() => handleDelete(sub._id)} 
+                            />
                         </div>
                     </div>
                 ))}
             </div>
+        </div>
+    ))}
+</div>
+
+
+
+
+
             {/* Modal for Editing Subcategory */}
             {selectedSubcategory && (
                 <Modal
@@ -291,6 +302,10 @@ const AddSubcategory = () => {
                     </Form>
                 </Modal>
             )}
+
+
+
+            
         </div>
     );
 };
