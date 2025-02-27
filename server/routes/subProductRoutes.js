@@ -1,11 +1,11 @@
 // routes/subProductRoutes.js
 const express = require("express");
 const {
-  addSubProduct,
-  getSubProducts,
-  getSubProductsByProductId,
-  deleteSubProduct,
-  updateSubProduct
+    addSubProduct,
+    getSubProducts,
+    getSubProductsByProductId,
+    deleteSubProduct,
+    updateSubProduct
 } = require("../controllers/subProductController");
 
 const router = express.Router();

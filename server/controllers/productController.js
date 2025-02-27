@@ -2,13 +2,19 @@ const Product = require("../models/productModel");
 
 exports.addProduct = async(req, res) => {
     try {
-        let { category, subcategory, productName, price, productCode, description, size, image } = req.body;
+        let { category, subcategory, productName, price, productCode, description, size } = req.body;
 
-        // Ensure `size` is an array
+        // Ensure size is an array
         if (!Array.isArray(size)) {
             size = typeof size === "string" ? size.split(",").map(s => s.trim()).filter(Boolean) : [];
         } else {
             size = size.filter(s => s.trim() !== "");
+        }
+
+        // Get the uploaded file name
+        let image = req.file ? req.file.filename : null;
+        if (!image) {
+            return res.status(400).json({ success: false, message: "Image upload failed" });
         }
 
         const newProduct = new Product({
@@ -19,16 +25,18 @@ exports.addProduct = async(req, res) => {
             productCode,
             description,
             size,
-            image
+            image // Save only the filename, not the path
         });
 
         await newProduct.save();
         res.status(201).json({ success: true, newProduct, message: "Product added successfully" });
+
     } catch (error) {
         console.error("Error adding product:", error);
         res.status(500).json({ success: false, message: "Error adding product" });
     }
 };
+
 
 
 
@@ -81,21 +89,33 @@ exports.getProductBySubId = async(req, res) => {
 exports.getById = async(req, res) => {
     try {
         const { productId } = req.params;
-        if (!productId.match(/^[0-9a-fA-F]{24}$/)) {
+
+        // Debugging Log: Check if productId is received
+        console.log("Received productId:", productId);
+
+        // Validate ObjectId format
+        if (!productId || !productId.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).json({ success: false, message: "Invalid Product ID" });
         }
 
+        // Fetch product from database
         const product = await Product.findById(productId);
+
+        // Debugging Log: Check if product exists
+        console.log("Fetched product:", product);
+
         if (!product) {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
 
         res.status(200).json({ success: true, product, message: "Product fetched successfully" });
+
     } catch (error) {
         console.error("Error fetching product:", error);
         res.status(500).json({ success: false, message: "Server error" });
     }
 };
+
 
 // Delete a product
 exports.deleteProduct = async(req, res) => {

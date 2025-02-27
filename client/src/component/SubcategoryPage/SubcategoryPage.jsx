@@ -21,12 +21,15 @@ const SubcategoryPage = () => {
         console.log("Fetched Subcategory Data:", subcategoryResponse.data);
         setSubcategory(subcategoryResponse.data.subcategory);
 
-        // Fetch products under this subcategory
+        // Fetch products under this subcategory (ensure the correct API route)
         const productsResponse = await axios.get(
-          `http://localhost:5001/api/product/get/${id}`
+          `http://localhost:5001/api/product/subcategory/${id}`
         );
+
         console.log("Fetched Products:", productsResponse.data);
-        setProducts(productsResponse.data.products);
+
+        // Check if products exist in response
+        setProducts(productsResponse.data.products || []);
       } catch (error) {
         console.error("Error fetching data:", error);
         message.error("Failed to load data. Please try again later.");
@@ -61,21 +64,40 @@ const SubcategoryPage = () => {
             <Col key={product._id} xs={24} sm={12} md={8} lg={6} style={{ paddingTop: "20px" }}>
               <Card
                 hoverable
-                style={{ width: "100%", maxWidth: "230px", margin: "auto" }}
+                style={{ 
+                  width: "100%", 
+                  maxWidth: "230px", 
+                  margin: "auto", 
+                  borderRadius: "12px", 
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)" 
+                }}
                 cover={
-                  <img
-                    alt={product.productName}
-                    src={`http://localhost:5001/uploads/${product.image}`} // Fixed Image Path
-                    style={{
-                      height: "150px",
-                      width: "100%",
-                      objectFit: "cover",
-                      borderRadius: "10px",
-                    }}
-                  />
+                  <div style={{ 
+                    width: "100%", 
+                    height: "150px", 
+                    display: "flex", 
+                    justifyContent: "center", 
+                    alignItems: "center", 
+                    backgroundColor: "white",
+                    borderRadius: "12px",
+                    overflow: "hidden"
+                  }}>
+                    <img
+                      alt={product.productName}
+                      src={`http://localhost:5001/uploads/${product.image}`}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain", // ✅ Ensures full visibility without cropping
+                        display: "block",
+                        borderRadius: "12px",
+                        backgroundColor: "white",
+                      }}
+                    />
+                  </div>
                 }
                 onClick={() => navigate(`/product/${product._id}`)}
-              >
+                >
                 <Meta
                   title={product.productName}
                   style={{

@@ -20,7 +20,7 @@ const Category = () => {
         const response = await fetch(`http://localhost:5001/api/category/${id}`);
         const data = await response.json();
         console.log("Fetched Category Data:", data); 
-  
+
         if (data.category) {  
           setCategory(data.category);
         }
@@ -30,7 +30,7 @@ const Category = () => {
         setLoading(false);
       }
     };
-  
+
     const fetchSubcategories = async () => {
       try {
         const subcategoriesResponse = await axios.get(`http://localhost:5001/api/subcategory/get/${id}`);
@@ -40,7 +40,7 @@ const Category = () => {
         console.error("Error fetching subcategories:", error);
       }
     };
-  
+
     fetchCategoryDetails();
     fetchSubcategories();
   }, [id]);
@@ -58,40 +58,29 @@ const Category = () => {
         {subcategories.length > 0 ? (
           subcategories.map((subcategory) => (
             <Col style={{ paddingTop: '30px' }} xs={24} sm={12} md={8} lg={6} key={subcategory._id}>
-
-
-
-<Card
-  hoverable
-  style={{ padding: '7px', width: '230px', height: '250px', textAlign: "center" }}
-  cover={
-    <img
-      alt={subcategory.name}
-      src={subcategory.image ? `${BASE_URL}${subcategory.image}` : "/default.jpg"} // ✅ Ensures fallback image
-      onError={(e) => { e.target.src = "/default.jpg"; }} // ✅ Handles broken images
-      style={{
-        width: "100%",          // Ensures full width
-        height: "150px",        // Fixed height
-        objectFit: "contain",   // ✅ Ensures full visibility without cropping
-        display: "block",       // Fixes spacing issues
-        borderRadius: "12px",
-        backgroundColor: "white",
-      }}
-    />
-  }
-  onClick={() => navigate(`/subcategory/${subcategory._id}`)}
->
-  <Meta title={subcategory.name} style={{ textAlign: "center", fontSize: "12px", fontWeight: "bold" }} />
-</Card>
-
-
-
-
+              <Card
+                hoverable
+                style={{ padding: '7px', width: '230px', height: '250px', textAlign: "center" }}
+                cover={
+                  <img
+                    alt={subcategory.name}
+                    src={subcategory.image ? `${BASE_URL}${subcategory.image}` : "/default.jpg"} // ✅ Ensures fallback image
+                    onError={(e) => { e.target.src = "/default.jpg"; }} // ✅ Handles broken images
+                    style={{
+                      width: "100%",          // Ensures full width
+                      height: "150px",        // Fixed height
+                      objectFit: "contain",   // ✅ Ensures full visibility without cropping
+                      display: "block",       // Fixes spacing issues
+                      borderRadius: "12px",
+                      backgroundColor: "white",
+                    }}
+                  />
+                }
+                onClick={() => navigate(`/subcategory/${subcategory._id}`)}
+              >
+                <Meta title={subcategory.name} style={{ textAlign: "center", fontSize: "12px", fontWeight: "bold" }} />
+              </Card>
             </Col>
-
-
-
-
           ))
         ) : (
           <p>No Subcategories Available</p>
