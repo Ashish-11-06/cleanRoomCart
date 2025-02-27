@@ -9,7 +9,7 @@ import Category from "./component/Category/Category";
 import Product from "./component/Product/Product";
 import AdminLogin from "./pages/admin/auth/AdminLogin";
 import AdminSignup from "./pages/admin/auth/AdminSignup";
-import MainLayout from "./component/MainLayout/MainLayout"; // ✅ Admin Layout
+import MainLayout from "./component/MainLayout/MainLayout"; // ✅ Admin Layout.
 import Dashboard from "./pages/admin/Dashboard";
 import Users from "./pages/admin/Users";
 import Orders from "./pages/admin/Orders";
