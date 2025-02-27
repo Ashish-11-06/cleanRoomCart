@@ -36,6 +36,5 @@ out/
 # Temporary files
 *.tmp
 *.bak
-=======
 .env
 /node_modules
