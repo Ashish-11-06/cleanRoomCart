@@ -5,7 +5,7 @@ const axios = require("axios");
 
 // Add a new contact request
 exports.addContact = async (req, res) => {
-    console.log('hii');
+    // console.log('hii');
     try {
         const { fullName, phone, email, orderNumber, companyName, comments } = req.body;
 
@@ -27,7 +27,7 @@ exports.addContact = async (req, res) => {
             secure: false, // true for 465, false for other ports
             auth: {
                 user: "gayatrirajguru2002@gmail.com", // SMTP email
-                pass: "nhngykhlgxzvsfdv" // SMTP password
+                pass: "wnaamjfxlmktfizc" // SMTP password
             }
         });
 
