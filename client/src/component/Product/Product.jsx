@@ -40,62 +40,60 @@ const Product = () => {
   if (loading) return <Spin size="large" style={{ display: "block", margin: "20px auto" }} />;
   if (!product) return <h2 style={{ color: "red", textAlign: "center" }}>⚠ Product Not Found</h2>;
 
-  const handleCartClick1 = () => {
-    // if (!user) {
-    //   alert("Please log in to add items to the cart!");
-    //   return;
-    // }
-
-    const user = localStorage.getItem('user');
-    const userId = user._id;
-    console.log(userId);
-
-    const cartItem = {
-      key: `${product._id}-${selectedSize}`,
-      name: product.productName,
-      price: product.price * quantity,
-      size: selectedSize,
-      quantity,
-      userId: userId
-    };
-
-    // API call 
-    try {
-      const response = axios.post("http://localhost:5001/api/admin/interested-users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data), // Send data to the server
-      });
-  
-      if (!response.ok) {
-        throw new Error("Failed to add interested user");
-      }
-  
-      alert("Item added to the cart & admin notified!");
-    } catch (error) {
-      console.error("Error adding interested user:", error);
-      alert("Failed to notify admin. Please try again.");
+  const handleCartClick1 = async () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+        alert("Please log in to add items to the cart!");
+        return;
     }
 
-        const data = {
-          ...user,      //this means extract the info from user
-            userId: userId,
-            userName: user.name,
-            email: user.email,
-            phone: user.phone,
-            productName:product.productName,
+    const userId = user._id;
+    console.log("User before sending:", user);
 
-        }
-    addToCart(cartItem);
-
-    alert("Item added to cart!");
+    const data = {
+      userId: user._id,
+      // userName: user.name || "Unknown User",
+      userName: `${user.firstName} ${user.lastName}`.trim() || "unknown User",
+      email: user.email,
+      phone: user.phone ? user.phone : "Not Provided",
+      productId: product._id,
+      product: product.productName,
   };
+  
+  console.log("Data being sent to API:", data);
+    // API call to notify admin (Add to Interested Users)
+    try {
+      const response = await axios.post("http://localhost:5001/api/admin/add/interested-users", data, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        console.log("Response:", response.data);
+        // alert("Item added to the cart & admin notified!");
+    } catch (error) {
+        console.error("Error adding interested user:", error);
+        alert("Failed to notify admin. Please try again.");
+    }
+
+    // Adding to cart
+    const cartItem = {
+        key: `${product._id}-${selectedSize}`,
+        name: product.productName,
+        price: product.price * quantity,
+        size: selectedSize,
+        quantity,
+        userId: userId,
+    };
+    console.log("cart items are ",cartItem)
+    addToCart(cartItem);
+    alert("Item added to cart!");
+};
+
 
   return (
     <div>
-      <div style={{ padding: "20px", backgroundColor: "pink", marginRight: "20px" }}>
+      <div style={{ padding: "20px", backgroundColor: "white", marginRight: "20px" }}>
         <Row gutter={24}>
           <Col span={12}>
             <Image

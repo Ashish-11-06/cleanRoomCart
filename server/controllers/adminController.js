@@ -73,13 +73,41 @@ const registerAdmin = async (req, res) => {
   }
 };
 
+const addInterestedUser = async (req, res) => {
+  try {
+    console.log("Received Data:", req.body);
+    const { userId, userName, email, phone, productId, product } = req.body;
+
+    if ( !userName ||  !phone) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
+
+    const newInterestedUser = new InterestedUser({
+      userId,
+      userName,
+      email,
+      phone,
+      productId,
+      product,
+    });
+
+    await newInterestedUser.save();
+    res.status(201).json({newInterestedUser,  success: true, message: "Interested User added successfully" });
+  } catch (error) {
+    console.error("Error adding interested user:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
 const getInterestedUsers = async (req, res) => {
   try {
-    const interestedUsers = InterestedUser.find().lean;
-    console.log(interestedUsers);
+    const interestedUsers = await InterestedUser
+    .find()
+    .populate("productId", "productName")
+    .lean();
+    console.log(" fetch the user",interestedUsers);
     res.status(200).json(interestedUsers); 
   } catch (error) {
-    console.log(error);
+    console.error('Database error',error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 }
@@ -87,7 +115,8 @@ const getInterestedUsers = async (req, res) => {
 module.exports = {
   loginAdmin,
   registerAdmin,
-  getInterestedUsers
+  getInterestedUsers,
+  addInterestedUser
 };
 
 

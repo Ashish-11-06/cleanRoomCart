@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Table, Card, Spin } from 'antd';
+import axios from "axios";
 
 const InterestedUsers = () => {
   const [users, setUsers] = useState([]);
@@ -7,37 +8,20 @@ const InterestedUsers = () => {
   // const userId = "67b6ffcadd55f21e9666ac95"; 
 
   useEffect(() => {
-  const response =  fetch("http://localhost:5001/api/admin/interested-users")
-      // .then(response)
-      .then((data) => {
-        setUsers(data);
-        setLoading(false);
-      })
-      .catch((error) => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:5001/api/admin/get/interested-users");
+        setUsers(response.data);
+      } catch (error) {
         console.error("Error fetching interested users:", error);
+      } finally {
         setLoading(false);
-      });
-  }, []);
-  const userId = localStorage.getItem("userId");
-  // useEffect(() => {
-  //   if (!userId) {
-  //     console.error("User ID is not available");
-  //     setLoading(false);
-  //     return;
-  //   }
+      }
+    };
 
-  //   fetch(`http://localhost:5001/api/cart/get`)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       setUsers(data);
-  //       setLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching cart items:", error);
-  //       setUsers([]); 
-  //       setLoading(false);
-  //     });
-  // }, [userId]); 
+    fetchUsers();
+  }, []);
+  
 
   const columns = [
     {
@@ -45,10 +29,20 @@ const InterestedUsers = () => {
       dataIndex: 'userName',
       key: 'userName',
     },
+    // {
+    //   title: 'Product',
+    //   dataIndex: 'productName',
+    //   key: 'productName',
+    // },
     {
-      title: 'Product',
-      dataIndex: 'product',
-      key: 'product',
+      title: "Product",
+      dataIndex: ["productId", "productName"], // Access nested product name
+      key: "productName",
+    },
+    {
+      title: "Product ID",
+      dataIndex: ["productId", "_id"], // Show product ID
+      key: "productId",
     },
     {
       title: 'Email',
@@ -70,9 +64,9 @@ const InterestedUsers = () => {
   const data = []; // Will be populated from API
 
   return (
-    <Card title="Interested Users">
-      {loading ? <Spin size="large" /> : 
-      <Table columns={columns} dataSource={users ? users: data} />}
+    <Card style={{}} title="Interested Users">
+      {/* {loading ? <Spin size="large" /> :  */}
+      {loading ? <Spin size="large" /> : <Table columns={columns} dataSource={users} rowKey="_id" />}
     </Card>
   );
 };
