@@ -139,10 +139,36 @@ const AddSubcategory = () => {
 
     return (
         <div>
-            <div style={{display:'flex', justifyContent:'space-between',paddingRight:'20px', paddingLeft:'20px', backgroundColor:'#F39E60', borderRadius:'10px'}}>
-                <h1 style={{color:'#7C444F'}}>Subcategories</h1>
-                <button style={{width:'200px', height:'50px', marginTop:'13px', backgroundColor:'#E16A54', color:'#fff', border:'none', borderRadius:'5px', cursor:'pointer'}} onClick={toggleForm}>Add Subcategory</button>
-            </div>
+           <div 
+    style={{
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        padding: '15px', 
+        backgroundColor: '#F5F5F5', 
+        borderBottom: '2px solid #ddd'
+    }}>
+    <h1 style={{ color: 'black' }}>Subcategories</h1>
+    <button 
+        style={{
+            backgroundColor: '#E16A54',
+            color: 'white',
+            padding: '8px 12px',
+            border: 'none',
+            cursor: 'pointer',
+            borderRadius: '5px',
+            fontSize: '14px',
+            marginTop: '13px',
+            width: '150px',
+            height: '40px'
+            
+        }} 
+        onClick={toggleForm}>
+        Add Subcategory
+    </button>
+</div>
+
+
 
 
             {isFormOpen && (
@@ -217,23 +243,25 @@ const AddSubcategory = () => {
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
     {categories.map(category => (
         <div key={category._id} style={{
-            background: '#fff',
+            background: '#f5f5f5',
             borderRadius: '10px',
             boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-            width: '300px'
+            width: '380px'
         }}>
             {/* Category Header */}
             <div style={{
-                backgroundColor: '#7C444F',
-                color: '#fff',
-                padding: '10px',
-                textAlign: 'center',
-                borderTopLeftRadius: '10px',
-                borderTopRightRadius: '10px',
-                fontWeight: 'bold'
-            }}>
-                {category.name}
-            </div>
+    backgroundColor: '#7C444F',
+    color: '#fff',
+    padding: '10px',
+    textAlign: 'center',
+    borderTopLeftRadius: '10px',
+    borderTopRightRadius: '10px',
+    fontWeight: 'bold',
+    fontSize: '18px'  // You can adjust the font size as needed
+}}>
+    {category.name}
+</div>
+
 
             {/* Subcategories List */}
             <div style={{ padding: '10px' }}>
@@ -244,10 +272,13 @@ const AddSubcategory = () => {
                         alignItems: 'center',
                         padding: '5px 0',
                         borderBottom: '1px solid #9F5255',
-                        fontWeight: 'bold'
+                        fontWeight: 'bold',
+                        fontSize: '16px' ,
+                         // You can adjust the font size as needed
+
 
                     }}>
-                        <span style={{ color: '#E16A54' }}>{sub.name}</span>
+                        <span style={{ color: 'black' }}>{sub.name}</span>
                         <div>
                             <EditOutlined 
                                 style={{ cursor: 'pointer', marginRight: '10px', color: '#F39E60' }} 
@@ -261,47 +292,112 @@ const AddSubcategory = () => {
                     </div>
                 ))}
             </div>
+
+
+
+
+
+
+
+            
         </div>
     ))}
 </div>
 
 
-
-
-
             {/* Modal for Editing Subcategory */}
             {selectedSubcategory && (
-                <Modal
-                    title="Edit Subcategory"
-                    open={true}
-                    onCancel={() => setSelectedSubcategory(null)}
-                    onOk={handleModalSubmit}
-                >
-                    <Form style={{padding:'0px 10px 0px 0px', width:'400px'}}>
-                        <Form.Item style={{padding:'10px 0px 0px 10px', width:'380px', marginBottom:'5px'}}
-                        label="Subcategory Name">
-                            <Input style={{display:'block'}}
-                                value={selectedSubcategory.name}
-                                onChange={(e) => setSelectedSubcategory({ ...selectedSubcategory, name: e.target.value })}
-                            />
-                        </Form.Item>
-                        <Form.Item style={{padding:'0px 0px 0px 10px'}}
-                        label="Short Description">
-                            <TextArea
-                                value={selectedSubcategory.shortDescription}
-                                onChange={(e) => setSelectedSubcategory({ ...selectedSubcategory, shortDescription: e.target.value })}
-                            />
-                        </Form.Item>
-                        <Form.Item style={{padding:'0px 0px 0px 10px'}}
-                        label="Detailed Description">
-                            <TextArea
-                                value={selectedSubcategory.detailedDescription}
-                                onChange={(e) => setSelectedSubcategory({ ...selectedSubcategory, detailedDescription: e.target.value })}
-                            />
-                        </Form.Item>
-                    </Form>
-                </Modal>
-            )}
+    <Modal
+        title="Edit Subcategory"
+        open={true}
+        onCancel={() => setSelectedSubcategory(null)}
+        onOk={handleModalSubmit}
+        okButtonProps={{
+            style: {
+                backgroundColor: '#F39E60', // Button color
+                borderColor: '#F39E60', // Border color
+                color: '#fff', // Text color
+                marginTop: '10px', // Margin to create distance between Cancel and Ok buttons
+            }
+        }}
+        cancelButtonProps={{
+            style: {
+                color: '#7C444F', // Cancel button text color
+                borderColor: '#9F5255', // Border color
+            }
+        }}
+    >
+        <Form style={{ padding: '0px 10px 0px 0px', width: '400px' }}>
+            <Form.Item
+                style={{
+                    padding: '10px 0px 0px 10px',
+                    width: '380px',
+                    marginBottom: '5px',
+                }}
+                label="Subcategory Name"
+            >
+                <Input
+                    style={{
+                        display: 'block',
+                        color: '#7C444F', // Text color
+                        borderColor: '#9F5255', // Border color
+                    }}
+                    value={selectedSubcategory.name}
+                    onChange={(e) =>
+                        setSelectedSubcategory({
+                            ...selectedSubcategory,
+                            name: e.target.value,
+                        })
+                    }
+                />
+            </Form.Item>
+
+            <Form.Item
+                style={{
+                    padding: '0px 0px 0px 10px',
+                }}
+                label="Short Description"
+            >
+                <TextArea
+                    style={{
+                        color: '#7C444F', // Text color
+                        borderColor: '#9F5255', // Border color
+                    }}
+                    value={selectedSubcategory.shortDescription}
+                    onChange={(e) =>
+                        setSelectedSubcategory({
+                            ...selectedSubcategory,
+                            shortDescription: e.target.value,
+                        })
+                    }
+                />
+            </Form.Item>
+
+            <Form.Item
+                style={{
+                    padding: '0px 0px 0px 10px',
+                }}
+                label="Detailed Description"
+            >
+                <TextArea
+                    style={{
+                        color: '#7C444F', // Text color
+                        borderColor: '#9F5255', // Border color
+                    }}
+                    value={selectedSubcategory.detailedDescription}
+                    onChange={(e) =>
+                        setSelectedSubcategory({
+                            ...selectedSubcategory,
+                            detailedDescription: e.target.value,
+                        })
+                    }
+                />
+            </Form.Item>
+        </Form>
+    </Modal>
+)}
+
+
 
 
 

@@ -145,52 +145,58 @@ const AddProduct = () => {
     try {
         const formData = new FormData();
 
-        // Ensure category and subcategory are set
-        if (!selectedCategory || !selectedSubcategory) {
+        // Ensure category and subcategory are selected
+        if (!values.category || !values.subcategory) {
             alert("Please select a category and subcategory.");
             return;
         }
 
-        formData.append("category", selectedCategory);
-        formData.append("subcategory", selectedSubcategory);
+        formData.append("category", values.category);
+        formData.append("subcategory", values.subcategory);
         formData.append("productName", values.productName);
         formData.append("price", values.price);
         formData.append("productCode", values.productCode);
         formData.append("description", values.description);
 
-        // Handle size correctly
-        if (values.size) {
-            formData.append("size", JSON.stringify([values.size]));
-        } else {
-            formData.append("size", JSON.stringify([]));
-        }
+        // Handle size as an array
+        const sizeArray = Array.isArray(values.size)
+            ? values.size
+            : values.size
+            ? values.size.split(",").map(s => s.trim())
+            : [];
 
-        // Handle image upload
-        if (values.image && values.image.fileList.length > 0) {
+        sizeArray.forEach(size => formData.append("size", size));
+
+        // Handle image upload safely
+        if (values.image?.fileList?.length > 0) {
             formData.append("image", values.image.fileList[0].originFileObj);
         } else {
             alert("Please upload an image.");
             return;
         }
 
-        // Debug FormData before sending
-        console.log("Form Data Entries:", [...formData.entries()]);
+        // Debugging FormData before sending
+        console.log("Form Data Entries:");
+        for (let pair of formData.entries()) {
+            console.log(pair[0], pair[1]);
+        }
 
         // API Call
         const response = await axios.post("http://localhost:5001/api/product/add", formData, {
-            headers: { "Content-Type": "multipart/form-data" }
+            headers: { "Content-Type": "multipart/form-data" },
         });
 
         if (response.status === 201) {
             console.log("Product added successfully:", response.data);
             alert("Product added successfully!");
         }
-
     } catch (error) {
         console.error("Error adding product:", error);
         alert(error.response?.data?.message || "Error adding product.");
     }
 };
+
+
 
 
 
@@ -226,15 +232,29 @@ const AddProduct = () => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', paddingRight: '20px', paddingLeft: '20px', backgroundColor: '#d8e4f2', borderRadius: '10px' }}>
-        <h1>Add Product</h1>
-      </div>
+      <div
+    style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '15px',
+        backgroundColor: '#F5F5F5', // Default background color (use from your palette if you want to replace)
+        borderBottom: '2px solid #ddd',
+        borderRadius: '10px'
+    }}
+>
+    <h1>Add Product</h1>
+</div>
+
 
       {/* Form for selecting Category and Subcategory */}
-      <div style={{ marginTop: "20px", padding: "10px", borderRadius: "10px" }}>
-  <h2 style={{ paddingLeft: '0px', color: '#7C444F' }}>Select Category and Subcategory</h2>
+      <div style={{ marginTop: "-25px", padding: "10px", borderRadius: "10px" ,alignItems: 'center'}}>
+      <h2 style={{ paddingLeft: '0px', color: '#7C444F', textAlign: 'center' }}>
+  Select Category and Subcategory
+</h2>
 
-  <Form style={{ alignItems: 'center', width: '500px', margin: "auto", padding: "inherit" }}>
+  <Form style={{ alignItems: 'center', width: '500px', margin: "auto", padding: "inherit", backgroundColor: '#F5F5F5', borderRadius: '10px', borderBottom: '2px solid #ddd'}}>
+
     {/* Category Dropdown */}
     <Form.Item label="Select Category" style={{ padding: '20px 0px 0px 0px', height: '80px', color: '#9F5255' }}>
       <Select
@@ -378,9 +398,6 @@ const AddProduct = () => {
 
 
 
-
-
-
 {isFormVisible && (
   <div style={{ marginTop: "20px", padding: "10px", borderRadius: "10px", border: "1px solid #ddd" }}>
     <h2 style={{ color: "#7C444F" }}>Enter Product Details</h2>
@@ -438,11 +455,22 @@ const AddProduct = () => {
       </Form.Item>
 
       {/* Product Image */}
-      <Form.Item style={{ height: '60px' }} label={<span style={{ color: "#9F5255" }}>Product Image</span>} name="image" rules={[{ required: true, message: "Please upload Image" }]}>
-        <Upload beforeUpload={() => false} listType="picture">
-          <Button icon={<UploadOutlined />} style={{ color: "#F39E60", borderColor: "#E16A54" }}>Upload Image</Button>
-        </Upload>
-      </Form.Item>
+      <Form.Item
+  label={<span style={{ color: "#9F5255" }}>Product Image</span>}
+  name="image"
+  rules={[{ required: true, message: "Please upload Image" }]}
+>
+  <Upload 
+    beforeUpload={() => false} 
+    listType="picture" 
+    onChange={(info) => console.log("Uploaded Image:", info)}
+  >
+    <Button icon={<UploadOutlined />} style={{ color: "#F39E60", borderColor: "#E16A54" }}>
+      Upload Image
+    </Button>
+  </Upload>
+</Form.Item>
+
 
       <Button style={{ backgroundColor: '#E16A54', borderColor: '#E16A54', color: "#fff", width: "100%" }} type="primary" htmlType="submit">
         Add Product

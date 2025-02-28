@@ -1,19 +1,25 @@
-const Product = require("../models/productModel");
+const Product = require("../models/ProductModel");
+const multer = require("multer");
+const path = require("path");
 
+// Set up multer storage
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, ""),
+    filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
+});
+
+const upload = multer({ storage });
+
+// ✅ Add a Product
 exports.addProduct = async(req, res) => {
     try {
         let { category, subcategory, productName, price, productCode, description, size } = req.body;
 
-        // Ensure size is an array
         if (!Array.isArray(size)) {
             size = typeof size === "string" ? size.split(",").map(s => s.trim()).filter(Boolean) : [];
-        } else {
-            size = size.filter(s => s.trim() !== "");
         }
 
-        // Get the uploaded file name
-        let image = req.file ? req.file.filename : null;
-        if (!image) {
+        if (!req.file) {
             return res.status(400).json({ success: false, message: "Image upload failed" });
         }
 
@@ -25,37 +31,23 @@ exports.addProduct = async(req, res) => {
             productCode,
             description,
             size,
-            image // Save only the filename, not the path
+            image: `/uploads/${req.file.filename}`
         });
 
         await newProduct.save();
         res.status(201).json({ success: true, newProduct, message: "Product added successfully" });
-
     } catch (error) {
         console.error("Error adding product:", error);
         res.status(500).json({ success: false, message: "Error adding product" });
     }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-// Get all products with optional filtering by category or subcategory
+// ✅ Get All Products with optional filtering
 exports.getProducts = async(req, res) => {
     try {
-        const { categoryId, subcategoryId } = req.query;
-        let filter = {};
-
-        if (categoryId) filter.category = categoryId;
-        if (subcategoryId) filter.subcategory = subcategoryId;
+        const filter = {};
+        if (req.query.categoryId) filter.category = req.query.categoryId;
+        if (req.query.subcategoryId) filter.subcategory = req.query.subcategoryId;
 
         const products = await Product.find(filter);
         res.status(200).json({ success: true, products, message: "Products fetched successfully" });
@@ -65,19 +57,15 @@ exports.getProducts = async(req, res) => {
     }
 };
 
-// Get products by subcategory ID
+// ✅ Get Product by Subcategory ID
 exports.getProductBySubId = async(req, res) => {
     try {
-        const { id: subcategoryId } = req.params;
-        if (!subcategoryId.match(/^[0-9a-fA-F]{24}$/)) {
+        const { id } = req.params;
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).json({ message: "Invalid Subcategory ID" });
         }
 
-        const products = await Product.find({ subcategory: subcategoryId });
-        if (!products.length) {
-            return res.status(404).json({ message: "No products found for this subcategory" });
-        }
-
+        const products = await Product.find({ subcategory: id });
         res.status(200).json({ success: true, products, message: "Products fetched successfully" });
     } catch (error) {
         console.error("Error fetching products:", error);
@@ -85,47 +73,35 @@ exports.getProductBySubId = async(req, res) => {
     }
 };
 
-// Get product by ID
+// ✅ Get Product by ID
 exports.getById = async(req, res) => {
     try {
         const { productId } = req.params;
-
-        // Debugging Log: Check if productId is received
-        console.log("Received productId:", productId);
-
-        // Validate ObjectId format
-        if (!productId || !productId.match(/^[0-9a-fA-F]{24}$/)) {
+        if (!productId.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).json({ success: false, message: "Invalid Product ID" });
         }
 
-        // Fetch product from database
         const product = await Product.findById(productId);
-
-        // Debugging Log: Check if product exists
-        console.log("Fetched product:", product);
-
         if (!product) {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
 
         res.status(200).json({ success: true, product, message: "Product fetched successfully" });
-
     } catch (error) {
         console.error("Error fetching product:", error);
         res.status(500).json({ success: false, message: "Server error" });
     }
 };
 
-
-// Delete a product
+// ✅ Delete a Product
 exports.deleteProduct = async(req, res) => {
     try {
-        const { id: productId } = req.params;
-        if (!productId.match(/^[0-9a-fA-F]{24}$/)) {
+        const { id } = req.params;
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).json({ message: "Invalid Product ID" });
         }
 
-        const deletedProduct = await Product.findByIdAndDelete(productId);
+        const deletedProduct = await Product.findByIdAndDelete(id);
         if (!deletedProduct) {
             return res.status(404).json({ message: "Product not found" });
         }
@@ -137,21 +113,19 @@ exports.deleteProduct = async(req, res) => {
     }
 };
 
-// Update a product
+// ✅ Update a Product
 exports.updateProduct = async(req, res) => {
     try {
-        const { id: productId } = req.params;
-        let updateData = req.body;
-
-        if (!productId.match(/^[0-9a-fA-F]{24}$/)) {
+        const { id } = req.params;
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).json({ message: "Invalid Product ID" });
         }
 
-        if (updateData.size && typeof updateData.size === "string") {
-            updateData.size = updateData.size.split(",").map(s => s.trim()).filter(Boolean);
+        if (req.body.size && typeof req.body.size === "string") {
+            req.body.size = req.body.size.split(",").map(s => s.trim()).filter(Boolean);
         }
 
-        const updatedProduct = await Product.findByIdAndUpdate(productId, updateData, { new: true });
+        const updatedProduct = await Product.findByIdAndUpdate(id, req.body, { new: true });
         if (!updatedProduct) {
             return res.status(404).json({ message: "Product not found" });
         }
@@ -163,18 +137,11 @@ exports.updateProduct = async(req, res) => {
     }
 };
 
+// ✅ Search Products for Table View
 exports.getProductsForTable = async(req, res) => {
     try {
-        const { name } = req.query; // Get product name from query parameters
-        let filter = {};
-
-        if (name) {
-            filter.productName = { $regex: name, $options: "i" }; // Case-insensitive search
-        }
-
-        // Fetch only productName, price, and productCode
+        const filter = req.query.name ? { productName: { $regex: req.query.name, $options: "i" } } : {};
         const products = await Product.find(filter).select("productName price productCode");
-
         res.status(200).json({ success: true, products, message: "Products fetched successfully" });
     } catch (error) {
         console.error("Error fetching products:", error);

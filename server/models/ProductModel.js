@@ -7,8 +7,8 @@ const productSchema = new mongoose.Schema({
     price: { type: Number, required: true },
     productCode: { type: String, required: true, unique: true },
     description: { type: String, required: true },
-    size: { type: [String], default: [] }, // Default empty array
-    image: { type: String, required: [true, "Product image is required"] }, // Error message if missing
+    size: { type: [String], default: [] },
+    image: { type: String, required: true }, // ✅ Only stores filename (e.g., "987654321.png")
 }, { timestamps: true });
 
 module.exports = mongoose.model("Product", productSchema);

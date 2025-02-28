@@ -38,14 +38,14 @@ const Subproduct = () => {
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
     setNewSubproduct({
-      name: product.productName, // Auto-fill subproduct name
-      price: product.price, // Auto-fill price
+      name: product.productName,
+      price: product.price,
       productId: product._id,
       size: "",
       color: "",
     });
 
-    setSearchTerm(product.productName); // Update search field
+    setSearchTerm(product.productName);
   };
 
   // Handle input change
@@ -65,9 +65,9 @@ const Subproduct = () => {
 
     axios
       .post("http://localhost:5001/api/subproduct/add", newSubproduct)
-      .then((response) => {
+      .then(() => {
         setMessage("✅ Subproduct added successfully!");
-        setNewSubproduct({ productId:"", name: "", price: "", size: "", color: "" });
+        setNewSubproduct({ productId: "", name: "", price: "", size: "", color: "" });
         setSearchTerm("");
         setSelectedProduct(null);
       })
@@ -98,30 +98,32 @@ const Subproduct = () => {
 
       {/* Product Table */}
       {products.length > 0 && (
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th>Product Name</th>
-              <th>Price (₹)</th>
-              <th>Product Code</th>
-              <th>Select</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => (
-              <tr key={product._id}>
-                <td>{product.productName}</td>
-                <td>{product.price}</td>
-                <td>{product.productCode}</td>
-                <td>
-                  <button style={styles.selectButton} onClick={() => handleSelectProduct(product)}>
-                    Select
-                  </button>
-                </td>
+        <div style={styles.tableContainer}>
+          <table style={styles.table}>
+            <thead>
+              <tr>
+                <th>Product Name</th>
+                <th>Price (₹)</th>
+                <th>Product Code</th>
+                <th>Select</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {products.map((product) => (
+                <tr key={product._id}>
+                  <td>{product.productName}</td>
+                  <td>{product.price}</td>
+                  <td>{product.productCode}</td>
+                  <td>
+                    <button style={styles.selectButton} onClick={() => handleSelectProduct(product)}>
+                      Select
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       {/* Selected Product */}
@@ -131,8 +133,8 @@ const Subproduct = () => {
         </div>
       )}
 
-      {/* Subproduct Form */}
-      <div style={styles.form}>
+      {/* Subproduct Form - Adjusts position dynamically */}
+      <div style={{ ...styles.form, marginTop: products.length > 0 ? "20px" : "0px" }}>
         <input
           type="text"
           name="name"
@@ -182,7 +184,9 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    height: "100vh",
+    width: "100%",
+    paddingTop: "80px",
+    marginTop: "-90px",
   },
   heading: {
     color: "#7C444F",
@@ -205,25 +209,18 @@ const styles = {
     borderRadius: "5px",
     outline: "none",
     width: "250px",
-    marginBottom: "20px",
+    marginBottom: "10px",
+  },
+  tableContainer: {
+    width: "80%",
+    overflowX: "auto",
+    marginTop: "20px",
   },
   table: {
-    width: "80%",
+    width: "100%",
     borderCollapse: "collapse",
-    marginBottom: "20px",
     fontSize: "16px",
     textAlign: "left",
-  },
-  th: {
-    padding: "12px",
-    backgroundColor: "#9F5255",
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  td: {
-    padding: "10px",
-    borderBottom: "1px solid #ddd",
-    color: "#7C444F",
   },
   selectButton: {
     padding: "5px 10px",
@@ -249,6 +246,7 @@ const styles = {
     borderRadius: "8px",
     boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
     width: "300px",
+    transition: "margin-top 0.3s ease-in-out",
   },
   button: {
     padding: "10px",
@@ -260,10 +258,6 @@ const styles = {
     cursor: "pointer",
     transition: "0.3s",
   },
-  buttonHover: {
-    backgroundColor: "#9F5255",
-  },
 };
-
 
 export default Subproduct;
