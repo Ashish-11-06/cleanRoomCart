@@ -23,7 +23,7 @@ const subCategorySchema = new mongoose.Schema({
         default: ""
     }
 }, {
-    timestamps: true // Optionally, you can add timestamps for createdAt and updatedAt
+    timestamps: true
 });
 
 module.exports = mongoose.model("SubCategory", subCategorySchema);

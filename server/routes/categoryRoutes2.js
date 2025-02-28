@@ -39,7 +39,7 @@ router.post('/add', upload.single('image'), async(req, res) => {
     }
 });
 
-// Other routes
+
 router.get('/get', getCategories);
 router.get('/:id', getCategoryById);
 router.delete('/delete/:id', deleteCategory);

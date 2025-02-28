@@ -81,35 +81,7 @@ const getSubcategoryById = async(req, res) => {
     }
 }
 
-// const getSubcategories = async (req, res) => {
-//   try {
-//     console.log("Request Params:", req); // Debugging
-//     const { categoryName } = req.params;
-//     console.log("Requested Category:", categoryName); // Debugging
 
-//     // Find category object
-//     const categoryData = await Category.findOne({
-//       name: { $regex: new RegExp("^" + categoryName + "$", "i") }, // Case-insensitive match
-//     });
-
-//     if (!categoryData) {
-//       console.log("Category not found:", categoryName);
-//       return res.status(404).json({ message: "Category not found" });
-//     }
-
-//     console.log("Found Category:", categoryData);
-
-//     // Fetch subcategories based on category ID
-//     const subcategories = await SubCategory.find({ categoryId: categoryData._id });
-
-//     console.log("Subcategories:", subcategories);
-
-//     res.json(subcategories);
-//   } catch (error) {
-//     console.error("Error fetching subcategories:", error);
-//     res.status(500).json({ message: "Error fetching subcategories", error });
-//   }
-// };
 
 const deleteCategory = async(req, res) => {
     try {

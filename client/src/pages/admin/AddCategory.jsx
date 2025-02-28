@@ -125,9 +125,6 @@ const AddCategory = () => {
 
 
 
-
-
-
       <h1 className="list-header">List of Categories</h1>
       <ul className="category-list">
   {categories.map((category) => (
