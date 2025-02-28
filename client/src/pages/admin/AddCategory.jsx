@@ -1,4 +1,5 @@
 import { Card, Modal, Input, Button } from "antd";
+
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -169,6 +170,7 @@ const AddCategory = () => {
         <label>Detailed Description</label>
         <Input.TextArea name="detailedDescription" value={editingCategory?.detailedDescription || ""} onChange={handleEditChange} />
       </Modal>
+
     </div>
   );
 };

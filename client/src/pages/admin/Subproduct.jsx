@@ -151,7 +151,7 @@ const Subproduct = () => {
           value={newSubproduct.price}
           onChange={handleChange}
           style={styles.input}
-          readOnly
+      
         />
         <input
           type="text"

@@ -178,3 +178,84 @@
 .icon:hover {
     color: #E16A54;
 }
+
+
+/* Style for the Modal Title */
+
+.ant-modal-title {
+    color: #7C444F;
+    /* Dark reddish shade for title */
+    font-weight: bold;
+}
+
+
+/* Style for the Input Fields */
+
+.ant-input,
+.ant-input-textarea {
+    border: 1px solid #9F5255;
+    /* Soft border color */
+    color: #7C444F;
+}
+
+.ant-input:focus,
+.ant-input:hover,
+.ant-input-textarea:focus,
+.ant-input-textarea:hover {
+    border-color: #E16A54;
+    /* Highlight color on focus */
+    box-shadow: 0 0 5px rgba(225, 106, 84, 0.5);
+}
+
+
+/* Style for the Labels */
+
+label {
+    color: rgb(46, 31, 31);
+    /* Slightly softer than the title */
+    font-weight: 500;
+    display: block;
+    margin-bottom: 5px;
+}
+
+
+/* Style for Buttons */
+
+.ant-btn-primary {
+    background-color: #F39E60;
+    /* Soft orange shade */
+    border-color: #F39E60;
+    color: white;
+}
+
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+    background-color: #E16A54;
+    border-color: #E16A54;
+}
+
+
+/* Cancel Button */
+
+.ant-btn {
+    color: #7C444F;
+    border-color: #9F5255;
+}
+
+.ant-btn:hover,
+.ant-btn:focus {
+    color: white;
+    background-color: #9F5255;
+    border-color: #9F5255;
+}
+
+
+/* Spacing between buttons */
+
+.ant-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    /* Adds space between buttons */
+    margin-top: 10px;
+}
