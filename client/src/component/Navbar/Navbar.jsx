@@ -116,7 +116,7 @@ const Navbar = () => {
             </a>
           </div>
         </Header>
-        <Menu style={{backgroundColor:''}} mode="horizontal" className="navbar-links">
+        <Menu style={{backgroundColor:'', }} mode="horizontal" className="navbar-links">
           <Menu.Item key="home"><a href="/">Home</a></Menu.Item>
           <Menu.Item key="cleanroom-supplies"><a href="#cleanroom-supplies">Cleanroom Apparel</a></Menu.Item>
           <Menu.Item key="cleanroom-equipment"><a href="#cleanroom-equipment">Cleanroom Equipment</a></Menu.Item>

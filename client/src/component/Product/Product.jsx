@@ -4,6 +4,7 @@ import { Row, Col, Typography, Button, Radio, InputNumber, Image, Spin, Tooltip,
 // import { Modal } from "antd";
 import axios from "axios";
 import { useCart } from "../../context/CartContext";
+import './Product.css'
 // import { useAuth } from "../../context/AuthContext"; // Uncomment if authentication is required
 
 const { Title, Text } = Typography;
@@ -57,6 +58,7 @@ const Product = () => {
             okText: "Login",
             cancelText: "Cancel",
             onOk: () => navigate("/login"),
+            className:'modal',
         });
         return;
       }
