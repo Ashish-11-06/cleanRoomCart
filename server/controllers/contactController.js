@@ -33,8 +33,10 @@ exports.addContact = async (req, res) => {
 
         // Email options
         const mailOptions = {
-            from: "gayatrirajguru2002@gmail.com", // Sender email
-            to: "prushaltech13@gmail.com", // Recipient email
+            // from: "gayatrirajguru2002@gmail.com", // Sender email
+            from: email,
+            // to: "kiran899964@gmail.com", // Recipient email
+            to: "gayatrirajguru2002@gmail.com",
             subject: "New Contact Request",
             text: `You have a new contact request from ${fullName}.
                    Email: ${email}

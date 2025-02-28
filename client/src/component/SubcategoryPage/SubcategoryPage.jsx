@@ -59,7 +59,7 @@ const SubcategoryPage = () => {
 
       {/* Product List */}
       {products.length > 0 ? (
-        <Row gutter={[16, 16]} justify="center">
+        <Row style={{justifyContent: 'flex-start'}} gutter={[16, 16]} justify="center">
           {products.map((product) => (
             <Col key={product._id} xs={24} sm={12} md={8} lg={6} style={{ paddingTop: "20px" }}>
               <Card
@@ -72,29 +72,16 @@ const SubcategoryPage = () => {
                   boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)" 
                 }}
                 cover={
-                  <div style={{ 
-                    width: "100%", 
-                    height: "150px", 
-                    display: "flex", 
-                    justifyContent: "center", 
-                    alignItems: "center", 
-                    backgroundColor: "white",
-                    borderRadius: "12px",
-                    overflow: "hidden"
-                  }}>
-                    <img
-                      alt={product.productName}
-                      src={`http://localhost:5001/uploads/${product.image}`}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "contain", // ✅ Ensures full visibility without cropping
-                        display: "block",
-                        borderRadius: "12px",
-                        backgroundColor: "white",
-                      }}
-                    />
-                  </div>
+                  <img
+                    alt={product.image}
+                    src={`http://localhost:5000/uploads/${product.image}`} // Fixed Image Path
+                    style={{
+                      height: "150px",
+                      width: "100%",
+                      objectFit: "cover",
+                      borderRadius: "10px",
+                    }}
+                  />
                 }
                 onClick={() => navigate(`/product/${product._id}`)}
                 >

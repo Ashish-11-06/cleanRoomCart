@@ -3,6 +3,8 @@ import { Form, Input, Button, message } from 'antd';
 import { loginApi } from '../../../utils/api'; // Ensure this function is correctly implemented
 import './login.css';
 import { LoginOutlined } from "@ant-design/icons";
+import { responsiveArray } from 'antd/es/_util/responsiveObserver';
+import axios from 'axios';
 
 const Login = () => {
   const navigate = useNavigate(); // Navigation after login
@@ -13,7 +15,19 @@ const Login = () => {
 
       if (data.token) {
         localStorage.setItem("userToken", data.token);// Store JWT token
-        message.success('Login successful');
+        
+        message.success('Login successfully ');
+        //  // ✅ Fetch user details from API using token
+        //  const userResponse = await axios.get("http://localhost:5001/api/consumer/me", {
+        //   headers: { Authorization: `Bearer ${data.token}` },
+        // });
+        
+        
+        const user = data.user;
+        console.log(user);
+        console.log("Fetched User:", user); 
+        localStorage.setItem("user", JSON.stringify(user));// Store user details
+        // setUser(user); // Update AuthContext
         navigate("/"); // Redirect to consumer dashboard
       } else {
         message.error(data.message || "Invalid credentials");
@@ -25,7 +39,7 @@ const Login = () => {
   };
 
   return (
-    <div style={{padding:'', margin:'0px'}} className="container">
+    <div className="container">
       <Form onFinish={handleSubmit}> {/* Ensure this is present */}
       <h2>
         <LoginOutlined style={{ marginRight: "8px", fontSize: "22px" }} />

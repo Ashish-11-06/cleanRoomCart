@@ -51,7 +51,8 @@ const App = () => {
     <Router>
       <Routes>
         {/* ✅ Consumer Login & Signup (Without AntdLayout) */}
-        <Route path="/login" element={<PublicRoute role="consumer"><Login /></PublicRoute>} />
+        {/* <Route path="/login" element={<PublicRoute role="consumer"><Login /></PublicRoute>} /> */}
+        {/* <Route path="/login" element={<Login/>} /> */}
         <Route path="/signup" element={<PublicRoute role="consumer"><Signup /></PublicRoute>} />
 
         {/* ✅ Admin Login & Signup (Without MainLayout) */}
@@ -59,21 +60,26 @@ const App = () => {
         <Route path="/admin/signup" element={<PublicRoute role="admin"><AdminSignup /></PublicRoute>} />
 
         {/* ✅ Consumer Protected Routes (Inside AntdLayout) */}
-        <Route element={<ProtectedRoute role="consumer"><AntdLayout /></ProtectedRoute>}>
-          <Route path="/" element={<Home />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/contact_form" element={<ContactForm />} />
-          {/* <Route path="/category/:categoryName/:subcategory" element={<ProductList />} /> */}
+        {/* <Route element={<ProtectedRoute role="consumer"><AntdLayout /></ProtectedRoute>}> */}
+        <Route element={<AntdLayout />}>
+          <Route path="/" element={<Home />} /> 
           <Route path="/category/:id" element={<Category />} />
-          <Route path="/product/:id" element={<Product />} />
           <Route path="/subcategory/:id" element={<SubcategoryPage />} /> 
-          {/* <Route path="/login" element={<Login/>} /> */}
+          <Route path="/product/:id" element={<Product />} />
+          <Route path="/contact_form" element={<ContactForm />} />
+          <Route path="/login" element={<Login/>} />
           {/* <Route path="/signup" element={<Signup/>}/> */}
-
-
           {/* ✅ Catch-All Route for Consumer Inside AntdLayout */}
           {/* <Route path="*" element={<Navigate to="/login" />} /> */}
         </Route>
+        <Route element={<ProtectedRoute role="consumer"><AntdLayout /></ProtectedRoute>}>
+          <Route path="/cart" element={<CartPage />} />
+        </Route>
+          
+          {/* <Route path="/category/:categoryName/:subcategory" element={<ProductList />} /> */}
+          
+          
+          
 
         {/* ✅ Admin Protected Routes (Inside MainLayout) */}
         <Route element={<ProtectedRoute role="admin"><MainLayout /></ProtectedRoute>}>

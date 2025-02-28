@@ -1,23 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Table, Card } from 'antd';
-
+import { Table, Card, Spin } from 'antd';
+import axios from "axios";
 
 const InterestedUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  // const userId = "67b6ffcadd55f21e9666ac95"; 
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/interested-users")
-      .then((response) => response.json())
-      .then((data) => {
-        setUsers(data);
-        setLoading(false);
-      })
-      .catch((error) => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:5001/api/admin/get/interested-users");
+        setUsers(response.data);
+      } catch (error) {
         console.error("Error fetching interested users:", error);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchUsers();
   }, []);
+  
 
   const columns = [
     {
@@ -25,21 +29,31 @@ const InterestedUsers = () => {
       dataIndex: 'userName',
       key: 'userName',
     },
+    // {
+    //   title: 'Product',
+    //   dataIndex: 'productName',
+    //   key: 'productName',
+    // },
     {
-      title: 'Product',
-      dataIndex: 'product',
-      key: 'product',
+      title: "Product",
+      dataIndex: ["productId", "productName"], // Access nested product name
+      key: "productName",
+    },
+    {
+      title: "Product ID",
+      dataIndex: ["productId", "_id"], // Show product ID
+      key: "productId",
     },
     {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
     },
-    {
-      title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
-    },
+    // {
+    //   title: 'Phone',
+    //   dataIndex: 'phone',
+    //   key: 'phone',
+    // },
     {
       title: 'Date',
       dataIndex: 'date',
@@ -50,9 +64,13 @@ const InterestedUsers = () => {
   const data = []; // Will be populated from API
 
   return (
-    <Card title="Interested Users">
-      {loading ? <Spin size="large" /> : <Table columns={columns} dataSource={users} />}
-    </Card>
+    <>
+    <h2>Interested Users</h2>
+      <Card style={{}} title="">
+        {/* {loading ? <Spin size="large" /> :  */}
+        {loading ? <Spin size="large" /> : <Table columns={columns} dataSource={users} rowKey="_id" />}
+      </Card>
+    </>
   );
 };
 

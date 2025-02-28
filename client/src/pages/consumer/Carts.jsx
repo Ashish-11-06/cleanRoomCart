@@ -18,6 +18,7 @@ const CartPage = () => {
 
   const handleRemoveItem = (key) => {
     setCartItems((prevItems) => prevItems.filter((item) => item.key !== key));
+    alert("Are you sure you want to remove this item from the cart?");
   };
 
   const calculateTotal = () => {
