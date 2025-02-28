@@ -16,7 +16,7 @@ const Login = () => {
       if (data.token) {
         localStorage.setItem("userToken", data.token);// Store JWT token
         
-        message.success('Login successful');
+        message.success('Login successfully ');
         //  // ✅ Fetch user details from API using token
         //  const userResponse = await axios.get("http://localhost:5001/api/consumer/me", {
         //   headers: { Authorization: `Bearer ${data.token}` },
@@ -39,7 +39,7 @@ const Login = () => {
   };
 
   return (
-    <div style={{padding:'', margin:'0px'}} className="container">
+    <div className="container">
       <Form onFinish={handleSubmit}> {/* Ensure this is present */}
       <h2>
         <LoginOutlined style={{ marginRight: "8px", fontSize: "22px" }} />

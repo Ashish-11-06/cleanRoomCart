@@ -64,10 +64,13 @@ const InterestedUsers = () => {
   const data = []; // Will be populated from API
 
   return (
-    <Card style={{}} title="Interested Users">
-      {/* {loading ? <Spin size="large" /> :  */}
-      {loading ? <Spin size="large" /> : <Table columns={columns} dataSource={users} rowKey="_id" />}
-    </Card>
+    <>
+    <h2>Interested Users</h2>
+      <Card style={{}} title="">
+        {/* {loading ? <Spin size="large" /> :  */}
+        {loading ? <Spin size="large" /> : <Table columns={columns} dataSource={users} rowKey="_id" />}
+      </Card>
+    </>
   );
 };
 

@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, message } from "antd";
 import { useEffect, useState } from "react";
 import { useCart } from "../../context/CartContext.jsx"; 
-import { Badge } from "antd";
+// import { Badge } from "antd";
 
 
 const { Header } = Layout
@@ -29,8 +29,10 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = () => {
+    localStorage.setItem("cart", JSON.stringify('cart'));
     localStorage.removeItem("userToken"); // Remove token
-    localStorage.removeItem('userName'); 
+    localStorage.removeItem('user'); 
+    localStorage.removeItem("cart");
     message.success("Logged out successfully");
     setIsLoggedIn(false);
     setUserName('');
@@ -42,21 +44,21 @@ const Navbar = () => {
     //     localStorage.removeItem("token"); // Remove token from storage
     //     window.location.reload(); // Refresh the page to reflect changes
     // };
+    const user = JSON.parse(localStorage.getItem('user'));
+    const name = user ? `${user.firstName} ${user.lastName}` : "Guest";
 
     return (
       <Layout className="navbar">
         <Header className="navbar-top" >
           {/* <div className="navbar-certification">Clean Room Cart</div> */}
           <div className="navbar-contact">
-              
+              <span style={{marginRight: '40px' }}>
+                Welcome, {name} !
+              </span>
             <Link style={{textDecoration: 'none', marginBottom:'10px'}} to="/contact_form"><span>Contact Us</span></Link>
             <span> | </span>
             {isLoggedIn ? (
-              <>
-              {/* <span style={{marginRight: '150px' }}>
-                Hello , {userName} !!
-              </span>
-              */}
+              <>            
                 <span style={{ cursor: "pointer" }} onClick={handleLogout}>Logout</span>
                 </>
               ) : (
@@ -75,7 +77,7 @@ const Navbar = () => {
             <Link style={{ textDecoration: 'none', paddingRight: '5px', marginRight: '5px', position: 'relative' }} to="/cart">
             <span style={{ marginLeft: "5px" }}>My Cart</span>
               <ShoppingCartOutlined style={{ fontSize: '22px' }} />
-              {cartItems.length >= 0 && (
+              {cartItems.length > 0 && (
                 <span style={{ 
                   position: 'absolute', 
                   top: '-32px', 
@@ -93,7 +95,10 @@ const Navbar = () => {
         </Header>
         <Header className="navbar-main" style={{ backgroundColor: '#f0f0f0',marginTop: '10px' }}>
           <h1 className="navbar-logo"></h1>
-          <img style={{width:' 120px'}} src={logo} alt='logo'/>
+          {/* <img style={{width:' 120px'}} src={logo} alt='logo'/> */}
+          <Link to="/">
+            <img style={{ width: "120px", cursor: "pointer", paddingTop:'18px' }} src={logo} alt="logo" />
+          </Link>
           <div className="navbar-search">
             <Input
               placeholder="Search by Keyword, Item or Model"
@@ -115,9 +120,9 @@ const Navbar = () => {
           <Menu.Item key="home"><a href="/">Home</a></Menu.Item>
           <Menu.Item key="cleanroom-supplies"><a href="#cleanroom-supplies">Cleanroom Apparel</a></Menu.Item>
           <Menu.Item key="cleanroom-equipment"><a href="#cleanroom-equipment">Cleanroom Equipment</a></Menu.Item>
-          <Menu.Item key="lab-supplies"><a href="#lab-supplies">Lab Supplies</a></Menu.Item>
-          <Menu.Item key="safety-supplies"><a href="#safety-supplies">Safety Supplies</a></Menu.Item>
-          <Menu.Item key="esd-equipment"><a href="#esd-equipment">ESD Equipment</a></Menu.Item>
+          <Menu.Item key="lab-supplies"><a href="#lab-supplies">Cleanrom furniture</a></Menu.Item>
+          <Menu.Item key="safety-supplies"><a href="#safety-supplies">Cleanroom mats</a></Menu.Item>
+          <Menu.Item key="esd-equipment"><a href="#esd-equipment">Sterile supply</a></Menu.Item>
           {/* <Menu.Item key="faqs"><a href="#faqs">FAQs</a></Menu.Item> */}
         </Menu>
       </Layout>

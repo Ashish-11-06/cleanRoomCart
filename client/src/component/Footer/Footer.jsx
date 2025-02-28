@@ -24,7 +24,7 @@ const Footer = () => {
           <hr />
           <ul>
             <li><a href="/login">User Login</a></li>
-            <li><a href='/'>Contact Us</a></li>
+            <li><a href='/contact_form'>Contact Us</a></li>
             <li><a href="/">Home</a></li>
           </ul>
         </div>
@@ -33,11 +33,11 @@ const Footer = () => {
           <h6>Categories</h6>
           <hr />
           <ul>
-            <li><a href="">Cleanroom Supplies</a></li>
+            <li><a href="">Cleanroom Apparel</a></li>
             <li><a href="">Cleanroom Equipment</a></li>
-            <li><a href="">Lab Supplies</a></li>
-            <li><a href="">Safety Supplies</a></li>
-            <li><a href="">ESD Equipment</a></li>
+            <li><a href="">Cleanrom furniture</a></li>
+            <li><a href="">Cleanroom mats</a></li>
+            <li><a href="">Sterile supply</a></li>
           </ul>
         </div>
       </div>

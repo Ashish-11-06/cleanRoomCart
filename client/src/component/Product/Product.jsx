@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Row, Col, Typography, Button, Radio, InputNumber, Image, Spin, Tooltip  } from "antd";
+import {useParams, useNavigate } from "react-router-dom";
+import { Row, Col, Typography, Button, Radio, InputNumber, Image, Spin, Tooltip, Modal  } from "antd";
+// import { Modal } from "antd";
 import axios from "axios";
 import { useCart } from "../../context/CartContext";
 // import { useAuth } from "../../context/AuthContext"; // Uncomment if authentication is required
@@ -14,6 +15,8 @@ const Product = () => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
+  const navigate = useNavigate();
+
   // const { user } = useAuth(); // Uncomment if user authentication is needed
 
   useEffect(() => {
@@ -42,10 +45,21 @@ const Product = () => {
 
   const handleCartClick1 = async () => {
     const user = JSON.parse(localStorage.getItem('user'));
+    // if (!user) {
+    //     alert("Please log in to add items to the cart!");
+    //     // navigate("/login");
+    //     return;
+    // }
     if (!user) {
-        alert("Please log in to add items to the cart!");
+        Modal.confirm({
+            title: "Login Required",
+            content: "Please log in to add items to the cart.",
+            okText: "Login",
+            cancelText: "Cancel",
+            onOk: () => navigate("/login"),
+        });
         return;
-    }
+      }
 
     const userId = user._id;
     console.log("User before sending:", user);
@@ -85,6 +99,10 @@ const Product = () => {
         quantity,
         userId: userId,
     };
+
+    // remins to add already existing product item 
+
+
     console.log("cart items are ",cartItem)
     addToCart(cartItem);
     alert("Item added to cart!");

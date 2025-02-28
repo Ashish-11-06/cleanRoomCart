@@ -24,7 +24,7 @@ const ContactForm = () => {
         We're happy to answer questions or help you with returns. <br />
         Please fill out the form below if you need assistance.
       </Paragraph>
-      <Form style={{padding:'10px'}} layout="vertical" onFinish={onFinish}>
+      <Form style={{padding:'10px', height:'650px'}} layout="vertical" onFinish={onFinish}>
         <Form.Item style={{height: '55px'}} name="fullName" label="Full Name" rules={[{ required: true, message: "Please enter your full name!" }]}>
           <Input placeholder="Enter your full name" />
         </Form.Item>
@@ -45,7 +45,7 @@ const ContactForm = () => {
           <Input placeholder="Enter your company name" />
         </Form.Item>
 
-        <Form.Item style={{height: '160px'}} name="comments" label="Comments/Questions" rules={[{ required: true, message: "Please enter your comments or questions!" }]}>
+        <Form.Item style={{height: '140px'}} name="comments" label="Comments/Questions" rules={[{ required: true, message: "Please enter your comments or questions!" }]}>
           <Input.TextArea rows={4} placeholder="Enter your comments or questions here" />
         </Form.Item>
 
