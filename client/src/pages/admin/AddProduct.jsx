@@ -1,6 +1,5 @@
 import React from 'react'
 import { EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
-import { EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
 import { Modal, Input, Form, Button, Select, Upload } from 'antd';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
@@ -15,7 +14,6 @@ const AddProduct = () => {
   const [allSubcategories, setAllSubcategories] = useState([]); // Store all subcategories
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState([]);
-  const [isFormVisible, setIsFormVisible] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [products, setProducts] = useState([]); // Store fetched products
   const [loading, setLoading] = useState(false); // Show loader while fetching
@@ -35,7 +33,6 @@ const AddProduct = () => {
   }, []);
 
 
-
   // Fetch subcategories based on selected category
   useEffect(() => {
     if (selectedCategory) {
@@ -47,7 +44,6 @@ const AddProduct = () => {
             const filtered = response.data.subCategories.filter(
               (sub) => sub.categoryId === selectedCategory
             );
-
 
             setSubcategories(filtered); // ✅ Set Filtered Subcategories
           } else {
@@ -80,8 +76,6 @@ const AddProduct = () => {
 
   // Handle Category Selection
   const handleCategoryChange = (categoryId) => {
-  // Handle Category Selection
-  const handleCategoryChange = (categoryId) => {
     setSelectedCategory(categoryId);
     setSelectedSubcategory(null); // Reset subcategory when category changes
   };
@@ -95,15 +89,8 @@ const AddProduct = () => {
   };
 
 
-
   const handleUpdateProduct = async (values, productId) => {
     try {
-      const response = await axios.put(`http://localhost:5001/api/product/update/${productId}`, values);
-
-      if (response.status === 200) {
-        alert("Product updated successfully!");
-        setIsEditModalVisible(false); // Close the modal
-      }
       const response = await axios.put(`http://localhost:5001/api/product/update/${productId}`, values);
 
       if (response.status === 200) {
@@ -113,10 +100,12 @@ const AddProduct = () => {
     } catch (error) {
       console.error("Error updating product:", error);
       alert("Failed to update product. Please try again.");
-      console.error("Error updating product:", error);
-      alert("Failed to update product. Please try again.");
     }
   };
+
+
+
+
 
   const handleSeeProducts = async () => {
     if (!selectedCategory || !selectedSubcategory) return;
@@ -126,18 +115,7 @@ const AddProduct = () => {
       const response = await axios.get(
         `http://localhost:5001/api/product/get?categoryId=${selectedCategory}&subcategoryId=${selectedSubcategory}`
       );
-      const response = await axios.get(
-        `http://localhost:5001/api/product/get?categoryId=${selectedCategory}&subcategoryId=${selectedSubcategory}`
-      );
 
-      console.log("Fetched Products:", response.data);
-      if (Array.isArray(response.data)) {
-        setProducts([...response.data]); // Ensure new reference
-      } else if (response.data.products) {
-        setProducts([...response.data.products]); // If products are nested
-      } else {
-        setProducts([]);
-      }
       console.log("Fetched Products:", response.data);
       if (Array.isArray(response.data)) {
         setProducts([...response.data]); // Ensure new reference
@@ -148,17 +126,18 @@ const AddProduct = () => {
       }
     } catch (error) {
       console.error("Error fetching products:", error);
-      console.error("Error fetching products:", error);
     }
     setLoading(false);
   };
-  };
 
-  useEffect(() => {
   useEffect(() => {
     console.log("Updated Products State:", products);
   }, [products]);
-  }, [products]);
+
+
+
+
+
 
 
   // Handle Form Submission
@@ -229,10 +208,6 @@ const AddProduct = () => {
   const toggleForm = () => {
     setIsFormVisible(!isFormVisible);
   };
-  // Toggle Form Visibility
-  const toggleForm = () => {
-    setIsFormVisible(!isFormVisible);
-  };
 
   // Handle Edit Product
   const handleDelete = async (productId) => {
@@ -247,21 +222,7 @@ const AddProduct = () => {
       console.error("Error deleting product:", error);
       alert("Failed to delete product. Please try again.");
     }
-  // Handle Edit Product
-  const handleDelete = async (productId) => {
-    try {
-      const response = await axios.delete(`http://localhost:5001/api/product/delete/${productId}`);
-
-      if (response.status === 200) {
-        alert("Product deleted successfully!");
-        setProducts(products.filter(product => product._id !== productId)); // Remove product from UI
-      }
-    } catch (error) {
-      console.error("Error deleting product:", error);
-      alert("Failed to delete product. Please try again.");
-    }
   };
-
 
   const handleEdit = (product) => {
     setEditingProduct(product);  // Store the product data

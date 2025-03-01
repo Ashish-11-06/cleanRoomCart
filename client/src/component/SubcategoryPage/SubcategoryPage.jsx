@@ -18,20 +18,15 @@ const SubcategoryPage = () => {
         const subcategoryResponse = await axios.get(
           `http://localhost:5001/api/subcategory/${id}`
         );
-        console.log("Fetched Subcategory Data:", subcategoryResponse.data);
         setSubcategory(subcategoryResponse.data.subcategory);
 
-        // Fetch products under this subcategory (ensure the correct API route)
+        // Fetch products under this subcategory
         const productsResponse = await axios.get(
-          `http://localhost:5001/api/product/subcategory/${id}`
+          `http://localhost:5001/api/product/get/${id}`
         );
 
-        console.log("Fetched Products:", productsResponse.data);
-
-        // Check if products exist in response
         setProducts(productsResponse.data.products || []);
       } catch (error) {
-        console.error("Error fetching data:", error);
         message.error("Failed to load data. Please try again later.");
       } finally {
         setLoading(false);
@@ -40,6 +35,10 @@ const SubcategoryPage = () => {
 
     fetchData();
   }, [id]);
+
+  const trimDescription = (desc) => {
+    return desc ? desc.split(" ").slice(0, 10).join(" ") + "..." : "No description available";
+  };
 
   if (loading)
     return <Spin size="large" style={{ display: "block", margin: "20px auto" }} />;
@@ -59,41 +58,48 @@ const SubcategoryPage = () => {
 
       {/* Product List */}
       {products.length > 0 ? (
-        <Row style={{justifyContent: 'flex-start'}} gutter={[16, 16]} justify="center">
+        <Row gutter={[16, 16]} justify="center">
           {products.map((product) => (
             <Col key={product._id} xs={24} sm={12} md={8} lg={6} style={{ paddingTop: "20px" }}>
               <Card
-                hoverable
-                style={{ 
-                  width: "100%", 
-                  maxWidth: "230px", 
-                  margin: "auto", 
-                  borderRadius: "12px", 
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)" 
-                }}
-                cover={
-                  <img
-                    alt={product.image}
-                    src={`http://localhost:5000/uploads/${product.image}`} // Fixed Image Path
-                    style={{
-                      height: "150px",
-                      width: "100%",
-                      objectFit: "cover",
-                      borderRadius: "10px",
-                    }}
-                  />
-                }
-                onClick={() => navigate(`/product/${product._id}`)}
-                >
-                <Meta
-                  title={product.productName}
-                  style={{
-                    textAlign: "center",
-                    fontSize: "15px",
-                    fontWeight: "bold",
-                  }}
-                />
-              </Card>
+  hoverable
+  style={{
+    width: "100%",
+    maxWidth: "250px",
+    margin: "auto",
+    borderRadius: "0px",
+    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+  }}
+  cover={
+    <img
+      alt={product.productName}
+      src={`http://localhost:5001/uploads/${product.image.replace("/uploads/", "")}`}
+      style={{
+        width: "100%",
+        height: "180px", // Increased height for a 70:30 ratio
+        objectFit: "contain",
+        borderRadius: "0px",
+        backgroundColor: "white",
+      }}
+    />
+  }
+  onClick={() => navigate(`/product/${product._id}`)}
+>
+  <Meta
+    title={product.productName}
+    description={
+      <div style={{ padding: "-3px", minHeight: "5px" }}> {/* Adjusted text container height */}
+        <p style={{ margin: "1px 0", fontSize: "16px", fontWeight: "bold", color: "#333" }}>
+          ₹ {product.price}
+        </p>
+        <p style={{ margin: "1px 0", fontSize: "15px", color: "gray" }}>
+          {trimDescription(product.description)}
+        </p>
+      </div>
+    }
+  />
+</Card>
+
             </Col>
           ))}
         </Row>
