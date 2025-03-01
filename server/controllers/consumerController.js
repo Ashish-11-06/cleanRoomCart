@@ -79,14 +79,13 @@ exports.getConsumers = async(req, res) => {
     }
 };
 
-exports.getConsumerProfile = async (req, res) => {
+exports.getConsumerProfile = async(req, res) => {
     try {
-      const user = await Consumer.findById(req.user.id).select("-password");
+        const user = await Consumer.findById(req.user.id).select("-password");
         if (!user) return res.status(404).json({ message: "User not found" });
-  
-      res.json({ user });
+
+        res.json({ user });
     } catch (error) {
-      res.status(500).json({ message: "Server error" });
+        res.status(500).json({ message: "Server error" });
     }
-  };
-  
+};

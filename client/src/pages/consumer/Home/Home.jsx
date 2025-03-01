@@ -40,14 +40,15 @@ const Home = () => {
     <div>
       {/* Carousel Section */}
       <div className="home-container">
-        <Carousel autoplay autoplaySpeed={2500} dots infinite effect="scrollx">
-          {images.map((img, index) => (
-            <div key={index} className="carousel-slide">
-              <img src={img} alt={`Slide ${index + 1}`} className="carousel-image" />
-            </div>
-          ))}
-        </Carousel>
+  <Carousel autoplay autoplaySpeed={1000} dots infinite effect="scrollx">
+    {images.map((img, index) => (
+      <div key={index} className="carousel-slide">
+        <img src={img} alt={`Slide ${index + 1}`} className="carousel-image" />
       </div>
+    ))}
+  </Carousel>
+</div>
+
 
       {/* Categories Section */}
       <div style={{ padding: "15px" }}>

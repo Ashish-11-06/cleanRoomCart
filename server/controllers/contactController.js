@@ -4,7 +4,7 @@ require("dotenv").config(); // Load environment variables
 const axios = require("axios");
 
 // Add a new contact request
-exports.addContact = async (req, res) => {
+exports.addContact = async(req, res) => {
     // console.log('hii');
     try {
         const { fullName, phone, email, orderNumber, companyName, comments } = req.body;
