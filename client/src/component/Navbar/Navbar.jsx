@@ -97,16 +97,21 @@ const Navbar = () => {
           <h1 className="navbar-logo"></h1>
           {/* <img style={{width:' 120px'}} src={logo} alt='logo'/> */}
           <Link to="/">
-            <img style={{ width: "120px", cursor: "pointer", paddingTop:'18px' }} src={logo} alt="logo" />
+            <img style={{ width: "120px", cursor: "pointer", paddingTop:'18px',  marginRight: '710px' }} src={logo} alt="logo" />
           </Link>
-          <div className="navbar-search">
+
+          
+          {/* in this line we have to show after searchbar after the api creation for that */}
+
+
+          {/* <div className="navbar-search">
             <Input
               placeholder="Search by Keyword, Item or Model"
               className="search-input"
               suffix={<SearchOutlined />}
             />
             <Button className="search-button" icon={<SearchOutlined />}></Button>
-          </div>
+          </div> */}
           <div className="navbar-questions">
             
               <PhoneOutlined /> <span>Questions? Call 123-456-7890 </span>
