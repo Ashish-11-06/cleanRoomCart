@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./Sidebar.css";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../API/BaseURL";
+
 
 const Sidebar = () => {
   const [categories, setCategories] = useState([]);
@@ -13,7 +15,7 @@ const Sidebar = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:5001/api/category/get");
+        const response = await fetch(`${BASE_URL}/api/category/get`);
         if (!response.ok) throw new Error("Failed to fetch categories");
         const data = await response.json();
         setCategories(data);
@@ -32,7 +34,7 @@ const Sidebar = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5001/api/subcategory/get/${categoryId}`
+        `${BASE_URL}/api/subcategory/get/${categoryId}`
       );
       if (!response.ok) throw new Error("Failed to fetch subcategories");
       const data = await response.json();

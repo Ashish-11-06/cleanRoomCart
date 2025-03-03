@@ -4,7 +4,8 @@ import { Card, Row, Col } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const BASE_URL = "http://localhost:5001/"; // ✅ API Base URL
+import { BASE_URL } from "../../API/BaseURL";
+ // ✅ API Base URL
 
 const Category = () => {
   const { id } = useParams(); // Get category ID from the URL
@@ -17,7 +18,7 @@ const Category = () => {
   useEffect(() => {
     const fetchCategoryDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/api/category/${id}`);
+        const response = await fetch(`${BASE_URL}/api/category/${id}`);
         const data = await response.json();
         console.log("Fetched Category Data:", data); 
 
@@ -33,7 +34,7 @@ const Category = () => {
 
     const fetchSubcategories = async () => {
       try {
-        const subcategoriesResponse = await axios.get(`http://localhost:5001/api/subcategory/get/${id}`);
+        const subcategoriesResponse = await axios.get(`${BASE_URL}/api/subcategory/get/${id}`);
         console.log("Fetched Subcategories Data:", subcategoriesResponse.data);
         setSubcategories(subcategoriesResponse.data.subcategories || []);
       } catch (error) {
@@ -64,7 +65,7 @@ const Category = () => {
                 cover={
                   <img
                     alt={subcategory.name}
-                    src={subcategory.image ? `${BASE_URL}${subcategory.image}` : "/default.jpg"} // ✅ Ensures fallback image
+                    src={subcategory.image ? `${BASE_URL}/${subcategory.image.replace(/\\/g, "/")}` : "/default.jpg"}
                     onError={(e) => { e.target.src = "/default.jpg"; }} // ✅ Handles broken images
                     style={{
                       width: "100%",          // Ensures full width

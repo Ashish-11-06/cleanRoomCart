@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import './signup.css';
 import { signupApi } from '../../../utils/api';   // Import the signup function
 import { UserAddOutlined } from "@ant-design/icons";
+import { BASE_URL } from "../../../API/BaseURL";
+
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -27,7 +29,7 @@ const Signup = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/consumer/signup', {
+      const response = await fetch(`${BASE_URL}/api/consumer/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

@@ -3,6 +3,8 @@ import { Card, Modal, Input, Button } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { BASE_URL } from "../../API/BaseURL";
+
 import "./AddCategory.css";
 
 const AddCategory = () => {
@@ -24,7 +26,7 @@ const AddCategory = () => {
   // Fetch Categories
   const fetchCategories = () => {
     axios
-      .get("http://localhost:5001/api/category/get")
+      .get(`${BASE_URL}/api/category/get`)
       .then((response) => setCategories(response.data))
       .catch((error) => console.error("Error fetching categories:", error));
   };
@@ -54,7 +56,7 @@ const AddCategory = () => {
     formData.append("image", category.image);
 
     axios
-      .post("http://localhost:5001/api/category/add", formData)
+      .post(`${BASE_URL}/api/category/add`, formData)
       .then(() => {
         fetchCategories(); // Refresh the list after adding
         setCategory({ name: "", shortDescription: "", detailedDescription: "", image: null });
@@ -78,7 +80,7 @@ const AddCategory = () => {
 
   const handleUpdate = () => {
     axios
-      .put(`http://localhost:5001/api/category/update/${editingCategory._id}`, editingCategory)
+      .put(`${BASE_URL}/api/category/update/${editingCategory._id}`, editingCategory)
       .then(() => {
         fetchCategories(); // Refresh the list
         setIsEditModalOpen(false);
@@ -89,7 +91,7 @@ const AddCategory = () => {
 
   const handleDelete = (id) => {
     axios
-      .delete(`http://localhost:5001/api/category/delete/${id}`)
+      .delete(`${BASE_URL}/api/category/delete/${id}`)
       .then(() => {
         fetchCategories();
       })

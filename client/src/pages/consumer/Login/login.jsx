@@ -39,10 +39,10 @@ const Login = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container" >
       <Form onFinish={handleSubmit}> {/* Ensure this is present */}
       <h2>
-        <LoginOutlined style={{ marginRight: "8px", fontSize: "22px" }} />
+        <LoginOutlined     style={{ marginRight: "8px", fontSize: "22px" }} />
         Login
       </h2>
         <Form.Item name="email" style={{paddingLeft:'10px', paddingRight:'10px'}} rules={[{ required: true, message: 'Please input your email!' }]}>
@@ -51,7 +51,7 @@ const Login = () => {
         <Form.Item name="password" style={{paddingLeft:'10px', paddingRight:'10px'}} rules={[{ required: true, message: 'Please input your password!' }]}>
           <Input.Password placeholder="Password" />
         </Form.Item>
-        <Button style={{backgroundColor:'#40476D'}} type="primary" htmlType="submit">Login</Button>
+        <Button className='button' style={{backgroundColor:'#40476D'}} type="primary" htmlType="submit">Login</Button>
         <p style={{paddingLeft:'99px'}}>Don't have an account? <Link to="/signup">Create account</Link></p>
       </Form>
     </div>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Table, Card, Spin } from 'antd';
 import axios from "axios";
+import { BASE_URL } from "../../API/BaseURL";
+
 
 const InterestedUsers = () => {
   const [users, setUsers] = useState([]);
@@ -10,7 +12,7 @@ const InterestedUsers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:5001/api/admin/get/interested-users");
+        const response = await axios.get(`${BASE_URL}/api/admin/get/interested-users`);
         setUsers(response.data);
       } catch (error) {
         console.error("Error fetching interested users:", error);

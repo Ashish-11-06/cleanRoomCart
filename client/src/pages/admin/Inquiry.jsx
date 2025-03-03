@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Card } from 'antd';
 import axios from 'axios';
+import { BASE_URL } from "../../API/BaseURL";
+
 
 const Inquiry = () => {
   const [inquiries, setInquiries] = useState([]);
@@ -11,7 +13,7 @@ const Inquiry = () => {
 
   const fetchInquiries = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/api/contact/get'); // Update with correct API route
+      const response = await axios.get(`${BASE_URL}/api/contact/get`); // Update with correct API route
       setInquiries(response.data);
     } catch (error) {
       console.error('Error fetching inquiries:', error);

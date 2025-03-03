@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { BASE_URL } from "../../API/BaseURL";
+
 
 const Subproduct = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,7 +26,7 @@ const Subproduct = () => {
     }
 
     axios
-      .get(`http://localhost:5001/api/product/search?name=${searchTerm}`)
+      .get(`${BASE_URL}/api/product/search?name=${searchTerm}`)
       .then((response) => {
         setProducts(response.data.products || []);
       })
@@ -64,7 +66,7 @@ const Subproduct = () => {
     setMessage("");
 
     axios
-      .post("http://localhost:5001/api/subproduct/add", newSubproduct)
+      .post(`${BASE_URL}/api/subproduct/add`, newSubproduct)
       .then(() => {
         setMessage("✅ Subproduct added successfully!");
         setNewSubproduct({ productId: "", name: "", price: "", size: "", color: "" });

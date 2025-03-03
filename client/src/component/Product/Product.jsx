@@ -4,6 +4,8 @@ import { Row, Col, Typography, Button, Radio, InputNumber, Image, Spin, Tooltip,
 // import { Modal } from "antd";
 import axios from "axios";
 import { useCart } from "../../context/CartContext";
+import { BASE_URL } from "../../API/BaseURL";
+
 import './Product.css'
 // import { useAuth } from "../../context/AuthContext"; // Uncomment if authentication is required
 
@@ -28,7 +30,7 @@ const Product = () => {
 
     const fetchProductDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5001/api/product/get-by/${id}`);
+        const response = await axios.get(`${BASE_URL}/api/product/get-by/${id}`);
         console.log("Fetched Product Data:", response.data);
         setProduct(response.data.product);
       } catch (error) {
@@ -76,7 +78,7 @@ const Product = () => {
   console.log("Data being sent to API:", data);
     // API call to notify admin (Add to Interested Users)
     try {
-      const response = await axios.post("http://localhost:5001/api/admin/add/interested-users", data, {
+      const response = await axios.post(`${BASE_URL}/api/admin/add/interested-users`, data, {
             headers: {
                 "Content-Type": "application/json",
             },
@@ -114,7 +116,7 @@ const Product = () => {
         <Row gutter={24}>
           <Col span={12}>
           <Image
-  src={`http://localhost:5001/uploads/${product.image.replace("/uploads/", "")}`}
+  src={`${BASE_URL}/uploads/${product.image.replace("/uploads/", "")}`}
   alt={product.productName}
   style={{ maxWidth: "100%", borderRadius: "8px" }}
   onError={(e) => { e.target.src = "/placeholder-image.png"; }} // Fallback if image is missing
@@ -156,7 +158,7 @@ const Product = () => {
             <br />
            
             <Tooltip style={{backgroundColor:'white'}} title={!selectedSize ? "Please select a size" : ""}>
-            <Button
+            <Button   className='button'
               style={{ backgroundColor: "#40476D", width: "200px", marginLeft: "30%" }}
               type="primary"
               onClick={ handleCartClick1 }

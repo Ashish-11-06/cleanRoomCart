@@ -2,13 +2,14 @@ import React from "react";
 import { Form, Input, Button, Typography, message } from "antd";
 import axios from "axios";
 import "./Contact_Form.css";
+import { BASE_URL } from "../../API/BaseURL";
 
 const { Title, Paragraph } = Typography;
 
 const ContactForm = () => {
   const onFinish = async (values) => {
     try {
-      const response = await axios.post("http://localhost:5001/api/contact/submit", values);
+      const response = await axios.post(`${BASE_URL}/api/contact/submit`, values);
       message.success(response.data.message);
     } catch (error) {
       message.error("Failed to submit query. Please try again.");
@@ -29,7 +30,7 @@ const ContactForm = () => {
           <Input placeholder="Enter your full name" />
         </Form.Item>
 
-        <Form.Item style={{height: '55px'}} name="phone" label="Phone Number">
+        <Form.Item style={{height: '55px'}} name="phone" label="Phone Number" rules={[{ required: true, message: "Please enter your phone number" }]}>
           <Input placeholder="Enter your phone number" />
         </Form.Item>
 
@@ -37,11 +38,11 @@ const ContactForm = () => {
           <Input placeholder="Enter your email" />
         </Form.Item>
 
-        <Form.Item style={{height: '55px'}} name="orderNumber" label="Order Number">
+        <Form.Item style={{height: '55px'}} name="orderNumber" label="Order Number" rules={[{ required: true, message: "Please enter order number!" }]}>
           <Input placeholder="Enter your order number" />
         </Form.Item>
 
-        <Form.Item style={{height: '55px'}} name="companyName" label="Company Name">
+        <Form.Item style={{height: '55px'}} name="companyName" label="Company Name" rules={[{ required: true, message: "Please enter company name!" }]}>
           <Input placeholder="Enter your company name" />
         </Form.Item>
 
@@ -50,7 +51,7 @@ const ContactForm = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button style={{padding:'0px 0px 0px 0px', margin:'0px 0px 0px 57px', width:'70%', backgroundColor:'#40476D'}} type="primary" htmlType="submit" block>
+          <Button  className='button' style={{padding:'0px 0px 0px 0px', margin:'0px 0px 0px 57px', width:'70%', backgroundColor:'#40476D'}} type="primary" htmlType="submit" block>
             Submit Form
           </Button>
         </Form.Item>

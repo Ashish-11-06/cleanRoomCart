@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, Spin, Row, Col, message } from "antd";
 import axios from "axios";
+import { BASE_URL } from "../../API/BaseURL";
+
 
 const SubcategoryPage = () => {
   const { id } = useParams(); // Get subcategory ID from URL
@@ -16,13 +18,13 @@ const SubcategoryPage = () => {
       try {
         // Fetch subcategory details
         const subcategoryResponse = await axios.get(
-          `http://localhost:5001/api/subcategory/${id}`
+          `${BASE_URL}/api/subcategory/${id}`
         );
         setSubcategory(subcategoryResponse.data.subcategory);
 
         // Fetch products under this subcategory
         const productsResponse = await axios.get(
-          `http://localhost:5001/api/product/get/${id}`
+          `${BASE_URL}/api/product/get/${id}`
         );
 
         setProducts(productsResponse.data.products || []);
@@ -73,7 +75,7 @@ const SubcategoryPage = () => {
   cover={
     <img
       alt={product.productName}
-      src={`http://localhost:5001/uploads/${product.image.replace("/uploads/", "")}`}
+      src={`${BASE_URL}/uploads/${product.image.replace("/uploads/", "")}`}
       style={{
         width: "100%",
         height: "180px", // Increased height for a 70:30 ratio

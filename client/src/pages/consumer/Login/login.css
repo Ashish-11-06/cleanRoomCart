@@ -5,16 +5,17 @@ body {
     font-family: "Quicksand", serif;
     margin: 0;
     padding: 0;
-  }
-  
-  .container {
+}
+
+.container {
     display: flex;
     justify-content: center;
     align-items: baseline;
     height: 100vh;
-  }
-  
-  form {
+    margin-top: -130px;
+}
+
+form {
     background: rgb(228, 240, 237);
     padding: 25px;
     margin: 0px;
@@ -22,42 +23,43 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
-  }
-  
-  h2 {
+}
+
+h2 {
     margin-bottom: 20px;
     margin-left: 30px;
     /* margin-left: 50%; */
     align-content: center;
-    font-size:xx-large;
+    font-size: xx-large;
+}
 
-  }
-  .form_item{
+.form_item {
     padding-left: 20px;
     padding-right: 20px;
-  }
-  
-  div {
+}
+
+div {
     margin-bottom: 15px;
-  }
-  
-  label {
+}
+
+label {
     display: block;
     margin-bottom: 5px;
-  }
-  .label_span {
+}
+
+.label_span {
     color: red;
-  }
-  
-  input {
+}
+
+input {
     width: 100%;
     padding: 8px;
     box-sizing: border-box;
     border: 1px solid #ccc;
     border-radius: 7px;
-  }
-  
-  button {
+}
+
+button {
     width: 88%;
     margin-left: 5%;
     /* margin-left: 20px; */
@@ -67,16 +69,19 @@ body {
     border: none;
     border-radius: 7px;
     cursor: pointer;
-  }
-  
-  button:hover {
+}
+
+button:hover {
     background-color: #758cab;
-    color: black;
-  }
-  /*
-  below is the css for the custom text
-  */
+    color: rgb(245, 231, 231);
+}
+
+
+/*
+below is the css for the custom text
+*/
+
 .custom-text {
-    margin-top: 0.5rem; 
-    text-align: center; 
+    margin-top: 0.5rem;
+    text-align: center;
 }

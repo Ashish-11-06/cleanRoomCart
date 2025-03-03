@@ -3,6 +3,8 @@ import { EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 import { Modal, Input, Form, Button, Select, Upload } from 'antd';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { BASE_URL } from "../../API/BaseURL";
+
 
 const { TextArea } = Input;
 
@@ -23,7 +25,7 @@ const AddProduct = () => {
 
 
   useEffect(() => {
-    axios.get("http://localhost:5001/api/category/get")
+    axios.get(`${BASE_URL}/api/category/get`)
       .then((response) => {
         setCategories(response.data);
       })
@@ -37,7 +39,7 @@ const AddProduct = () => {
   useEffect(() => {
     if (selectedCategory) {
       axios
-        .get(`http://localhost:5001/api/subcategory/get?categoryId=${selectedCategory}`)
+        .get(`${BASE_URL}/api/subcategory/get?categoryId=${selectedCategory}`)
         .then((response) => {
           if (response.data.subCategories && Array.isArray(response.data.subCategories)) {
             // 🔥 Filter Subcategories based on Selected Category
@@ -91,7 +93,7 @@ const AddProduct = () => {
 
   const handleUpdateProduct = async (values, productId) => {
     try {
-      const response = await axios.put(`http://localhost:5001/api/product/update/${productId}`, values);
+      const response = await axios.put(`${BASE_URL}/api/product/update/${productId}`, values);
 
       if (response.status === 200) {
         alert("Product updated successfully!");
@@ -113,7 +115,7 @@ const AddProduct = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:5001/api/product/get?categoryId=${selectedCategory}&subcategoryId=${selectedSubcategory}`
+        `${BASE_URL}/api/product/get?categoryId=${selectedCategory}&subcategoryId=${selectedSubcategory}`
       );
 
       console.log("Fetched Products:", response.data);
@@ -182,7 +184,7 @@ const AddProduct = () => {
         }
 
         // API Call
-        const response = await axios.post("http://localhost:5001/api/product/add", formData, {
+        const response = await axios.post(`${BASE_URL}/api/product/add`, formData, {
             headers: { "Content-Type": "multipart/form-data" },
         });
 
@@ -212,7 +214,7 @@ const AddProduct = () => {
   // Handle Edit Product
   const handleDelete = async (productId) => {
     try {
-      const response = await axios.delete(`http://localhost:5001/api/product/delete/${productId}`);
+      const response = await axios.delete(`${BASE_URL}/api/product/delete/${productId}`);
 
       if (response.status === 200) {
         alert("Product deleted successfully!");

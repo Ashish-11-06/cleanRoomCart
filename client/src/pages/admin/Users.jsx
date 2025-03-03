@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Card, Statistic } from 'antd';
 import axios from 'axios';
+import { BASE_URL } from "../../API/BaseURL";
+
 
 const Users = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5001/api/consumer/list')
+    axios.get(`${BASE_URL}/api/consumer/list`)
       .then(response => {
         setUsers(response.data);
       })

@@ -97,21 +97,16 @@ const Navbar = () => {
           <h1 className="navbar-logo"></h1>
           {/* <img style={{width:' 120px'}} src={logo} alt='logo'/> */}
           <Link to="/">
-            <img style={{ width: "120px", cursor: "pointer", paddingTop:'18px',  marginRight: '710px' }} src={logo} alt="logo" />
+            <img style={{ width: "120px", cursor: "pointer", paddingTop:'18px' }} src={logo} alt="logo" />
           </Link>
-
-          
-          {/* in this line we have to show after searchbar after the api creation for that */}
-
-
-          {/* <div className="navbar-search">
+          <div className="navbar-search">
             <Input
               placeholder="Search by Keyword, Item or Model"
               className="search-input"
               suffix={<SearchOutlined />}
             />
             <Button className="search-button" icon={<SearchOutlined />}></Button>
-          </div> */}
+          </div>
           <div className="navbar-questions">
             
               <PhoneOutlined /> <span>Questions? Call 123-456-7890 </span>
@@ -121,15 +116,35 @@ const Navbar = () => {
             </a>
           </div>
         </Header>
-        <Menu style={{backgroundColor:'', }} mode="horizontal" className="navbar-links">
-          <Menu.Item key="home"><a href="/">Home</a></Menu.Item>
-          <Menu.Item key="cleanroom-supplies"><a href="#cleanroom-supplies">Cleanroom Apparel</a></Menu.Item>
-          <Menu.Item key="cleanroom-equipment"><a href="#cleanroom-equipment">Cleanroom Equipment</a></Menu.Item>
-          <Menu.Item key="lab-supplies"><a href="#lab-supplies">Cleanrom furniture</a></Menu.Item>
-          <Menu.Item key="safety-supplies"><a href="#safety-supplies">Cleanroom mats</a></Menu.Item>
-          <Menu.Item key="esd-equipment"><a href="#esd-equipment">Sterile supply</a></Menu.Item>
-          {/* <Menu.Item key="faqs"><a href="#faqs">FAQs</a></Menu.Item> */}
-        </Menu>
+
+
+
+
+        <Menu mode="horizontal" className="navbar-links">
+      <Menu.Item key="home">
+        <a href="/">Home</a>
+      </Menu.Item>
+      <Menu.Item key="cleanroom-apparel">
+        <a href="#" onClick={() => navigate(`/category/67c03a9fc5e677c56f72b829`)}>Cleanroom Apparel</a>
+      </Menu.Item>
+      <Menu.Item key="cleanroom-vacuums">
+        <a href="#" onClick={() => navigate(`/category/67c0994754f8f0c5749550e4`)}>Cleanroom Vacuums</a>
+      </Menu.Item>
+      <Menu.Item key="cleanroom-mats">
+        <a href="#" onClick={() => navigate(`/category/67c1467bbdd10abdd0d88940`)}>Cleanroom Mats</a>
+      </Menu.Item>
+      <Menu.Item key="sterile-supply">
+        <a href="#" onClick={() => navigate(`/category/67c146adbdd10abdd0d88944`)}>Sterile Supply</a>
+      </Menu.Item>
+      <Menu.Item key="cleanroom-assets">
+        <a href="#" onClick={() => navigate(`/category/67c14f21bdd10abdd0d889d3`)}>Cleanroom Assets</a>
+      </Menu.Item>
+    </Menu>
+
+
+
+
+
       </Layout>
     );
   };

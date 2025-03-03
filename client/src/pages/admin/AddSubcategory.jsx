@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Modal, Input, Form, Button } from 'antd';
 const { TextArea } = Input;
+import { BASE_URL } from "../../API/BaseURL";
+
 import axios from 'axios';
 
 const AddSubcategory = () => {
@@ -23,7 +25,7 @@ const AddSubcategory = () => {
 
     // Fetch categories from DB
     useEffect(() => {
-        axios.get("http://localhost:5001/api/category/get")
+        axios.get(`${BASE_URL}/api/category/get`)
             .then((response) => {
                 console.log("Fetched categories:", response.data); // Debugging log
                 setCategories(response.data);
@@ -38,7 +40,7 @@ const AddSubcategory = () => {
    
     
     const fetchSubcategories = () => {
-        axios.get("http://localhost:5001/api/subcategory/get")
+        axios.get(`${BASE_URL}/api/subcategory/get`)
         .then((response) => {
             console.log("Fetched subcategories:", response.data); 
             if (Array.isArray(response.data.subCategories)) {
@@ -79,7 +81,7 @@ const AddSubcategory = () => {
         formData.append("detailedDescription", subcategory.detailedDescription);
         formData.append("image", subcategory.image);
 
-        axios.post("http://localhost:5001/api/subcategory/add", formData, {
+        axios.post(`${BASE_URL}/api/subcategory/add`, formData, {
             headers: { "Content-Type": "multipart/form-data" }
         })
         .then((response) => {
@@ -113,7 +115,7 @@ const AddSubcategory = () => {
 
     const handleModalSubmit = () => {
         console.log("Updated Subcategory: ", selectedSubcategory); // Log data before submitting
-        axios.put(`http://localhost:5001/api/subcategory/update/${selectedSubcategory._id}`, selectedSubcategory)
+        axios.put(`${BASE_URL}/api/subcategory/update/${selectedSubcategory._id}`, selectedSubcategory)
             .then(response => {
                 console.log("Subcategory updated:", response.data);
                 setSelectedSubcategory(null); // Close the modal
@@ -125,7 +127,7 @@ const AddSubcategory = () => {
     };
    
     const handleDelete = (subcategoryId) => {
-        axios.delete(`http://localhost:5001/api/subcategory/delete/${subcategoryId}`)
+        axios.delete(`${BASE_URL}/api/subcategory/delete/${subcategoryId}`)
             .then((response) => {
                 console.log("Subcategory deleted:", response.data);
                 fetchSubcategories(); // Refresh subcategories after deletion

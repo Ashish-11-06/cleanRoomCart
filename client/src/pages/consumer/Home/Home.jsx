@@ -3,6 +3,8 @@ import axios from "axios";
 import { Card, Row, Col, Carousel } from "antd";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
+import { BASE_URL } from "../../../API/BaseURL";
+
 
 // Import images for carousel
 import one from "../../../assets/1st.jpg";
@@ -17,12 +19,12 @@ const { Meta } = Card;
 
 const Home = () => {
   const [categories, setCategories] = useState([]);
-  const BASE_URL = "http://localhost:5001/uploads/"; // API Base URL
+  const BASE_URL2 = `${BASE_URL}/uploads/`; // API Base URL
   const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get("http://localhost:5001/api/category/get") 
+      .get(`${BASE_URL}/api/category/get`) 
       .then((response) => {
         console.log("API Response:", response.data);
         setCategories(response.data);
@@ -66,7 +68,7 @@ const Home = () => {
   cover={
     <img
       alt={category.name}
-      src={category.image ? `${BASE_URL}${category.image}` : "/default.jpg"}
+      src={category.image ? `${BASE_URL2}${category.image}` : "/default.jpg"}
       onError={(e) => { e.target.src = "/default.jpg"; }} // Fallback for broken images
       style={{
         width: "100%",

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, Typography, Row, Col } from "antd";
+import { BASE_URL } from "../../API/BaseURL";
+
 
 const { Title } = Typography;
 
@@ -11,7 +13,7 @@ const Dashboard = () => {
     // Fetch Customer Queries Count
     const fetchQueryCount = async () => {
       try {
-        const response = await fetch("http://localhost:5001/api/contact/get");
+        const response = await fetch(`${BASE_URL}/api/contact/get`);
         const data = await response.json();
         setQueryCount(data.length); // Assuming API returns an array of queries
       } catch (error) {
@@ -22,7 +24,7 @@ const Dashboard = () => {
     // Fetch Users Count
     const fetchUserCount = async () => {
       try {
-        const response = await fetch("http://localhost:5001/api/consumer/list");
+        const response = await fetch(`${BASE_URL}/api/consumer/list`);
         const data = await response.json();
         setUserCount(data.length); // Assuming API returns an array of users
       } catch (error) {
