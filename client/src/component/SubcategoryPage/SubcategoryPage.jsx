@@ -39,7 +39,7 @@ const SubcategoryPage = () => {
   }, [id]);
 
   const trimDescription = (desc) => {
-    return desc ? desc.split(" ").slice(0, 10).join(" ") + "..." : "No description available";
+    return desc ? desc.split(" ").slice(0, 2).join(" ") + "..." : "No description available";
   };
 
   if (loading)
