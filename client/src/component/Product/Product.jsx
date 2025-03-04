@@ -43,13 +43,15 @@ const Product = () => {
       } catch (error) {
         console.error("Error fetching subproducts:", error);
         message.error("Failed to load subproduct details.");
-      } finally {
-        setLoading(false);
       }
     };
 
-    fetchProductDetails();
-    fetchSubProducts();
+    const fetchData = async () => {
+      await Promise.all([fetchProductDetails(), fetchSubProducts()]);
+      setLoading(false);
+    };
+
+    fetchData();
   }, [id]);
 
   if (loading) return <Spin size="large" style={{ display: "block", margin: "20px auto" }} />;
@@ -75,11 +77,11 @@ const Product = () => {
     }
 
     const cartItem = {
-      key: `${product._id}-${selectedSize}-${selectedColor}`,
+      key: `${product._id}-${selectedSize || ""}-${selectedColor || ""}`,
       name: product.productName,
       price: product.price * quantity,
-      size: selectedSize,
-      color: selectedColor,
+      size: selectedSize || "",
+      color: selectedColor || "",
       quantity,
       userId: user._id,
     };
@@ -110,15 +112,15 @@ const Product = () => {
         image: product.image,
         price: product.price,
         quantity,
-        size: selectedSize,
-        color: selectedColor,
+        size: selectedSize || "",
+        color: selectedColor || "",
       });
 
       addToCart(cartItem);
       message.success("Item added to cart!");
     } catch (error) {
       console.error("Error adding to cart:", error);
-      
+      // message.error("Failed to add item to cart. Please try again.");
     }
   };
 
@@ -140,36 +142,36 @@ const Product = () => {
             <Text>Product Code: <strong>{updatedProductCode}</strong></Text>
             <br /><br />
 
-            <Text>Size:</Text>
-            <div>
-              <Radio.Group onChange={(e) => setSelectedSize(e.target.value)} value={selectedSize}>
-                {availableSizes.length > 0 ? (
-                  availableSizes.map((size) => (
-                    <Radio.Button key={size} value={size}>
-                      {size}
-                    </Radio.Button>
-                  ))
-                ) : (
-                  <Text> No sizes available </Text>
-                )}
-              </Radio.Group>
-            </div>
-            <br />
+            {availableSizes.length > 0 && (
+              <div>
+                <Text>Size:</Text>
+                <div>
+                  <Radio.Group onChange={(e) => setSelectedSize(e.target.value)} value={selectedSize}>
+                    {availableSizes.map((size) => (
+                      <Radio.Button key={size} value={size}>
+                        {size}
+                      </Radio.Button>
+                    ))}
+                  </Radio.Group>
+                </div>
+                <br />
+              </div>
+            )}
 
-            <Text>Color:</Text>
-            <div>
-              <Radio.Group onChange={(e) => setSelectedColor(e.target.value)} value={selectedColor}>
-                {availableColors.length > 0 ? (
-                  availableColors.map((color) => (
-                    <Radio.Button key={color} value={color} style={{ backgroundColor: color, color: "white", borderRadius: "50%", marginLeft: "10px" }}>
-                    </Radio.Button>
-                  ))
-                ) : (
-                  <Text> No colors available </Text>
-                )}
-              </Radio.Group>
-            </div>
-            <br />
+            {availableColors.length > 0 && (
+              <div>
+                <Text>Color:</Text>
+                <div>
+                  <Radio.Group onChange={(e) => setSelectedColor(e.target.value)} value={selectedColor}>
+                    {availableColors.map((color) => (
+                      <Radio.Button key={color} value={color} style={{ backgroundColor: color, color: "white", borderRadius: "50%", marginLeft: "10px" }}>
+                      </Radio.Button>
+                    ))}
+                  </Radio.Group>
+                </div>
+                <br />
+              </div>
+            )}
 
             <Text>Quantity:</Text>
             <div>
@@ -177,13 +179,13 @@ const Product = () => {
             </div>
             <br />
 
-            <Tooltip title={!selectedSize || !selectedColor ? "Please select a size and color" : ""}>
+            <Tooltip title={(availableSizes.length > 0 && !selectedSize) || (availableColors.length > 0 && !selectedColor) ? "Please select a size and/or color" : ""}>
               <Button
                 className="button"
                 style={{ backgroundColor: "#40476D", width: "200px", marginLeft: "30%" }}
                 type="primary"
                 onClick={handleCartClick}
-                disabled={!selectedSize || !selectedColor}
+                disabled={(availableSizes.length > 0 && !selectedSize) || (availableColors.length > 0 && !selectedColor)}
               >
                 I'm Interested
               </Button>
