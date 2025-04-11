@@ -4,11 +4,10 @@ const productSchema = new mongoose.Schema({
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
     subcategory: { type: mongoose.Schema.Types.ObjectId, ref: "Subcategory", required: true },
     productName: { type: String, required: true },
-    price: { type: Number, required: true },
     productCode: { type: String, required: true, unique: true },
+    price: { type: Number, required: true },
     description: { type: String, required: true },
-    size: { type: [String], default: [] },
-    image: { type: String, required: true }, // ✅ Only stores filename (e.g., "987654321.png")
+    image: { type: String, required: true }
 }, { timestamps: true });
 
-module.exports = mongoose.model("Product", productSchema);
+module.exports = mongoose.models.Product || mongoose.model("Product", productSchema);

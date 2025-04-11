@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Footer.css"; // Import the CSS file
-import contact from '../Contact_Form/Contact_Form.jsx';
 import logo from '../../assets/logo.png';
+import { BASE_URL } from "../../API/BaseURL";
 
 const Footer = () => {
   const navigate = useNavigate(); // Initialize navigate
+  const [categories, setCategories] = useState([]);
   const currentYear = new Date().getFullYear();
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/api/category/get`);
+        const data = await response.json();
+        if (data && Array.isArray(data)) {
+          setCategories(data.slice(0, 5)); // Fetch first 5 categories
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   return (
     <footer className="footer">
@@ -35,16 +51,22 @@ const Footer = () => {
           <h6>Categories</h6>
           <hr />
           <ul>
-            <li><a href="#" onClick={() => navigate(`/category/67c03a9fc5e677c56f72b829`)}>Cleanroom Apparel</a></li>
-            <li><a href="#" onClick={() => navigate(`/category/67c0994754f8f0c5749550e4`)}>Cleanroom Vaccums</a></li>
-            <li><a href="#" onClick={() => navigate(`/category/67c14f21bdd10abdd0d889d3`)}>Cleanroom Assests</a></li>
-            <li><a href="#" onClick={() => navigate(`/category/67c1467bbdd10abdd0d88940`)}>Cleanroom Mats</a></li>
-            <li><a href="#" onClick={() => navigate(`/category/67c146adbdd10abdd0d88944`)}>Sterile Supply</a></li>
+            {categories.length > 0 ? (
+              categories.map((category) => (
+                <li key={category._id}>
+                  <a href="#" onClick={() => navigate(`/category/${category._id}`)}>
+                    {category.name}
+                  </a>
+                </li>
+              ))
+            ) : (
+              <li>No categories available</li>
+            )}
           </ul>
         </div>
       </div>
       <div className="footer-bottom">
-        © {currentYear} Cleanroom Cart. All Rights Reserved.
+        &copy; {currentYear} Cleanroom Cart. All Rights Reserved.
       </div>
     </footer>
   );

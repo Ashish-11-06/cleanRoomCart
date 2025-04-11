@@ -1,152 +1,264 @@
-import React from 'react'
-// import { Link } from 'react-router-dom'
-import { Layout, Menu, Input} from 'antd'
-import { MailOutlined, PhoneOutlined, SearchOutlined, ShoppingCartOutlined  } from '@ant-design/icons'
-import './Navbar.css'
-import logo from '../../assets/logo.png'
+import React, { useState, useEffect, useRef } from "react";
+import { Layout, Menu, message, Input, Button } from "antd";
+import { MailOutlined, PhoneOutlined, ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, message } from "antd";
-import { useEffect, useState } from "react";
-import { useCart } from "../../context/CartContext.jsx"; 
-// import { Badge } from "antd";
+import { useCart } from "../../context/CartContext.jsx";
+import "./Navbar.css";
+import logo from "../../assets/logo.png";
+import { BASE_URL } from "../../API/BaseURL";
+import SearchModal from "./SearchModal";
 
-
-const { Header } = Layout
+const { Header } = Layout;
 
 const Navbar = () => {
-  const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState('');
-  const { cartItems } = useCart();
+    const navigate = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userName, setUserName] = useState("");
+    const { cartItems } = useCart();
+    const [categories, setCategories] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [showModal, setShowModal] = useState(false);
+    const searchInputRef = useRef(null);
+    const [quoteBoxVisible, setQuoteBoxVisible] = useState(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem("userToken");
-    const storedUserName = localStorage.getItem('userName');
-    setIsLoggedIn(!!token);
-    if (storedUserName) {
-      setUserName(storedUserName);
-    } // Convert token existence to a boolean
-  }, []);
+    useEffect(() => {
+        fetch(`${BASE_URL}/api/category/get`)
+            .then((response) => response.json())
+            .then((data) => {
+                if (data && Array.isArray(data)) {
+                    setCategories(data.slice(0, 5));
+                }
+            })
+            .catch((error) => {
+                console.error("Error fetching categories:", error);
+            });
+    }, []);
 
-  const handleLogout = () => {
-    localStorage.setItem("cart", JSON.stringify('cart'));
-    localStorage.removeItem("userToken"); // Remove token
-    localStorage.removeItem('user'); 
-    localStorage.removeItem("cart");
-    message.success("Logged out successfully");
-    setIsLoggedIn(false);
-    setUserName('');
-    navigate("/login"); // Redirect to login page
-  };
-    // const isAuthenticated = localStorage.getItem("token"); // Check if token exists
+    useEffect(() => {
+        const handleStorageChange = () => {
+            const token = localStorage.getItem("userToken");
+            const storedUserName = localStorage.getItem("userName");
+            setIsLoggedIn(!!token);
+            if (storedUserName) {
+                setUserName(storedUserName);
+            }
+        };
 
-    // const handleLogout = () => {
-    //     localStorage.removeItem("token"); // Remove token from storage
-    //     window.location.reload(); // Refresh the page to reflect changes
-    // };
-    const user = JSON.parse(localStorage.getItem('user'));
+        handleStorageChange();
+        window.addEventListener("storage", handleStorageChange);
+        return () => {
+            window.removeEventListener("storage", handleStorageChange);
+        };
+    }, []);
+
+    const handleLogout = () => {
+        try {
+            localStorage.removeItem("userToken");
+            localStorage.removeItem("user");
+            localStorage.removeItem("cart");
+            message.success("Logged out successfully");
+            setIsLoggedIn(false);
+            setUserName("");
+            navigate("/login");
+        } catch (error) {
+            console.error("Error during logout:", error);
+        }
+    };
+
+    const user = JSON.parse(localStorage.getItem("user"));
     const name = user ? `${user.firstName} ${user.lastName}` : "Guest";
 
-    return (
-      <Layout className="navbar">
-        <Header className="navbar-top" >
-          {/* <div className="navbar-certification">Clean Room Cart</div> */}
-          <div className="navbar-contact">
-              <span style={{marginRight: '40px' }}>
-                Welcome, {name} !
-              </span>
-            <Link style={{textDecoration: 'none', marginBottom:'10px'}} to="/contact_form"><span>Contact Us</span></Link>
-            <span> | </span>
-            {isLoggedIn ? (
-              <>            
-                <span style={{ cursor: "pointer" }} onClick={handleLogout}>Logout</span>
-                </>
-              ) : (
-                <Link style={{ textDecoration: "none" }} to="/login">
-                  <span>Login</span>
+    const debounce = (func, delay) => {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
+    };
+
+    const showModalIfNeeded = (value) => {
+        if (value) {
+            setShowModal(true);
+        } else {
+            setShowModal(false);
+        }
+    };
+
+    const debouncedShowModalIfNeeded = debounce(showModalIfNeeded, 2000);
+
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+        debouncedShowModalIfNeeded(value);
+    };
+
+    const handleQuoteMouseEnter = () => {
+        setQuoteBoxVisible(true);
+    };
+
+    const handleQuoteMouseLeave = () => {
+        // Delay hiding the quote box by 2 seconds (2000 ms)
+        quoteHideTimeout = setTimeout(() => {
+          setQuoteBoxVisible(false);
+        }, 2000);
+      };
+
+    const menuItems = [
+        { label: <Link to="/">Home</Link>, key: "home" },
+        ...categories.map((category) => ({
+            label: (
+                <Link to={`/category/${category._id}`} style={{ textDecoration: "none" }}>
+                    {category.name}
                 </Link>
-              )}
-            <span> | </span>
-            {/* <Link style={{ textDecoration: 'none', paddingRight:'5px', marginRight:'5px'}} to="/cart">
-              <span>My Cart</span>
-             // <ShoppingCartOutlined style={{ fontSize: '18px' }} />
-              <Badge style={{backgroundColor:'#40476D'}} count={cartItems.length} showZero>
-                <ShoppingCartOutlined style={{ fontSize: '18px' }} />
-              </Badge>
-            </Link> */}
-            <Link style={{ textDecoration: 'none', paddingRight: '5px', marginRight: '5px', position: 'relative' }} to="/cart">
-            <span style={{ marginLeft: "5px" }}>My Cart</span>
-              <ShoppingCartOutlined style={{ fontSize: '22px' }} />
-              {cartItems.length > 0 && (
-                <span style={{ 
-                  position: 'absolute', 
-                  top: '-32px', 
-                  right: '-3px', 
-                  color: 'red', 
-                  fontSize: '14px', 
-                  fontWeight: 'bold' 
-                }}>
-                  {cartItems.length}
-                </span>
-              )}
-             
-            </Link>
-          </div>
-        </Header>
-        <Header className="navbar-main" style={{ backgroundColor: '#f0f0f0',marginTop: '10px' }}>
-          <h1 className="navbar-logo"></h1>
-          {/* <img style={{width:' 120px'}} src={logo} alt='logo'/> */}
-          <Link to="/">
-            <img style={{ width: "120px", cursor: "pointer", paddingTop:'18px' }} src={logo} alt="logo" />
-          </Link>
-          <div className="navbar-search">
-            <Input
-              placeholder="Search by Keyword, Item or Model"
-              className="search-input"
-              suffix={<SearchOutlined />}
+            ),
+            key: category._id,
+        })),
+    ];
+
+    return (
+        <Layout className="navbar">
+            {/* Top Header */}
+            <Header className="navbar-top">
+                <div className="navbar-contact">
+                    <span style={{ marginRight: "40px" }}>Welcome, {name}!</span>
+                    <Link style={{ textDecoration: "none", marginBottom: "10px" }} to="/contact_form">
+                        <span>Contact Us</span>
+                    </Link>
+                    <span> | </span>
+                    <span
+                        style={{ position: "relative" }}
+                        onMouseEnter={handleQuoteMouseEnter}
+                        onMouseLeave={handleQuoteMouseLeave}
+                    >
+                        Quote
+                        {quoteBoxVisible && (
+    <div
+        style={{
+            position: "absolute",
+            top: "32px",
+            left: "-40px",
+            padding: "10px",
+            background: "white",
+            border: "1px solid #ccc",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+            zIndex: 10,
+            width: "140px", // Slightly increased
+            textAlign: "center"
+        }}
+    >
+        <Link to="/quote">
+  <button
+    style={{
+      backgroundColor: "#40476D",
+      color: "white",
+      border: "none",
+      padding: "8px 12px",
+      borderRadius: "4px",
+      cursor: "pointer"
+    }}
+  >
+    Get a quick quote
+  </button>
+</Link>
+    </div>
+)}
+
+                    </span>
+                    <span> | </span>
+                    {isLoggedIn ? (
+                        <>
+                            <Link style={{ textDecoration: "none" }} to="/account">
+                                <UserOutlined style={{ marginRight: "5px" }} />
+                                <span>Account</span>
+                            </Link>
+                            <span> | </span>
+                            <span style={{ cursor: "pointer" }} onClick={handleLogout}>
+                                Logout
+                            </span>
+                        </>
+                    ) : (
+                        <Link style={{ textDecoration: "none" }} to="/login">
+                            <span>Login</span>
+                        </Link>
+                    )}
+                    <span> | </span>
+                    <Link style={{ textDecoration: "none", position: "relative" }} to="/cart">
+                        <span style={{ marginLeft: "5px" }}>My Cart</span>
+                        <ShoppingCartOutlined style={{ fontSize: "22px" }} />
+                        {cartItems.length > 0 && (
+                            <span
+                                style={{
+                                    position: "absolute",
+                                    top: "-32px",
+                                    right: "-3px",
+                                    color: "red",
+                                    fontSize: "14px",
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                {cartItems.length}
+                            </span>
+                        )}
+                    </Link>
+                </div>
+            </Header>
+
+            {/* Main Navbar */}
+            <Header className="navbar-main" style={{ backgroundColor: "#f0f0f0", marginTop: "10px" }}>
+                <Link to="/">
+                    <img
+                        style={{ width: "120px", cursor: "pointer", paddingTop: "18px", margin: "0px", marginRight: "20px" }}
+                        src={logo}
+                        alt="logo"
+                    />
+                </Link>
+
+                <div style={{ display: "flex", alignItems: "center", marginRight: "20px" }}>
+  <Input
+    id="search-input"
+    type="text"
+    placeholder="#Browse products"
+    value={searchTerm}
+    onChange={handleSearchChange}
+    style={{
+      width: "350px",
+      height: "40px",
+      padding: "5px",
+      color: "black", // Text color
+    }}
+    ref={searchInputRef}
+  />
+  <style>
+    {`
+      #search-input::placeholder {
+        color: black;
+        opacity: 1; /* Ensures it's visible in all browsers */
+      }
+    `}
+  </style>
+</div>
+
+
+                <div className="navbar-questions">
+                    <PhoneOutlined /> <span>Talk to Us ?  Call 123-456-7890 </span>
+                    <a href="mailto:info@cleanroomworld.com" className="email-link">
+                        <MailOutlined /> info@cleanroomcart.com
+                    </a>
+                </div>
+            </Header>
+
+            {/* Category Navigation */}
+            <Menu mode="horizontal" className="navbar-links" items={menuItems} />
+
+            {/* Search Modal */}
+            <SearchModal
+                searchQuery={searchTerm}
+                visible={showModal}
+                onCancel={() => setShowModal(false)}
+                onOutsideClick={() => setShowModal(false)}
             />
-            <Button className="search-button" icon={<SearchOutlined />}></Button>
-          </div>
-          <div className="navbar-questions">
-            
-              <PhoneOutlined /> <span>Questions? Call 123-456-7890 </span>
-          
-            <a href="mailto:info@cleanroomworld.com" className="email-link">
-              <MailOutlined /> info@cleanroomcart.com
-            </a>
-          </div>
-        </Header>
-
-
-
-
-        <Menu mode="horizontal" className="navbar-links">
-      <Menu.Item key="home">
-        <a href="/">Home</a>
-      </Menu.Item>
-      <Menu.Item key="cleanroom-apparel">
-        <a href="#" onClick={() => navigate(`/category/67c03a9fc5e677c56f72b829`)}>Cleanroom Apparel</a>
-      </Menu.Item>
-      <Menu.Item key="cleanroom-vacuums">
-        <a href="#" onClick={() => navigate(`/category/67c0994754f8f0c5749550e4`)}>Cleanroom Vacuums</a>
-      </Menu.Item>
-      <Menu.Item key="cleanroom-mats">
-        <a href="#" onClick={() => navigate(`/category/67c1467bbdd10abdd0d88940`)}>Cleanroom Mats</a>
-      </Menu.Item>
-      <Menu.Item key="sterile-supply">
-        <a href="#" onClick={() => navigate(`/category/67c146adbdd10abdd0d88944`)}>Sterile Supply</a>
-      </Menu.Item>
-      <Menu.Item key="cleanroom-assets">
-        <a href="#" onClick={() => navigate(`/category/67c14f21bdd10abdd0d889d3`)}>Cleanroom Assets</a>
-      </Menu.Item>
-    </Menu>
-
-
-
-
-
-      </Layout>
+        </Layout>
     );
-  };
-  
-  export default Navbar;
+};
+
+export default Navbar;

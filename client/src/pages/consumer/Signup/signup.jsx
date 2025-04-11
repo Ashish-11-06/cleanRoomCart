@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './signup.css';
-import { signupApi } from '../../../utils/api';   // Import the signup function
+import { message } from 'antd'; // Ensure message is imported
 import { UserAddOutlined } from "@ant-design/icons";
 import { BASE_URL } from "../../../API/BaseURL";
-
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -27,7 +26,14 @@ const Signup = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+
+    if (formData.password !== formData.confirmPassword) {
+      message.error('Passwords do not match!');
+      return;
+    }
+
     try {
       const response = await fetch(`${BASE_URL}/api/consumer/signup`, {
         method: 'POST',
@@ -36,6 +42,7 @@ const Signup = () => {
       });
 
       const data = await response.json();
+
       if (response.ok) {
         message.success('Signup successful! Redirecting to login...');
         setTimeout(() => navigate('/login'), 2000); // Redirect after 2 seconds
@@ -47,20 +54,18 @@ const Signup = () => {
       message.error('Something went wrong!');
     }
   };
-  
 
   return (
     <div className="container">
       <form className='form' onSubmit={handleSubmit}>
         <h2 className='h2'>
-        <UserAddOutlined style={{ marginRight: "8px", fontSize: "22px" }} />
-        New Account
+          <UserAddOutlined style={{ marginRight: "8px", fontSize: "22px" }} />
+          New Account
         </h2>
         <div className='div'>
-          <label 
-          className='label'>
-          <span className='label_span'>*</span>
-          Email:</label>
+          <label className='label'>
+            <span className='label_span'>*</span>
+            Email:</label>
           <input type="email" name="email" className='input' value={formData.email} onChange={handleChange} required />
         </div>
         <div className='div'>

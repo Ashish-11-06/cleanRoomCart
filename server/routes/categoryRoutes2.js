@@ -39,10 +39,13 @@ router.post('/add', upload.single('image'), async(req, res) => {
     }
 });
 
+// Route to update a category (with optional file upload)
+router.put('/update/:id', updatedCategory);
+
+
 // Other routes
 router.get('/get', getCategories);
 router.get('/:id', getCategoryById);
 router.delete('/delete/:id', deleteCategory);
-router.put('/update/:id', updatedCategory);
 
 module.exports = router;

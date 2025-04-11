@@ -1,6 +1,7 @@
+// Cart Context (CartContext.jsx)
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
-import { BASE_URL } from '../API/BaseURL';
+import { BASE_URL } from "../API/BaseURL";
 
 const CartContext = createContext();
 
@@ -20,7 +21,6 @@ export const CartProvider = ({ children }) => {
       setCartItems(response.data);
     } catch (error) {
       console.error("Error fetching cart items:", error);
-      alert("Failed to fetch cart items. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -31,26 +31,29 @@ export const CartProvider = ({ children }) => {
   }, [user, userId]);
 
   const addToCart = async (item) => {
-  
-      const response = await axios.post(`${BASE_URL}/api/cart/add`, item);
-      fetchCartItems(); // Update cart items after adding a new item
-    } 
+    const response = await axios.post(`${BASE_URL}/api/cart/add`, item);
+    fetchCartItems(); // Update cart items after adding a new item
+  };
 
   const handleQuantityChange = async (value, record) => {
     try {
-      const response = await axios.put(`${BASE_URL}/api/cart/update/${userId}/${record.productId}/${record.size}/${record.color}`, {
-        quantity: value,
-      });
+      const response = await axios.put(
+        `${BASE_URL}/api/cart/update/${userId}/${record.productId}`,
+        {
+          quantity: value,
+        }
+      );
       fetchCartItems(); // Update cart items after changing quantity
     } catch (error) {
       console.error("Error updating quantity:", error);
-      alert("Failed to update quantity. Please try again.");
     }
   };
 
-  const handleRemoveItem = async (key) => {
+  const handleRemoveItem = async (record) => {
     try {
-      const response = await axios.delete(`${BASE_URL}/api/cart/remove/${userId}/${key.split('-')[1]}/${key.split('-')[2]}/${key.split('-')[3]}`);
+      const response = await axios.delete(
+        `${BASE_URL}/api/cart/remove/${userId}/${record.productId}`
+      );
       fetchCartItems(); // Update cart items after removing an item
     } catch (error) {
       console.error("Error removing item:", error);
@@ -59,7 +62,15 @@ export const CartProvider = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, handleQuantityChange, handleRemoveItem, loading }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        addToCart,
+        handleQuantityChange,
+        handleRemoveItem,
+        loading,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

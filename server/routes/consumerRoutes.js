@@ -1,10 +1,26 @@
 const express = require('express');
-const { registerConsumer, loginConsumer, getConsumers } = require('../controllers/consumerController');
-
 const router = express.Router();
+const {
+    registerConsumer,
+    loginConsumer,
+    getConsumers,
+    getConsumerProfile,
+    updateConsumerProfile,
+    forgotPassword,
+    resetPassword
+} = require('../controllers/consumerController');
 
+const { authenticate } = require('../middleware/authMiddleware');
+
+
+
+// ✅ Routes
 router.post('/signup', registerConsumer);
 router.post('/login', loginConsumer);
-router.get('/list', getConsumers); // ✅ New route to fetch consumers
+router.get('/profile/:userId', getConsumerProfile);
+router.put('/update-profile/:userId', updateConsumerProfile);
+router.get('/list', getConsumers); // ✅ Fetch Consumers Route
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password/:token', resetPassword);
 
 module.exports = router;

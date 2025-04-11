@@ -1,11 +1,12 @@
-// routes/subProductRoutes.js
 const express = require("express");
 const {
     addSubProduct,
     getSubProducts,
     getSubProductsByProductId,
     deleteSubProduct,
-    updateSubProduct
+    updateSubProduct,
+    getFilters,
+    getFilteredProducts
 } = require("../controllers/subProductController");
 
 const router = express.Router();
@@ -13,7 +14,9 @@ const router = express.Router();
 router.post("/add", addSubProduct);
 router.get("/get", getSubProducts);
 router.get("/product/:productId", getSubProductsByProductId);
+router.get("/filters", getFilters);
 router.delete("/delete/:id", deleteSubProduct);
 router.put("/update/:id", updateSubProduct);
+router.post("/filtered/:subcategoryId", getFilteredProducts);
 
 module.exports = router;

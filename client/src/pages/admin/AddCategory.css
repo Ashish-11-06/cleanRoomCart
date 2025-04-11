@@ -9,10 +9,8 @@
 
 .add-btn {
     background-color: #E16A54;
-    /* Updated color */
     color: white;
     padding: 8px 12px;
-    /* Smaller size */
     border: none;
     cursor: pointer;
     border-radius: 5px;
@@ -22,35 +20,20 @@
 
 .add-btn:hover {
     background-color: #9F5255;
-    /* Darker hover effect */
 }
 
 .form-container {
-    display: flex;
-    /* For Flexbox layout */
-    flex-direction: column;
-    justify-content: center;
-    /* Vertical Center */
-    align-items: center;
-    /* Horizontal Center */
     position: fixed;
-    /* Fixed position for center on whole page */
     top: 50%;
-    /* Vertical Center */
     left: 50%;
-    /* Horizontal Center */
     transform: translate(-50%, -50%);
-    /* Exact Center */
     background: white;
-    /* Optional Background */
     padding: 20px;
-    /* Padding around form */
     border-radius: 10px;
-    /* Rounded Corners */
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-    /* Shadow Effect */
     width: 500px;
-    /* Set Width */
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
 .form-container label {
@@ -85,7 +68,6 @@
 
 .save-btn {
     background-color: #F39E60;
-    /* Updated color */
     color: white;
     padding: 10px;
     border: none;
@@ -96,35 +78,7 @@
 
 .save-btn:hover {
     background-color: #E16A54;
-    /* Darker hover effect */
 }
-
-.list-header {
-    margin-top: 20px;
-}
-
-.category-table {
-    margin-top: 10px;
-}
-
-.edit-btn {
-    background-color: #7C444F;
-    /* Updated color */
-    color: white;
-    margin-right: 5px;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.edit-btn:hover {
-    background-color: #9F5255;
-    /* Darker hover effect */
-}
-
-
-/* Category List Styling */
 
 .category-list {
     list-style: none;
@@ -148,114 +102,84 @@
     background-color: #f1f1f1;
 }
 
-
-/* Category Text Styling */
-
 .category-text {
     font-size: 30px;
     font-weight: 500;
     color: #333;
 }
 
-
-/* Icon Container */
-
 .icon-container {
     display: flex;
     gap: 12px;
 }
 
-
-/* Icons Styling */
-
 .icon {
     font-size: 20px;
-    color: #7C444F;
+    color: #050505;
     cursor: pointer;
     transition: color 0.3s ease;
 }
 
 .icon:hover {
-    color: #E16A54;
+    color: #141414;
 }
 
 
-/* Style for the Modal Title */
+/* Adjusting modal styling */
 
 .ant-modal-title {
-    color: #7C444F;
-    /* Dark reddish shade for title */
+    color: #121112;
     font-weight: bold;
 }
 
-
-/* Style for the Input Fields */
-
 .ant-input,
 .ant-input-textarea {
-    border: 1px solid #9F5255;
-    /* Soft border color */
-    color: #7C444F;
+    border: 1px solid #a19d9d;
+    color: #141414;
 }
 
 .ant-input:focus,
 .ant-input:hover,
 .ant-input-textarea:focus,
 .ant-input-textarea:hover {
-    border-color: #E16A54;
-    /* Highlight color on focus */
-    box-shadow: 0 0 5px rgba(225, 106, 84, 0.5);
+    border-color: #b5b9bb;
+    box-shadow: 0 0 5px rgba(239, 235, 235, 0.5);
 }
 
-
-/* Style for the Labels */
-
 label {
-    color: rgb(46, 31, 31);
-    /* Slightly softer than the title */
+    color: rgb(19, 18, 18);
     font-weight: 500;
     display: block;
     margin-bottom: 5px;
 }
 
-
-/* Style for Buttons */
-
 .ant-btn-primary {
     background-color: #F39E60;
-    /* Soft orange shade */
     border-color: #F39E60;
     color: white;
 }
 
 .ant-btn-primary:hover,
 .ant-btn-primary:focus {
-    background-color: #E16A54;
-    border-color: #E16A54;
+    background-color: #f7f1f1;
+    border-color: #953423;
 }
 
-
-/* Cancel Button */
-
 .ant-btn {
-    color: #7C444F;
-    border-color: #9F5255;
+    color: #0e0e0e;
+    border-color: #f6efef;
 }
 
 .ant-btn:hover,
 .ant-btn:focus {
     color: white;
-    background-color: #9F5255;
+    background-color: #fffdfd;
     border-color: #9F5255;
 }
-
-
-/* Spacing between buttons */
 
 .ant-modal-footer {
     display: flex;
     justify-content: flex-end;
     gap: 15px;
-    /* Adds space between buttons */
     margin-top: 10px;
 }

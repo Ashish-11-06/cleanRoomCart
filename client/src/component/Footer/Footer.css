@@ -11,11 +11,9 @@
     justify-content: center;
     gap: 20px;
     max-width: 1100px;
-    /* height: 250px; */
+    height: 176px;
     margin: auto;
     font-size: 14px;
-    /* background-color: #adb4d2; */
-    height: 176px;
     padding-top: 16px;
 }
 
@@ -38,8 +36,6 @@
 
 .footer-section ul {
     list-style: none;
-    /* padding: 0px 0px 0px 0px; */
-    /* font-size: 18px; */
     padding: 0;
 }
 

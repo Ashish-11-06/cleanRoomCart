@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, Row, Col } from "antd";
 import { useParams, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../API/BaseURL";
 
 const ProductList = () => {
   const { subcategory } = useParams();
@@ -13,7 +14,7 @@ const ProductList = () => {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5001/api/subcategory/${subcategory}/products/${products}`
+          `${BASE_URL}/api/subcategory/${subcategory}/products/${products}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch products");

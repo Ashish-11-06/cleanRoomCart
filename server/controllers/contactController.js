@@ -26,8 +26,8 @@ exports.addContact = async(req, res) => {
             port: 587, // or 465 if using SSL
             secure: false, // true for 465, false for other ports
             auth: {
-                user: "gayatrirajguru2002@gmail.com", // SMTP email
-                pass: "wnaamjfxlmktfizc" // SMTP password
+                user: "kiran899964@gmail.com", // SMTP email
+                pass: "djjykbogdxqqnpyx" // SMTP password
             }
         });
 
@@ -36,12 +36,11 @@ exports.addContact = async(req, res) => {
             // from: "gayatrirajguru2002@gmail.com", // Sender email
             from: email,
             // to: "kiran899964@gmail.com", // Recipient email
-            to: "gayatrirajguru2002@gmail.com",
+            to: "kiran899964@gmail.com",
             subject: "New Contact Request",
             text: `You have a new contact request from ${fullName}.
                    Email: ${email}
                    Phone: ${phone}
-                   Order Number: ${orderNumber}
                    Company Name: ${companyName}
                    Comments: ${comments}`
         };
@@ -50,7 +49,7 @@ exports.addContact = async(req, res) => {
         await transporter.sendMail(mailOptions);
 
         console.log("Email sent successfully");
-        res.status(201).json({ message: "Contact request submitted successfully", contact });
+        res.status(201).json({ message: "✅ Contact request submitted successfully we will reach you soon !!", contact });
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ message: "Server error", error });

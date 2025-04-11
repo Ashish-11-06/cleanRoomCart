@@ -1,6 +1,7 @@
 const Product = require("../models/ProductModel");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
 // Set up multer storage
 const storage = multer.diskStorage({
@@ -13,11 +14,7 @@ const upload = multer({ storage });
 // ✅ Add a Product
 exports.addProduct = async(req, res) => {
     try {
-        let { category, subcategory, productName, price, productCode, description, size } = req.body;
-
-        if (!Array.isArray(size)) {
-            size = typeof size === "string" ? size.split(",").map(s => s.trim()).filter(Boolean) : [];
-        }
+        let { category, subcategory, productName, price, productCode, description } = req.body;
 
         if (!req.file) {
             return res.status(400).json({ success: false, message: "Image upload failed" });
@@ -30,7 +27,6 @@ exports.addProduct = async(req, res) => {
             price,
             productCode,
             description,
-            size,
             image: `/uploads/${req.file.filename}`
         });
 
@@ -41,6 +37,7 @@ exports.addProduct = async(req, res) => {
         res.status(500).json({ success: false, message: "Error adding product" });
     }
 };
+
 
 // ✅ Get All Products with optional filtering
 exports.getProducts = async(req, res) => {
@@ -97,16 +94,33 @@ exports.getById = async(req, res) => {
 exports.deleteProduct = async(req, res) => {
     try {
         const { id } = req.params;
+
+        // Validate Product ID format
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).json({ message: "Invalid Product ID" });
         }
 
-        const deletedProduct = await Product.findByIdAndDelete(id);
-        if (!deletedProduct) {
+        // Find the product to get its image path before deletion
+        const product = await Product.findById(id);
+        if (!product) {
             return res.status(404).json({ message: "Product not found" });
         }
 
-        res.status(200).json({ message: "Product deleted successfully" });
+        // Delete the image if it exists
+        if (product.image) {
+            // Extract only the filename from "/uploads/1741251879610-707426037.jpg"
+            const imageFilename = path.basename(product.image); // Extracts "1741251879610-707426037.jpg"
+            const imagePath = path.join(__dirname, "../uploads", imageFilename); // Forms correct path
+
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath);
+            }
+        }
+
+        // Delete the product from the database
+        await Product.findByIdAndDelete(id);
+
+        res.status(200).json({ message: "Product and its image deleted successfully" });
     } catch (error) {
         console.error("Error deleting product:", error);
         res.status(500).json({ message: "Internal Server Error" });
@@ -146,5 +160,39 @@ exports.getProductsForTable = async(req, res) => {
     } catch (error) {
         console.error("Error fetching products:", error);
         res.status(500).json({ message: "Error fetching products", error });
+    }
+};
+
+
+// products.controller.js
+exports.searchProductsByName = async(req, res) => {
+    try {
+        const searchTerm = req.query.name; // Get search term from query parameter
+
+        if (!searchTerm) {
+            return res.status(400).json({ message: "Search term is required" });
+        }
+
+        // Search products by name (case-insensitive)
+        const products = await Product.find({
+            productName: { $regex: new RegExp(searchTerm, "i") }
+        }).select("_id productName productCode price description image category subcategory");
+
+        if (products.length === 0) {
+            console.log("🟡 No products found for:", searchTerm);
+            return res.status(404).json({ message: "No products found" });
+        }
+
+        console.log("✅ Products found:", products);
+
+        res.status(200).json({
+            success: true,
+            products,
+            message: "Products fetched successfully"
+        });
+
+    } catch (error) {
+        console.error("❌ Error:", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };

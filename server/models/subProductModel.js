@@ -1,4 +1,3 @@
-// models/subProductModel.js
 const mongoose = require("mongoose");
 
 const subProductSchema = new mongoose.Schema({
@@ -6,7 +5,9 @@ const subProductSchema = new mongoose.Schema({
     name: { type: String, required: true },
     price: { type: Number, required: true },
     size: { type: String, default: "" },
-    color: { type: String, default: "" }
+    color: { type: String, default: "" },
+    height: { type: Number, default: null },
+    width: { type: Number, default: null }
 }, { timestamps: true });
 
 module.exports = mongoose.model("SubProduct", subProductSchema);

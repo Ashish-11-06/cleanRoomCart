@@ -1,0 +1,421 @@
+/* Global Styles */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: white;
+    margin: 0;
+}
+
+
+/* Header Styles */
+
+
+/* Checkout Container */
+
+.checkout-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 98%;
+    max-width: 1200px;
+    margin: 10px auto;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.checkout-left {
+    width: 65%;
+    padding-right: 10px;
+    box-sizing: border-box;
+}
+
+.checkout-right {
+    width: 35%;
+    padding-left: 10px;
+    box-sizing: border-box;
+}
+
+
+/* Checkout Sections */
+
+.checkout-card {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: white;
+}
+
+
+/* Typography */
+
+.checkout-card .ant-typography-title {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: black;
+}
+
+.checkout-card .ant-typography-text {
+    font-size: 1rem;
+    color: black;
+}
+
+
+/* Customer Info */
+
+.customer-card .customer-info {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.customer-card .customer-info .ant-typography {
+    margin-bottom: 0;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-right: 5px;
+    color: black;
+}
+
+.customer-card .customer-info button {
+    font-size: 0.9rem;
+    background: none;
+    color: navy;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.customer-card .customer-info button:hover {
+    text-decoration: underline;
+}
+
+
+/* Shipping Address */
+
+.shipping-card .ant-typography-strong {
+    display: block;
+    font-size: 1rem;
+    color: black;
+}
+
+.shipping-card .address-display {
+    padding: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: black;
+}
+
+.shipping-card .address-display:hover {
+    background-color: #f5f5f5;
+}
+
+
+/* Shipping Method */
+
+.shipping-method-card .ant-radio-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.shipping-method-card .ant-radio-wrapper {
+    margin-bottom: 5px;
+    color: black;
+}
+
+
+/* Order Summary */
+
+.order-summary-card {
+    padding: 10px;
+    background-color: white;
+}
+
+.order-summary-card .price-summary {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 14px;
+    color: black;
+}
+
+.order-summary-card .price-summary strong {
+    font-weight: bold;
+}
+
+
+/* "Edit Cart" Text */
+
+.edit-cart-text {
+    float: right;
+    margin-top: -30px;
+    cursor: pointer;
+    color: navy;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.edit-cart-text:hover {
+    text-decoration: none;
+}
+
+
+/* Place Order Button */
+
+.order-summary-card .place-order-btn {
+    background-color: navy;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.order-summary-card .place-order-btn:hover {
+    background-color: black;
+}
+
+
+/* Continue Button */
+
+.checkout-container button[type="primary"] {
+    background-color: black !important;
+    color: white !important;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.checkout-container button[type="primary"]:hover {
+    background-color: navy !important;
+}
+
+
+/* Modal Styling */
+
+.address-card {
+    margin-bottom: 5px;
+    padding: 5px;
+}
+
+
+/* Responsive Styles */
+
+@media (max-width: 768px) {
+    .checkout-container {
+        flex-direction: column;
+        width: 100%;
+        padding: 5px;
+    }
+    .checkout-left,
+    .checkout-right {
+        width: 100%;
+        padding: 0;
+    }
+    .checkout-right {
+        margin-top: 10px;
+    }
+}
+
+
+/* Checkout Page Styles */
+
+
+/* Order Summary Container */
+
+.order-summary-container {
+    background: #f9f9f9;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+    padding: 16px;
+}
+
+
+/* Order Summary Title */
+
+.order-summary-title {
+    margin-bottom: 16px;
+    font-size: 1.2rem;
+}
+
+
+/* Order Item */
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+
+/* Item Details */
+
+.item-details {
+    display: flex;
+    align-items: center;
+}
+
+
+/* Item Image */
+
+.item-image {
+    width: 60px;
+    height: 60px;
+    margin-right: 12px;
+    object-fit: contain;
+    background-color: white;
+    border-radius: 4px;
+}
+
+
+/* Item Name */
+
+.item-name {
+    font-weight: 500;
+}
+
+
+/* Price Summary */
+
+.price-summary {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #e8e8e8;
+}
+
+
+/* Price Item */
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+
+/* Total Price */
+
+.total-price {
+    font-size: 1.2rem;
+    margin-top: 16px;
+}
+
+
+/* Edit Cart Link */
+
+.edit-cart {
+    float: right;
+    margin-top: -40px;
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}
+
+
+/* Payment Section Styles */
+
+.payment-card {
+    margin-top: 20px;
+}
+
+
+/* Payment Method */
+
+.payment-method {
+    margin-bottom: 16px;
+}
+
+
+/* Payment Input Fields */
+
+.payment-input {
+    margin-bottom: 12px;
+    width: 100%;
+}
+
+
+/* Payment Details Container */
+
+.payment-details-container {
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* Terms and Conditions */
+
+.terms-and-conditions {
+    margin-top: 20px;
+}
+
+
+/* Input Row (for MM/YY & CVV) */
+
+.input-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.input-row .half-width {
+    width: 48%;
+}
+
+
+/* Shipping Information Section */
+
+.shipping-card {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+}
+
+
+/* Address Container */
+
+.address-container {
+    cursor: pointer;
+    padding: 12px;
+    margin-top: 10px;
+    border: 1px solid #d9d9d9;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.3s ease-in-out;
+}
+
+.address-container:hover {
+    background-color: #f0f0f0;
+}
+
+
+/* Edit Shipping Method Button */
+
+.shipping-method-edit {
+    margin-top: 12px;
+    display: inline-block;
+    color: #1890ff;
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.3s ease-in-out;
+}
+
+.shipping-method-edit:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}

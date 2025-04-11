@@ -1,6 +1,12 @@
 const { message } = require('statuses');
 const Category = require('../models/CategoryModel');
 const Subcategory = require('../models/SubcategoryModel');
+const multer = require('multer');
+const fs = require("fs");
+const path = require("path");
+
+// Setup Multer for handling file uploads
+const upload = multer({ dest: './uploads/' }); // Adjust the destination as needed
 
 // Add Category
 exports.addCategory = async(req, res) => {
@@ -15,7 +21,7 @@ exports.addCategory = async(req, res) => {
         const category = new Category({
             name,
             shortDescription,
-            detailedDescription,
+            detailedDescription, // This can now hold HTML content
             image,
         });
 
@@ -91,19 +97,31 @@ exports.deleteCategory = async(req, res) => {
     }
 
     try {
-        const deletedCategory = await Category.findByIdAndDelete(categoryId);
-        if (!deletedCategory) {
+        // Find the category to get its image path before deletion
+        const category = await Category.findById(categoryId);
+        if (!category) {
             return res.status(404).json({ error: "Category not found" });
         }
-        res.status(200).json({ message: "Category deleted successfully" });
+
+        // Delete the image from the uploads folder if it exists
+        if (category.image) {
+            const imagePath = path.join(__dirname, "../uploads", category.image);
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath);
+            }
+        }
+
+        // Delete the category from the database
+        await Category.findByIdAndDelete(categoryId);
+
+        res.status(200).json({ message: "Category and its image deleted successfully" });
     } catch (error) {
         console.error("Error deleting category:", error);
         res.status(500).json({ error: "Failed to delete category" });
     }
 };
 
-//update the category name
-
+// Update the category
 exports.updatedCategory = async(req, res) => {
     try {
         const { id } = req.params;
@@ -117,7 +135,6 @@ exports.updatedCategory = async(req, res) => {
             return res.status(404).json({ message: "Category not found" });
         }
 
-        // res.status(200).json(updatedCategory);
         res.status(200).json({
             message: "Category updated successfully",
             updatedCategory,

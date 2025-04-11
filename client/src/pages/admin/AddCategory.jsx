@@ -1,9 +1,10 @@
 import { Card, Modal, Input, Button } from "antd";
-
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../API/BaseURL";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 import "./AddCategory.css";
 
@@ -74,8 +75,13 @@ const AddCategory = () => {
   };
 
   const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setEditingCategory({ ...editingCategory, [name]: value });
+    if (e.target) {
+      const { name, value } = e.target;
+      setEditingCategory({ ...editingCategory, [name]: value });
+    } else {
+      // Handle Quill input changes
+      setEditingCategory({ ...editingCategory, detailedDescription: e });
+    }
   };
 
   const handleUpdate = () => {
@@ -105,73 +111,92 @@ const AddCategory = () => {
         <button className="add-btn" onClick={toggleForm}>Add Category</button>
       </div>
 
-
-
-
       {isFormOpen && (
-    <div className="form-container">
-      <span className="close-icon" onClick={() => setIsFormOpen(false)}>❎</span>
-      <h2>Add Category</h2>
-      <form onSubmit={handleSubmit}>
-        <label>Category Name</label>
-        <input type="text" name="name" value={category.name} onChange={handleChange} required />
-        <label>Short Description</label>
-        <textarea name="shortDescription" value={category.shortDescription} onChange={handleChange}></textarea>
-        <label>Detailed Description</label>
-        <textarea name="detailedDescription" value={category.detailedDescription} onChange={handleChange}></textarea>
-        <label>Category Image</label>
-        <input type="file" onChange={handleFileChange} />
-        <button type="submit" className="save-btn">Save Category</button>
-      </form>
-    </div>
-)}
-
-
+        <div className="form-container">
+          <span className="close-icon" onClick={() => setIsFormOpen(false)}>❎</span>
+          <h2>Add Category</h2>
+          <form onSubmit={handleSubmit}>
+            <label>Category Name</label>
+            <input type="text" name="name" value={category.name} onChange={handleChange} required />
+            <label>Short Description</label>
+            <textarea name="shortDescription" value={category.shortDescription} onChange={handleChange}></textarea>
+            <label>Detailed Description</label>
+            <ReactQuill
+              theme="snow"
+              value={category.detailedDescription}
+              onChange={(value) => setCategory({ ...category, detailedDescription: value })}
+            />
+            <label>Category Image</label>
+            <input type="file" onChange={handleFileChange} />
+            <button type="submit" className="save-btn">Save Category</button>
+          </form>
+        </div>
+      )}
 
       <h1 className="list-header">List of Categories</h1>
       <ul className="category-list">
-  {categories.map((category) => (
-    <li key={category._id} className="category-item" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0" }}>
-      <span className="category-name" style={{ fontWeight: "bold", fontSize: "16px" }}>{category.name}</span>
-      <div className="buttons" style={{ display: "flex", gap: "8px" }}>
-        <button 
-          className="edit-button" 
-          style={{ backgroundColor: "#4CAF50", color: "white", border: "none", padding: "6px 12px", cursor: "pointer", borderRadius: "4px", fontSize: "14px", fontWeight: "bold" }} 
-          onClick={() => handleEdit(category._id)}
-        >
-          Edit
-        </button>
-        <button 
-          className="delete-button" 
-          style={{ backgroundColor: "#E74C3C", color: "white", border: "none", padding: "6px 12px", cursor: "pointer", borderRadius: "4px", fontSize: "14px", fontWeight: "bold" }} 
-          onClick={() => handleDelete(category._id)}
-        >
-          Delete
-        </button>
-      </div>
-    </li>
-  ))}
-</ul>
+        {categories.map((category) => (
+          <li key={category._id} className="category-item" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0" }}>
+            <span className="category-name" style={{ fontWeight: "bold", fontSize: "16px" }}>{category.name}</span>
+            <div className="buttons" style={{ display: "flex", gap: "8px" }}>
+              <button 
+                className="edit-button" 
+                style={{ backgroundColor: "#4CAF50", color: "white", border: "none", padding: "6px 12px", cursor: "pointer", borderRadius: "4px", fontSize: "14px", fontWeight: "bold" }} 
+                onClick={() => handleEdit(category._id)}
+              >
+                Edit
+              </button>
+              <button 
+  className="delete-button" 
+  style={{ 
+    backgroundColor: "#E74C3C", 
+    color: "white", 
+    border: "none", 
+    padding: "6px 12px", 
+    cursor: "pointer", 
+    borderRadius: "4px", 
+    fontSize: "14px", 
+    fontWeight: "bold" 
+  }} 
+  onClick={() => {
+    if (window.confirm("Do you want to remove category?")) {
+      handleDelete(category._id);
+    }
+  }}
+>
+  Delete
+</button>
 
+            </div>
+          </li>
+        ))}
+      </ul>
 
       {/* Edit Category Modal */}
-      <Modal 
-        title="Edit Category" 
-        open={isEditModalOpen} 
-        onOk={handleUpdate} 
-        onCancel={() => setIsEditModalOpen(false)}
-        footer={[
-          <Button key="cancel" onClick={() => setIsEditModalOpen(false)}>Cancel</Button>,
-          <Button key="update" type="primary" onClick={handleUpdate}>Update</Button>
-        ]}
-      >
-        <label>Category Name</label>
-        <Input type="text" name="name" value={editingCategory?.name || ""} onChange={handleEditChange} />
-        <label>Short Description</label>
-        <Input.TextArea name="shortDescription" value={editingCategory?.shortDescription || ""} onChange={handleEditChange} />
-        <label>Detailed Description</label>
-        <Input.TextArea name="detailedDescription" value={editingCategory?.detailedDescription || ""} onChange={handleEditChange} />
-      </Modal>
+      <Modal
+  title="Edit Category"
+  open={isEditModalOpen}
+  onOk={handleUpdate}
+  onCancel={() => setIsEditModalOpen(false)}
+  footer={[
+    <Button key="cancel" onClick={() => setIsEditModalOpen(false)}>Cancel</Button>,
+    <Button key="update" type="primary" onClick={handleUpdate}>Update</Button>
+  ]}
+  centered
+  bodyStyle={{ maxHeight: '400px', overflowY: 'auto' }}
+>
+  <label>Category Name</label>
+  <Input type="text" name="name" value={editingCategory?.name || ""} onChange={handleEditChange} />
+  <label>Short Description</label>
+  <Input.TextArea name="shortDescription" value={editingCategory?.shortDescription || ""} onChange={handleEditChange} />
+  <label>Detailed Description</label>
+  <ReactQuill
+    theme="snow"
+    value={editingCategory?.detailedDescription || ""}
+    onChange={(value) => setEditingCategory({ ...editingCategory, detailedDescription: value })}
+  />
+</Modal>
+
 
     </div>
   );

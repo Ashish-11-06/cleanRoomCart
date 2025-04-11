@@ -1,6 +1,6 @@
 import React from 'react'
 import { EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
-import { Modal, Input, Form, Button, Select, Upload } from 'antd';
+import { Modal, Input, Form, Button, Select, Upload ,InputNumber} from 'antd';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { BASE_URL } from "../../API/BaseURL";
@@ -43,7 +43,7 @@ const AddProduct = () => {
         .then((response) => {
           if (response.data.subCategories && Array.isArray(response.data.subCategories)) {
             // 🔥 Filter Subcategories based on Selected Category
-            const filtered = response.data.subCategories.filter(
+               const filtered = response.data.subCategories.filter(
               (sub) => sub.categoryId === selectedCategory
             );
 
@@ -63,18 +63,6 @@ const AddProduct = () => {
   }, [selectedCategory]);
 
 
-
-  //   useEffect(() => {
-  //     if (selectedCategory) {
-  //         axios.get(http://localhost:5001/api/subcategory/get?categoryId=${selectedCategory})
-  //             .then((response) => {
-  //                 setSubcategories(response.data);
-  //             })
-  //             .catch((error) => {
-  //                 console.error("Error fetching subcategories:", error);
-  //             });
-  //     }
-  //   }, [selectedCategory]);
 
   // Handle Category Selection
   const handleCategoryChange = (categoryId) => {
@@ -104,6 +92,7 @@ const AddProduct = () => {
       alert("Failed to update product. Please try again.");
     }
   };
+
 
 
 
@@ -145,64 +134,51 @@ const AddProduct = () => {
   // Handle Form Submission
   const onFinish = async (values) => {
     try {
-        const formData = new FormData();
-
-        // Ensure category and subcategory are selected
-        if (!values.category || !values.subcategory) {
-            alert("Please select a category and subcategory.");
-            return;
-        }
-
-        formData.append("category", values.category);
-        formData.append("subcategory", values.subcategory);
-        formData.append("productName", values.productName);
-        formData.append("price", values.price);
-        formData.append("productCode", values.productCode);
-        formData.append("description", values.description);
-
-        // Handle size as an array
-        const sizeArray = Array.isArray(values.size)
-            ? values.size
-            : values.size
-            ? values.size.split(",").map(s => s.trim())
-            : [];
-
-        sizeArray.forEach(size => formData.append("size", size));
-
-        // Handle image upload safely
-        if (values.image?.fileList?.length > 0) {
-            formData.append("image", values.image.fileList[0].originFileObj);
-        } else {
-            alert("Please upload an image.");
-            return;
-        }
-
-        // Debugging FormData before sending
-        console.log("Form Data Entries:");
-        for (let pair of formData.entries()) {
-            console.log(pair[0], pair[1]);
-        }
-
-        // API Call
-        const response = await axios.post(`${BASE_URL}/api/product/add`, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        if (response.status === 201) {
-            console.log("Product added successfully:", response.data);
-            alert("Product added successfully!");
-        }
+      const formData = new FormData();
+  
+      // Ensure category and subcategory are selected
+      if (!values.category || !values.subcategory) {
+        alert("Please select a category and subcategory.");
+        return;
+      }
+  
+      formData.append("category", values.category);
+      formData.append("subcategory", values.subcategory);
+      formData.append("productName", values.productName);
+      formData.append("productCode", values.productCode);
+      formData.append("price", values.price); // Add price to form data
+      formData.append("description", values.description);
+  
+      // Handle image upload safely
+      if (values.image?.fileList?.length > 0) {
+        formData.append("image", values.image.fileList[0].originFileObj);
+      } else {
+        alert("Please upload an image.");
+        return;
+      }
+  
+      // Debugging FormData before sending
+      console.log("Form Data Entries:");
+      for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+  
+      // API Call
+      const response = await axios.post(`${BASE_URL}/api/product/add`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+  
+      if (response.status === 201) {
+        console.log("Product added successfully:", response.data);
+        alert("Product added successfully!");
+      }
     } catch (error) {
-        console.error("Error adding product:", error);
-        alert(error.response?.data?.message || "Error adding product.");
+      console.error("Error adding product:", error);
+      alert(error.response?.data?.message || "Error adding product.");
     }
-};
-
-
-
-
-
-
+  };
+  
+  
 
 
 
@@ -326,7 +302,7 @@ const AddProduct = () => {
   open={isEditModalVisible}
   onCancel={() => setIsEditModalVisible(false)}
   footer={null}
-  centered // This will automatically center the modal
+  centered
 >
   {editingProduct && (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%", width: "100%" }}>
@@ -335,12 +311,13 @@ const AddProduct = () => {
         layout="vertical"
         initialValues={{
           productName: editingProduct.productName,
+          productCode: editingProduct.productCode,
           price: editingProduct.price,
           description: editingProduct.description,
-          size: editingProduct.size,
         }}
         onFinish={(values) => handleUpdateProduct(values, editingProduct._id)}
       >
+        {/* Product Name */}
         <Form.Item 
           style={{ height: '60px' }} 
           label={<span style={{ color: "#9F5255" }}>Product Name</span>} 
@@ -350,15 +327,27 @@ const AddProduct = () => {
           <Input placeholder="Enter product name" style={{ borderColor: "#E16A54", color: "#7C444F" }} />
         </Form.Item>
 
+        {/* Product Code */}
         <Form.Item 
           style={{ height: '60px' }} 
-          label={<span style={{ color: "#9F5255" }}>Price (₹)</span>} 
+          label={<span style={{ color: "#9F5255" }}>Product Code</span>} 
+          name="productCode" 
+          rules={[{ required: true, message: "Enter product code" }]}
+        >
+          <Input placeholder="Enter product code" style={{ borderColor: "#E16A54", color: "#7C444F" }} />
+        </Form.Item>
+
+        {/* Price */}
+        <Form.Item 
+          style={{ height: '60px' }} 
+          label={<span style={{ color: "#9F5255" }}>Price</span>} 
           name="price" 
           rules={[{ required: true, message: "Enter product price" }]}
         >
-          <Input type="number" placeholder="Enter price" style={{ borderColor: "#E16A54", color: "#7C444F" }} />
+          <InputNumber placeholder="Enter product price" style={{ borderColor: "#E16A54", color: "#7C444F", width: "100%" }} />
         </Form.Item>
 
+        {/* Description */}
         <Form.Item 
           style={{ height: '105px' }} 
           label={<span style={{ color: "#9F5255" }}>Description</span>} 
@@ -366,14 +355,6 @@ const AddProduct = () => {
           rules={[{ required: true, message: "Enter description" }]}
         >
           <Input.TextArea rows={3} placeholder="Enter product description" style={{ borderColor: "#E16A54", color: "#7C444F" }} />
-        </Form.Item>
-
-        <Form.Item 
-          style={{ height: '60px' }} 
-          label={<span style={{ color: "#9F5255" }}>Size (Optional)</span>} 
-          name="size"
-        >
-          <Input placeholder="Enter size (if applicable)" style={{ borderColor: "#E16A54", color: "#7C444F" }} />
         </Form.Item>
 
         <Button 
@@ -400,6 +381,8 @@ const AddProduct = () => {
 
 
 
+
+
 {isFormVisible && (
   <div style={{ marginTop: "20px", padding: "10px", borderRadius: "10px", border: "1px solid #ddd" }}>
     <h2 style={{ color: "#7C444F" }}>Enter Product Details</h2>
@@ -407,8 +390,8 @@ const AddProduct = () => {
       style={{ marginLeft: '31px', padding: '21px' }}
       layout="vertical"
       onFinish={onFinish}
-      initialValues={{ category: selectedCategory, subcategory: selectedSubcategory }}>
-
+      initialValues={{ category: selectedCategory, subcategory: selectedSubcategory }}
+    >
       {/* Category */}
       <Form.Item style={{ height: '60px' }} label={<span style={{ color: "#9F5255" }}>Select Category</span>} name="category">
         <Select value={selectedCategory} onChange={handleCategoryChange} style={{ borderColor: "#E16A54", color: "#7C444F" }}>
@@ -436,14 +419,14 @@ const AddProduct = () => {
         <Input placeholder="Enter product name" style={{ borderColor: "#E16A54", color: "#7C444F" }} />
       </Form.Item>
 
-      {/* Price */}
-      <Form.Item style={{ height: '60px' }} label={<span style={{ color: "#9F5255" }}>Price (₹)</span>} name="price" rules={[{ required: true, message: "Please enter product price" }]}>
-        <Input type="number" placeholder="Enter price" style={{ borderColor: "#E16A54", color: "#7C444F" }} />
-      </Form.Item>
-
       {/* Product Code */}
       <Form.Item style={{ height: '60px' }} label={<span style={{ color: "#9F5255" }}>Product Code</span>} name="productCode" rules={[{ required: true, message: "Please enter product code" }]}>
         <Input placeholder="Enter product code" style={{ borderColor: "#E16A54", color: "#7C444F" }} />
+      </Form.Item>
+
+      {/* Price */}
+      <Form.Item style={{ height: '60px' }} label={<span style={{ color: "#9F5255" }}>Price</span>} name="price" rules={[{ required: true, message: "Please enter product price" }]}>
+        <InputNumber placeholder="Enter product price" style={{ borderColor: "#E16A54", color: "#7C444F", width: '100%' }} />
       </Form.Item>
 
       {/* Description */}
@@ -451,35 +434,31 @@ const AddProduct = () => {
         <TextArea rows={3} placeholder="Enter product description" style={{ borderColor: "#E16A54", color: "#7C444F" }} />
       </Form.Item>
 
-      {/* Size */}
-      <Form.Item style={{ height: '60px' }} label={<span style={{ color: "#9F5255" }}>Size (Optional)</span>} name="size">
-        <Input placeholder="Enter size (if applicable)" style={{ borderColor: "#E16A54", color: "#7C444F" }} />
-      </Form.Item>
-
       {/* Product Image */}
       <Form.Item
-  label={<span style={{ color: "#9F5255" }}>Product Image</span>}
-  name="image"
-  rules={[{ required: true, message: "Please upload Image" }]}
->
-  <Upload 
-    beforeUpload={() => false} 
-    listType="picture" 
-    onChange={(info) => console.log("Uploaded Image:", info)}
-  >
-    <Button icon={<UploadOutlined />} style={{ color: "#F39E60", borderColor: "#E16A54" }}>
-      Upload Image
-    </Button>
-  </Upload>
-</Form.Item>
+        label={<span style={{ color: "#9F5255" }}>Product Image</span>}
+        name="image"
+        rules={[{ required: true, message: "Please upload Image" }]}
+      >
+        <Upload 
+          beforeUpload={() => false} 
+          listType="picture" 
+          onChange={(info) => console.log("Uploaded Image:", info)}
+        >
+          <Button icon={<UploadOutlined />} style={{ color: "#F39E60", borderColor: "#E16A54" }}>
+            Upload Image
+          </Button>
+        </Upload>
+      </Form.Item>
 
-
-      <Button style={{ backgroundColor: '#E16A54', borderColor: '#E16A54', color: "#fff", width: "100%" }} type="primary" htmlType="submit">
+      <Button style={{ backgroundColor: '#E16A54', marginTop:'-60px', borderColor: '#E16A54', color: "#fff", width: "70%", marginLeft: '15%' }} type="primary" htmlType="submit">
         Add Product
       </Button>
     </Form>
   </div>
 )}
+
+
 
 
 
@@ -496,9 +475,7 @@ const AddProduct = () => {
       <thead>
         <tr style={{ backgroundColor: "#9F5255", color: "#fff" }}>
           <th style={{ padding: "10px", textAlign: "left" }}>Product Name</th>
-          <th style={{ padding: "10px", textAlign: "left" }}>Price</th>
           <th style={{ padding: "10px", textAlign: "left" }}>Description</th>
-          <th style={{ padding: "10px", textAlign: "left" }}>Size</th>
           <th style={{ padding: "10px", textAlign: "left" }}>Actions</th>
         </tr>
       </thead>
@@ -506,9 +483,7 @@ const AddProduct = () => {
         {products.map((product) => (
           <tr key={product._id} style={{ borderBottom: "1px solid #ddd", fontSize: "16px", color: "#7C444F" }}>
             <td style={{ padding: "10px" }}>{product.productName}</td>
-            <td style={{ padding: "10px" }}>₹{product.price}</td>
             <td style={{ padding: "10px" }}>{product.description}</td>
-            <td style={{ padding: "10px" }}>{product.size || "N/A"}</td>
             <td style={{ padding: "10px", display: "flex", flexDirection: "column", gap: "5px" }}>
               <div style={{ display: "flex", gap: "5px" }}>
                 {/* Edit Button - Soft Orange */}
@@ -534,7 +509,11 @@ const AddProduct = () => {
                     fontSize: "12px",
                     padding: "5px 10px",
                   }}
-                  onClick={() => handleDelete(product._id)}
+                  onClick={() => {
+                    if (window.confirm("Do you want to remove this product?")) {
+                      handleDelete(product._id);
+                    }
+                  }}
                 >
                   Delete
                 </Button>
@@ -546,6 +525,7 @@ const AddProduct = () => {
     </table>
   </div>
 )}
+
 
 
 

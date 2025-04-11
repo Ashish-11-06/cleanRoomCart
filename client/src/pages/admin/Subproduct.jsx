@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../API/BaseURL";
 
-
 const Subproduct = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [products, setProducts] = useState([]);
@@ -16,6 +15,8 @@ const Subproduct = () => {
     productId: "",
     size: "",
     color: "",
+    height: "",
+    width: ""
   });
 
   // Fetch products when search term changes
@@ -45,6 +46,8 @@ const Subproduct = () => {
       productId: product._id,
       size: "",
       color: "",
+      height: "",
+      width: ""
     });
 
     setSearchTerm(product.productName);
@@ -69,9 +72,16 @@ const Subproduct = () => {
       .post(`${BASE_URL}/api/subproduct/add`, newSubproduct)
       .then(() => {
         setMessage("✅ Subproduct added successfully!");
-        setNewSubproduct({ productId: "", name: "", price: "", size: "", color: "" });
-        setSearchTerm("");
-        setSelectedProduct(null);
+        // Keep selected product and new subproduct data intact
+        // Reset only optional fields in newSubproduct
+        setNewSubproduct((prev) => ({
+          ...prev,
+          size: "",
+          color: "",
+          height: "",
+          width: ""
+        }));
+        // Do not reset selectedProduct or searchTerm
       })
       .catch((error) => {
         setMessage("❌ Error adding subproduct! Try again.");
@@ -135,13 +145,13 @@ const Subproduct = () => {
         </div>
       )}
 
-      {/* Subproduct Form - Adjusts position dynamically */}
+      {/* Subproduct Form */}
       <div style={{ ...styles.form, marginTop: products.length > 0 ? "20px" : "0px" }}>
         <input
           type="text"
           name="name"
           placeholder="Subproduct Name"
-          value={newSubproduct.name}
+          value={newSubproduct.name || ""}
           onChange={handleChange}
           style={styles.input}
           readOnly
@@ -150,16 +160,15 @@ const Subproduct = () => {
           type="number"
           name="price"
           placeholder="Price"
-          value={newSubproduct.price}
+          value={newSubproduct.price || ""}
           onChange={handleChange}
           style={styles.input}
-      
         />
         <input
           type="text"
           name="size"
           placeholder="Size (optional)"
-          value={newSubproduct.size}
+          value={newSubproduct.size || ""}
           onChange={handleChange}
           style={styles.input}
         />
@@ -167,7 +176,23 @@ const Subproduct = () => {
           type="text"
           name="color"
           placeholder="Color (optional)"
-          value={newSubproduct.color}
+          value={newSubproduct.color || ""}
+          onChange={handleChange}
+          style={styles.input}
+        />
+        <input
+          type="number"
+          name="height"
+          placeholder="Height (optional)"
+          value={newSubproduct.height || ""}
+          onChange={handleChange}
+          style={styles.input}
+        />
+        <input
+          type="number"
+          name="width"
+          placeholder="Width (optional)"
+          value={newSubproduct.width || ""}
           onChange={handleChange}
           style={styles.input}
         />
@@ -179,7 +204,7 @@ const Subproduct = () => {
   );
 };
 
-// Styles
+// Styles remain unchanged...
 const styles = {
   container: {
     display: "flex",
@@ -234,32 +259,35 @@ const styles = {
     transition: "0.3s",
   },
   selectedProduct: {
-    background: "#F39E60",
-    padding: "10px",
-    borderRadius: "5px",
-    marginBottom: "10px",
-    color: "#fff",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-    padding: "20px",
-    borderRadius: "8px",
-    boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-    width: "300px",
-    transition: "margin-top 0.3s ease-in-out",
-  },
-  button: {
-    padding: "10px",
-    fontSize: "16px",
-    backgroundColor: "#7C444F",
-    color: "#fff",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    transition: "0.3s",
-  },
+    backgroundColor:"#F39E60", 
+   padding:"10px", 
+   borderRadius:"5px", 
+   marginBottom:"10px", 
+   color:"#fff", 
+   display:"flex", 
+   justifyContent:"space-between", 
+   alignItems:"center" 
+},
+form:{
+     display:"flex", 
+     flexDirection:"column", 
+     gap:"10px", 
+     padding:"20px", 
+     borderRadius:"8px", 
+     boxShadow:"0 0 10px rgba(0,0,0,0.1)", 
+     width:"300px", 
+     transition:"margin-top 0.3s ease-in-out" 
+},
+button:{
+     padding:"10px", 
+     fontSize:"16px", 
+     backgroundColor:"#7C444F", 
+     color:"#fff", 
+     border:"none", 
+     borderRadius:"5px", 
+     cursor:"pointer", 
+     transition:"0.3s" 
+},
 };
 
 export default Subproduct;

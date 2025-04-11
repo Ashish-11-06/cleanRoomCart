@@ -1,33 +1,46 @@
+// AdminLogin.js
 import React, { useState } from 'react';
-import { Form, Input, Button, Card, message } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Card, message, Radio } from 'antd';
+import { UserOutlined, LockOutlined, KeyOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../../API/BaseURL';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [role, setRole] = useState('admin');
 
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      const response = await fetch(`${BASE_URL}/api/admin/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
-        localStorage.setItem('adminToken', data.token);
-        localStorage.setItem('adminName', data.name);
-        message.success('Login successful!');
-        navigate('/admin/dashboard');
+      if (role === 'superadmin') {
+        if (values.email === 'super@gmail.com' && values.password === 'super') {
+          localStorage.setItem('adminToken', 'superadmin-token');
+          localStorage.setItem('role', 'superadmin');
+          localStorage.setItem('adminName', 'Super Admin');
+          message.success('Login successful!');
+          navigate('/superadmin/dashboard');
+        } else {
+          message.error('Invalid super admin credentials!');
+        }
       } else {
-        message.error(data.message || 'Login failed!');
+        const response = await fetch(`${BASE_URL}/api/admin/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(values),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          localStorage.setItem('adminToken', data.token);
+          localStorage.setItem('adminName', data.name);
+          localStorage.setItem('role', 'admin');
+          message.success('Login successful!');
+          navigate('/admin/dashboard');
+        } else {
+          message.error(data.message || 'Login failed!');
+        }
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -38,46 +51,80 @@ const AdminLogin = () => {
   };
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
       minHeight: '100vh',
       background: '#f0f2f5'
     }}>
-      <Card title="Admin Login" style={{ width: 400, boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
+      <Card
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <KeyOutlined style={{ marginRight: 9, color: 'black', fontSize: '20px' }} />
+            <span style={{ fontSize: '20px' }}>Admin/SuperAdmin Login</span>
+          </div>
+        }
+        style={{
+          width: 400,
+          boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+          padding: '20px',
+          borderRadius: '16px'
+        }}
+      >
         <Form
           name="login"
           onFinish={onFinish}
           layout="vertical"
+          style={{ marginTop: 10 }}
         >
+          <Form.Item style={{ textAlign: 'center' }}>
+            <Radio.Group onChange={(e) => setRole(e.target.value)} value={role}>
+              <Radio value="admin">Admin</Radio>
+              <Radio value="superadmin">Super Admin</Radio>
+            </Radio.Group>
+          </Form.Item>
+
           <Form.Item
             name="email"
+            label="Email"
             rules={[
               { required: true, message: 'Please input your email!' },
-              { type: 'email', message: 'Please enter a valid email!' }
+              { type: 'email', message: 'Enter a valid email!' }
             ]}
+            style={{ marginBottom: '7px' }}
           >
-            <Input prefix={<UserOutlined />} placeholder="Email" size="large" />
+            <Input prefix={<UserOutlined />} placeholder="Email" />
           </Form.Item>
+
           <Form.Item
             name="password"
+            label="Password"
             rules={[{ required: true, message: 'Please input your password!' }]}
+            style={{ marginBottom: '7px' }}
           >
-            <Input.Password prefix={<LockOutlined />} placeholder="Password" size="large" />
+            <Input.Password prefix={<LockOutlined />} placeholder="Password" />
           </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" block size="large" loading={loading}>
-              Log in
+
+          <Form.Item style={{ textAlign: 'center' }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              style={{
+                width: '150px',
+                backgroundColor: '#1677ff',
+                border: 'none',
+                padding: '6px 0',
+              }}
+            >
+              Login
             </Button>
           </Form.Item>
-          <Button type="link" onClick={() => navigate('/admin/signup')} block>
-            Don't have an account? Create account
-          </Button>
         </Form>
       </Card>
     </div>
   );
 };
 
-export default AdminLogin; 
+export default AdminLogin;

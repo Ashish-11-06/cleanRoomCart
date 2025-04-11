@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const SubCategory = require("../models/SubcategoryModel");
 const Category = require("../models/CategoryModel");
 const { message } = require("statuses");
+const fs = require("fs");
+const path = require("path");
 
 // Add Subcategory to Database
 const addSubCategory = async(req, res) => {
@@ -86,18 +88,30 @@ const getSubcategoryById = async(req, res) => {
 const deleteCategory = async(req, res) => {
     try {
         const subcategoryId = req.params.id;
-        const subcategory = await SubCategory.findByIdAndDelete(subcategoryId);
 
+        // Find the subcategory first to get the image path before deletion
+        const subcategory = await SubCategory.findById(subcategoryId);
         if (!subcategory) {
             return res.status(404).json({ message: "Subcategory not found" });
         }
 
-        res.status(200).json({ message: "Subcategory deleted successfully" });
+        // Delete the image from the uploads folder if it exists
+        if (subcategory.image) {
+            const imagePath = path.join(__dirname, "../", subcategory.image);
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath);
+            }
+        }
+
+        // Delete the subcategory from the database
+        await SubCategory.findByIdAndDelete(subcategoryId);
+
+        res.status(200).json({ message: "Subcategory and its image deleted successfully" });
     } catch (error) {
-        console.error(error);
+        console.error("Error deleting subcategory:", error);
         res.status(500).json({ message: "Error deleting subcategory" });
     }
-}
+};
 
 const updateCategory = async(req, res) => {
     try {

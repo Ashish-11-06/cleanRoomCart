@@ -3,6 +3,8 @@ import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Modal, Input, Form, Button } from 'antd';
 const { TextArea } = Input;
 import { BASE_URL } from "../../API/BaseURL";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 import axios from 'axios';
 
@@ -173,7 +175,7 @@ const AddSubcategory = () => {
 
 
 
-            {isFormOpen && (
+{isFormOpen && (
     <div style={{
         display: 'flex',
         flexDirection: 'column',
@@ -188,6 +190,8 @@ const AddSubcategory = () => {
         borderRadius: '10px',
         boxShadow: '0px 0px 15px rgba(0, 0, 0, 0.2)',
         width: '500px',
+        maxHeight: '80vh', /* Prevent overflow beyond viewport */
+        overflowY: 'auto', /* Enable vertical scrolling */
         zIndex: '9999'
     }}>
         {/* Cross Icon */}
@@ -203,41 +207,54 @@ const AddSubcategory = () => {
 
         <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#7C444F' }}>Add Subcategory</h2>
 
-        <form onSubmit={handleSubmit} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <label style={{ color: '#9F5255' }}>Select Category</label>
-            <select name="categoryId" value={subcategory.categoryId} onChange={handleChange} required style={{ padding: '10px', borderRadius: '5px', width: '100%', border: '1px solid #9F5255' }}>
-                <option value="">-- Select a Category --</option>
-                {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>{cat.name}</option>
-                ))}
-            </select>
+        {/* Scrollable Form Container */}
+        <div style={{
+            width: '100%',
+            maxHeight: '65vh', /* Limit form height */
+            overflowY: 'auto', /* Enable scroll when needed */
+            paddingRight: '10px' /* Ensure padding for scrollbar */
+        }}>
+            <form onSubmit={handleSubmit} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <label style={{ color: '#9F5255' }}>Select Category</label>
+                <select name="categoryId" value={subcategory.categoryId} onChange={handleChange} required style={{ padding: '10px', borderRadius: '5px', width: '100%', border: '1px solid #9F5255' }}>
+                    <option value="">-- Select a Category --</option>
+                    {categories.map((cat) => (
+                        <option key={cat._id} value={cat._id}>{cat.name}</option>
+                    ))}
+                </select>
 
-            <label style={{ color: '#9F5255' }}>Subcategory Name</label>
-            <input type="text" name="name" value={subcategory.name} onChange={handleChange} placeholder="Enter Subcategory Name" required style={{ padding: '10px', borderRadius: '5px', border: '1px solid #9F5255' }} />
+                <label style={{ color: '#9F5255' }}>Subcategory Name</label>
+                <input type="text" name="name" value={subcategory.name} onChange={handleChange} placeholder="Enter Subcategory Name" required style={{ padding: '10px', borderRadius: '5px', border: '1px solid #9F5255' }} />
 
-            <label style={{ color: '#9F5255' }}>Short Description</label>
-            <textarea name="shortDescription" value={subcategory.shortDescription} onChange={handleChange} placeholder="Enter Short Description" style={{ padding: '10px', borderRadius: '5px', border: '1px solid #9F5255' }}></textarea>
+                <label style={{ color: '#9F5255' }}>Short Description</label>
+                <textarea name="shortDescription" value={subcategory.shortDescription} onChange={handleChange} placeholder="Enter Short Description" style={{ padding: '10px', borderRadius: '5px', border: '1px solid #9F5255' }}></textarea>
 
-            <label style={{ color: '#9F5255' }}>Detailed Description</label>
-            <textarea name="detailedDescription" value={subcategory.detailedDescription} onChange={handleChange} placeholder="Enter Detailed Description" style={{ padding: '10px', borderRadius: '5px', border: '1px solid #9F5255' }}></textarea>
+                <label style={{ color: '#9F5255' }}>Detailed Description</label>
+                <ReactQuill
+                    theme="snow"
+                    value={subcategory?.detailedDescription || ""}
+                    onChange={(value) => setSubcategory({ ...subcategory, detailedDescription: value })}
+                />
 
-            <label style={{ color: '#9F5255' }}>Subcategory Image</label>
-            <input type="file" onChange={handleFileChange} style={{ padding: '10px', border: '1px solid #9F5255' }} />
+                <label style={{ color: '#9F5255' }}>Subcategory Image</label>
+                <input type="file" onChange={handleFileChange} style={{ padding: '10px', border: '1px solid #9F5255' }} />
 
-            <button type="submit" style={{
-                background: '#E16A54',
-                color: '#fff',
-                padding: '10px 20px',
-                border: 'none',
-                cursor: 'pointer',
-                marginTop: '10px',
-                borderRadius: '5px'
-            }}>
-                Save Subcategory
-            </button>
-        </form>
+                <button type="submit" style={{
+                    background: '#E16A54',
+                    color: '#fff',
+                    padding: '10px 20px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    marginTop: '10px',
+                    borderRadius: '5px'
+                }}>
+                    Save Subcategory
+                </button>
+            </form>
+        </div>
     </div>
 )}
+
 
 
             {/* Display Categories and Subcategories */}
@@ -287,19 +304,18 @@ const AddSubcategory = () => {
                                 onClick={() => handleEdit(sub._id)} 
                             />
                             <DeleteOutlined 
-                                style={{ cursor: 'pointer', color: '#7C444F' }} 
-                                onClick={() => handleDelete(sub._id)} 
-                            />
+  style={{ cursor: 'pointer', color: '#7C444F' }} 
+  onClick={() => {
+    if (window.confirm("Do you want to remove subcategory?")) {
+      handleDelete(sub._id);
+    }
+  }} 
+/>
+
                         </div>
                     </div>
                 ))}
             </div>
-
-
-
-
-
-
 
             
         </div>
@@ -381,27 +397,21 @@ const AddSubcategory = () => {
                 }}
                 label="Detailed Description"
             >
-                <TextArea
-                    style={{
-                        color: '#7C444F', // Text color
-                        borderColor: '#9F5255', // Border color
-                    }}
-                    value={selectedSubcategory.detailedDescription}
-                    onChange={(e) =>
-                        setSelectedSubcategory({
-                            ...selectedSubcategory,
-                            detailedDescription: e.target.value,
-                        })
-                    }
-                />
+                <ReactQuill
+  theme="snow"
+  value={selectedSubcategory?.detailedDescription || ""}
+  onChange={(value) =>
+    setSelectedSubcategory({
+      ...selectedSubcategory,
+      detailedDescription: value,
+    })
+  }
+/>
+
             </Form.Item>
         </Form>
     </Modal>
 )}
-
-
-
-
 
             
         </div>

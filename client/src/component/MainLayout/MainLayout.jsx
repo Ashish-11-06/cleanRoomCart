@@ -2,16 +2,18 @@ import React from "react";
 import { Layout, Menu, Button, Space } from "antd";
 import {
   HomeOutlined,
-  UserOutlined,
-  ShoppingCartOutlined,
-  HistoryOutlined,
-  LogoutOutlined,
-  LoginOutlined,
-  MessageOutlined,
   AppstoreOutlined,
   FolderOpenOutlined,
   ShoppingOutlined,
-  BranchesOutlined, // Added icon for Subproduct
+  ThunderboltOutlined,
+  MessageOutlined,
+  UserAddOutlined,
+  QuestionCircleOutlined,
+  StarOutlined,
+  ShoppingCartOutlined,
+  LogoutOutlined,
+  LoginOutlined,
+  TagOutlined
 } from "@ant-design/icons";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 
@@ -33,60 +35,64 @@ const MainLayout = () => {
 
   const menuItems = [
     {
-      key: "/admin/dashboard",
+      key: "/superadmin/dashboard",
       icon: <HomeOutlined />,
       label: "Dashboard",
-      onClick: () => navigate("/admin/dashboard"),
+      onClick: () => navigate("/superadmin/dashboard"),
     },
     {
-      key: "/admin/category",
+      key: "/superadmin/category",
       icon: <AppstoreOutlined />,
       label: "Category",
-      onClick: () => navigate("/admin/category"),
+      onClick: () => navigate("/superadmin/category"),
     },
     {
-      key: "/admin/Subcategory",
+      key: "/superadmin/subcategory",
       icon: <FolderOpenOutlined />,
       label: "Subcategories",
-      onClick: () => navigate("/admin/Subcategory"),
+      onClick: () => navigate("/superadmin/subcategory"),
     },
     {
-      key: "/admin/product",
+      key: "/superadmin/product",
       icon: <ShoppingOutlined />,
       label: "Product",
-      onClick: () => navigate("/admin/product"),
+      onClick: () => navigate("/superadmin/product"),
     },
     {
-      key: "/admin/subproduct",
-      icon: <BranchesOutlined />, // Icon for subproduct
+      key: "/superadmin/subproduct",
+      icon: <ThunderboltOutlined />,
       label: "Subproduct",
-      onClick: () => navigate("/admin/subproduct"),
+      onClick: () => navigate("/superadmin/subproduct"),
     },
     {
-      key: "/admin/users",
-      icon: <UserOutlined />,
-      label: "Users",
-      onClick: () => navigate("/admin/users"),
-    },
-
-   /* {
-      key: "/admin/orders",
-      icon: <ShoppingCartOutlined />,
-      label: "Orders History",
-      onClick: () => navigate("/admin/orders"),
-    },*/
-    
-    {
-      key: "/admin/interested",
-      icon: <HistoryOutlined />,
-      label: "Interested Users",
-      onClick: () => navigate("/admin/interested"),
+      key: "/superadmin/advertise",
+      icon: <TagOutlined />,
+      label: "Advertisement",
+      onClick: () => navigate("/superadmin/advertise"),
     },
     {
-      key: "/admin/inquiries",
-      icon: <MessageOutlined />,
+      key: "/superadmin/addadmin",
+      icon: <UserAddOutlined />,
+      label: "Add Admin",
+      onClick: () => navigate("/superadmin/addadmin"),
+    },
+    {
+      key: "/superadmin/inquiries",
+      icon: <QuestionCircleOutlined />,
       label: "Inquiries",
-      onClick: () => navigate("/admin/inquiries"),
+      onClick: () => navigate("/superadmin/inquiries"),
+    },
+    {
+      key: "/superadmin/interested",
+      icon: <StarOutlined />,
+      label: "Interested Users",
+      onClick: () => navigate("/superadmin/interested"),
+    },
+    {
+      key: "/superadmin/orders",
+      icon: <ShoppingCartOutlined />,
+      label: "Orders",
+      onClick: () => navigate("/superadmin/orders"),
     },
   ];
 
@@ -94,8 +100,12 @@ const MainLayout = () => {
     <Layout style={{ minHeight: "100vh" }}>
       <Sider
         style={{
+          position: "fixed",
+          left: 0,
+          height: "calc(100vh)",
           background: "#7C444F",
           paddingTop: "16px",
+          width: 200,
         }}
       >
         <div
@@ -128,8 +138,10 @@ const MainLayout = () => {
               onClick={item.onClick}
               style={{
                 color: "#FFFFFF",
-                background: location.pathname === item.key ? "#E16A54" : "transparent",
+                background:
+                  location.pathname === item.key ? "#E16A54" : "transparent",
                 fontWeight: location.pathname === item.key ? "bold" : "normal",
+                fontSize: "16px", // Increased font size by 2px
               }}
             >
               {item.label}
@@ -137,14 +149,19 @@ const MainLayout = () => {
           ))}
         </Menu>
       </Sider>
-      <Layout>
+      <Layout style={{ marginLeft: 200 }}>
         <Header
           style={{
+            position: "fixed",
+            left: 200,
+            right: 0,
+            top: 0,
             padding: "0 16px",
             background: "#F39E60",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            zIndex: 1,
           }}
         >
           <div
@@ -157,7 +174,7 @@ const MainLayout = () => {
           >
             {isAuthenticated ? "Welcome, Admin" : "Please Login"}
           </div>
-          <Space style={{ padding: "10px 20px" ,marginTop: "20px"}}>
+          <Space style={{ padding: "10px 20px", marginTop: "16px" }}>
             {isAuthenticated ? (
               <Button
                 type="primary"
@@ -181,6 +198,7 @@ const MainLayout = () => {
         <Content
           style={{
             margin: "24px 16px",
+            marginTop: 64,
             padding: "24px",
             background: "#fff",
           }}
