@@ -68,8 +68,8 @@ const AdminLogin = () => {
         style={{
           width: 400,
           boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-          padding: '20px',
-          borderRadius: '16px'
+          padding: '30px', // ✅ form padding
+          borderRadius: '0px'
         }}
       >
         <Form
@@ -78,7 +78,7 @@ const AdminLogin = () => {
           layout="vertical"
           style={{ marginTop: 10 }}
         >
-          <Form.Item style={{ textAlign: 'center' }}>
+          <Form.Item style={{ textAlign: 'center' , padding: 15}}>
             <Radio.Group onChange={(e) => setRole(e.target.value)} value={role}>
               <Radio value="admin">Admin</Radio>
               <Radio value="superadmin">Super Admin</Radio>
@@ -92,7 +92,12 @@ const AdminLogin = () => {
               { required: true, message: 'Please input your email!' },
               { type: 'email', message: 'Enter a valid email!' }
             ]}
-            style={{ marginBottom: '7px' }}
+            style={{ 
+              marginBottom: '7px',
+              marginLeft: '20px',
+              marginRight: '20px',
+              marginTop: '-65px' // ✅ email field margin
+            }}
           >
             <Input prefix={<UserOutlined />} placeholder="Email" />
           </Form.Item>
@@ -101,12 +106,17 @@ const AdminLogin = () => {
             name="password"
             label="Password"
             rules={[{ required: true, message: 'Please input your password!' }]}
-            style={{ marginBottom: '7px' }}
+            style={{ 
+              marginBottom: '7px',
+              marginLeft: '20px',
+              marginRight: '20px',
+              marginTop: '-35px' // ✅ password field margin
+            }}
           >
             <Input.Password prefix={<LockOutlined />} placeholder="Password" />
           </Form.Item>
 
-          <Form.Item style={{ textAlign: 'center' }}>
+          <Form.Item style={{ textAlign: 'center', marginTop: '-20px' }}> {/* ✅ button margin */}
             <Button
               type="primary"
               htmlType="submit"
@@ -116,6 +126,7 @@ const AdminLogin = () => {
                 backgroundColor: '#1677ff',
                 border: 'none',
                 padding: '6px 0',
+                borderRadius: '0px',
               }}
             >
               Login

@@ -160,7 +160,6 @@ const AddSubcategory = () => {
             padding: '8px 12px',
             border: 'none',
             cursor: 'pointer',
-            borderRadius: '5px',
             fontSize: '14px',
             marginTop: '13px',
             width: '150px',
@@ -170,12 +169,7 @@ const AddSubcategory = () => {
         onClick={toggleForm}>
         Add Subcategory
     </button>
-</div>
-
-
-
-
-{isFormOpen && (
+</div>... {isFormOpen && (
     <div style={{
         display: 'flex',
         flexDirection: 'column',
@@ -187,7 +181,6 @@ const AddSubcategory = () => {
         transform: 'translate(-50%, -50%)',
         background: 'white',
         padding: '20px',
-        borderRadius: '10px',
         boxShadow: '0px 0px 15px rgba(0, 0, 0, 0.2)',
         width: '500px',
         maxHeight: '80vh', /* Prevent overflow beyond viewport */
@@ -216,7 +209,7 @@ const AddSubcategory = () => {
         }}>
             <form onSubmit={handleSubmit} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <label style={{ color: '#9F5255' }}>Select Category</label>
-                <select name="categoryId" value={subcategory.categoryId} onChange={handleChange} required style={{ padding: '10px', borderRadius: '5px', width: '100%', border: '1px solid #9F5255' }}>
+                <select name="categoryId" value={subcategory.categoryId} onChange={handleChange} required style={{ padding: '10px', width: '100%', border: '1px solid #9F5255' }}>
                     <option value="">-- Select a Category --</option>
                     {categories.map((cat) => (
                         <option key={cat._id} value={cat._id}>{cat.name}</option>
@@ -224,10 +217,10 @@ const AddSubcategory = () => {
                 </select>
 
                 <label style={{ color: '#9F5255' }}>Subcategory Name</label>
-                <input type="text" name="name" value={subcategory.name} onChange={handleChange} placeholder="Enter Subcategory Name" required style={{ padding: '10px', borderRadius: '5px', border: '1px solid #9F5255' }} />
+                <input type="text" name="name" value={subcategory.name} onChange={handleChange} placeholder="Enter Subcategory Name" required style={{ padding: '10px', border: '1px solid #9F5255' }} />
 
                 <label style={{ color: '#9F5255' }}>Short Description</label>
-                <textarea name="shortDescription" value={subcategory.shortDescription} onChange={handleChange} placeholder="Enter Short Description" style={{ padding: '10px', borderRadius: '5px', border: '1px solid #9F5255' }}></textarea>
+                <textarea name="shortDescription" value={subcategory.shortDescription} onChange={handleChange} placeholder="Enter Short Description" style={{ padding: '10px', border: '1px solid #9F5255' }}></textarea>
 
                 <label style={{ color: '#9F5255' }}>Detailed Description</label>
                 <ReactQuill
@@ -246,7 +239,6 @@ const AddSubcategory = () => {
                     border: 'none',
                     cursor: 'pointer',
                     marginTop: '10px',
-                    borderRadius: '5px'
                 }}>
                     Save Subcategory
                 </button>
@@ -263,7 +255,6 @@ const AddSubcategory = () => {
     {categories.map(category => (
         <div key={category._id} style={{
             background: '#f5f5f5',
-            borderRadius: '10px',
             boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
             width: '380px'
         }}>
@@ -273,8 +264,6 @@ const AddSubcategory = () => {
     color: '#fff',
     padding: '10px',
     textAlign: 'center',
-    borderTopLeftRadius: '10px',
-    borderTopRightRadius: '10px',
     fontWeight: 'bold',
     fontSize: '18px'  // You can adjust the font size as needed
 }}>

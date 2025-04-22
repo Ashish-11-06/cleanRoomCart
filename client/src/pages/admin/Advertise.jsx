@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import {BASE_URL} from '../../API/BaseURL';
 
 const Advertise = () => {
   const [form, setForm] = useState({
@@ -33,7 +34,7 @@ const Advertise = () => {
       formData.append('endDate', form.endDate);
       formData.append('bannerImage', form.bannerImage);
 
-      await axios.post('http://localhost:5001/api/advertise', formData, {
+      await axios.post(`${BASE_URL}/api/advertise`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
@@ -56,7 +57,7 @@ const Advertise = () => {
 
   const fetchAds = async () => {
     try {
-      const res = await axios.get('http://localhost:5001/api/advertise');
+      const res = await axios.get(`${BASE_URL}/api/advertise`);
       setAds(res.data);
       setShowAds(true);
     } catch (err) {
@@ -67,7 +68,7 @@ const Advertise = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this ad?')) {
       try {
-        await axios.delete(`http://localhost:5001/api/advertise/${id}`);
+        await axios.delete(`${BASE_URL}/api/advertise/${id}`);
         fetchAds(); // Refresh after deletion
       } catch (err) {
         console.error(err);
@@ -83,7 +84,8 @@ const Advertise = () => {
       minHeight: '100vh',
       background: '#f0f2f5',
       padding: '40px',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      marginTop: '-65px'
     }}>
       <div style={{
         alignSelf: 'flex-end',
@@ -95,8 +97,9 @@ const Advertise = () => {
             backgroundColor: '#E16A54',
             color: 'white',
             padding: '10px 20px', // Increased padding for width
-            borderRadius: '5px',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            width: '150px',
+            marginTop:'20px' // Fixed width
           }}
         >
           Show All Ads
@@ -106,17 +109,18 @@ const Advertise = () => {
       <div style={{
         background: '#fff',
         padding: '30px',
-        borderRadius: '12px',
         boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
         width: '100%',
         maxWidth: '500px',
-        alignSelf: 'center'
+        alignSelf: 'center',
+        marginTop: '-16px',
       }}>
         <h2 style={{
           fontSize: '24px',
           fontWeight: 'bold',
-          marginBottom: '20px',
-          textAlign: 'center'
+          marginBottom: '15px',
+          textAlign: 'center',
+          marginTop: '2px',
         }}>
           Create Advertisement
         </h2>
@@ -130,8 +134,7 @@ const Advertise = () => {
             placeholder='Product Name'
             style={{
               padding: '10px',
-              border: '1px solid #ddd',
-              borderRadius: '5px'
+              border: '1px solid #ddd'
             }}
           />
           <textarea
@@ -141,8 +144,7 @@ const Advertise = () => {
             placeholder='Message'
             style={{
               padding: '10px',
-              border: '1px solid #ddd',
-              borderRadius: '5px'
+              border: '1px solid #ddd'
             }}
             rows={3}
           ></textarea>
@@ -154,8 +156,7 @@ const Advertise = () => {
             placeholder='Discount Percentage'
             style={{
               padding: '10px',
-              border: '1px solid #ddd',
-              borderRadius: '5px'
+              border: '1px solid #ddd'
             }}
           />
           <input
@@ -165,8 +166,7 @@ const Advertise = () => {
             onChange={handleChange}
             style={{
               padding: '10px',
-              border: '1px solid #ddd',
-              borderRadius: '5px'
+              border: '1px solid #ddd'
             }}
           />
           <input
@@ -176,27 +176,30 @@ const Advertise = () => {
             onChange={handleChange}
             style={{
               padding: '10px',
-              border: '1px solid #ddd',
-              borderRadius: '5px'
+              border: '1px solid #ddd'
             }}
           />
-          <input
-            type='file'
-            name='bannerImage'
-            onChange={handleChange}
-            style={{
-              padding: '10px',
-              border: '1px solid #ddd',
-              borderRadius: '5px'
-            }}
-          />
+          <div style={{ marginBottom: '16px' }}>
+  <input
+    type="file"
+    name="bannerImage"
+    onChange={handleChange}
+    style={{
+      padding: '10px',
+      border: '1px solid #ddd'
+    }}
+  />
+  <p style={{ fontSize: '15px', color: '#7B3F00', marginTop: '5px' }}>
+    For best results, please upload a horizontal image in <strong>16:9</strong> or <strong>2:1</strong> ratio (e.g., <em>1200×600</em> or <em>1920×1080</em>).
+  </p>
+</div>
+
           <button
             type='submit'
             style={{
               backgroundColor: '#E16A54',
               color: 'white',
               padding: '10px',
-              borderRadius: '5px',
               cursor: 'pointer'
             }}
           >
@@ -204,13 +207,12 @@ const Advertise = () => {
           </button>
         </form>
       </div>
-
+      
       {showAds && ads.length > 0 && (
         <div style={{
           marginTop: '40px',
           background: '#fff',
           padding: '20px',
-          borderRadius: '10px',
           boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
           width: '100%',
           overflowX: 'auto'
@@ -242,7 +244,6 @@ const Advertise = () => {
                         backgroundColor: '#E16A54',
                         color: 'white',
                         padding: '5px 10px',
-                        borderRadius: '5px',
                         cursor: 'pointer'
                       }}
                     >

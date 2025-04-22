@@ -7,6 +7,7 @@ const contactSchema = new mongoose.Schema({
     orderNumber: { type: String }, // Optional
     companyName: { type: String }, // Optional
     comments: { type: String, required: true },
+    status: { type: String, default: 'pending' }, // New status field
     createdAt: { type: Date, default: Date.now }, // Store submission time
 });
 

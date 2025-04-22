@@ -110,33 +110,41 @@ const Subproduct = () => {
 
       {/* Product Table */}
       {products.length > 0 && (
-        <div style={styles.tableContainer}>
-          <table style={styles.table}>
-            <thead>
-              <tr>
-                <th>Product Name</th>
-                <th>Price (₹)</th>
-                <th>Product Code</th>
-                <th>Select</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product) => (
-                <tr key={product._id}>
-                  <td>{product.productName}</td>
-                  <td>{product.price}</td>
-                  <td>{product.productCode}</td>
-                  <td>
-                    <button style={styles.selectButton} onClick={() => handleSelectProduct(product)}>
-                      Select
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+  <div style={{ ...styles.tableContainer, overflowX: "auto" }}>
+    <table
+      style={{
+        ...styles.table,
+        borderCollapse: "collapse",
+        width: "100%",
+        border: "1px solid #ccc" // Slight black/grey border for table
+      }}
+    >
+      <thead>
+        <tr>
+          <th style={{ border: "1px solid #ccc", padding: "10px" }}>Product Name</th>
+          <th style={{ border: "1px solid #ccc", padding: "10px" }}>Price (₹)</th>
+          <th style={{ border: "1px solid #ccc", padding: "10px" }}>Product Code</th>
+          <th style={{ border: "1px solid #ccc", padding: "10px" }}>Select</th>
+        </tr>
+      </thead>
+      <tbody>
+        {products.map((product) => (
+          <tr key={product._id}>
+            <td style={{ border: "1px solid #ccc", padding: "8px" }}>{product.productName}</td>
+            <td style={{ border: "1px solid #ccc", padding: "8px" }}>{product.price}</td>
+            <td style={{ border: "1px solid #ccc", padding: "8px" }}>{product.productCode}</td>
+            <td style={{ border: "1px solid #ccc", padding: "8px" }}>
+              <button style={styles.selectButton} onClick={() => handleSelectProduct(product)}>
+                Select
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
+
 
       {/* Selected Product */}
       {selectedProduct && (
@@ -233,7 +241,7 @@ const styles = {
     padding: "10px",
     fontSize: "16px",
     border: "1px solid #9F5255",
-    borderRadius: "5px",
+    borderRadius: "0px",
     outline: "none",
     width: "250px",
     marginBottom: "10px",
@@ -254,14 +262,14 @@ const styles = {
     backgroundColor: "#E16A54",
     color: "#fff",
     border: "none",
-    borderRadius: "5px",
+    borderRadius: "0px",
     cursor: "pointer",
     transition: "0.3s",
   },
   selectedProduct: {
     backgroundColor:"#F39E60", 
    padding:"10px", 
-   borderRadius:"5px", 
+   borderRadius:"0px", 
    marginBottom:"10px", 
    color:"#fff", 
    display:"flex", 
@@ -273,7 +281,7 @@ form:{
      flexDirection:"column", 
      gap:"10px", 
      padding:"20px", 
-     borderRadius:"8px", 
+     borderRadius:"0px", 
      boxShadow:"0 0 10px rgba(0,0,0,0.1)", 
      width:"300px", 
      transition:"margin-top 0.3s ease-in-out" 
@@ -284,7 +292,7 @@ button:{
      backgroundColor:"#7C444F", 
      color:"#fff", 
      border:"none", 
-     borderRadius:"5px", 
+     borderRadius:"0px", 
      cursor:"pointer", 
      transition:"0.3s" 
 },

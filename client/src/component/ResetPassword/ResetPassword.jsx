@@ -31,7 +31,7 @@ const ResetPassword = () => {
           Reset Password
         </h2>
         <Form.Item
-        style={{height:'55px'}}
+          style={{height:'55px'}}
           name="newPassword"
           rules={[{ required: true, message: 'Enter new password!' }]}
           hasFeedback
@@ -64,7 +64,7 @@ const ResetPassword = () => {
             color: 'white',
             marginLeft: '20%',
             width: '60%',
-            borderRadius: '2px'
+            borderRadius: '0px' // Set to 0 for sharp edges
           }}
           type="primary"
           htmlType="submit"
@@ -72,7 +72,7 @@ const ResetPassword = () => {
           Reset Password
         </Button>
         <p style={{display:'flex',justifyContent:'center'}}>
-        <Link to='/login'>Back to Login</Link>
+          <Link to='/login'>Back to Login</Link>
         </p>
       </Form>
     </div>
@@ -80,5 +80,3 @@ const ResetPassword = () => {
 };
 
 export default ResetPassword;
-
-

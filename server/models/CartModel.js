@@ -1,3 +1,4 @@
+// backend/models/Cart.js
 const mongoose = require("mongoose");
 
 const cartSchema = new mongoose.Schema({
@@ -10,6 +11,9 @@ const cartSchema = new mongoose.Schema({
         quantity: { type: Number, default: 1 },
         size: { type: String },
         color: { type: String },
+        height: { type: String },
+        width: { type: String },
+        productCode: { type: String }, // Add productCode field
     }, ],
 });
 

@@ -83,6 +83,7 @@
         "mime-db": "^1.52.0",
         "mime-types": "^2.1.35",
         "minimatch": "^3.1.2",
+        "moment": "^2.30.1",
         "mongodb": "^6.13.0",
         "mongodb-connection-string-url": "^3.0.2",
         "mongoose": "^8.11.0",
@@ -131,6 +132,7 @@
         "undefsafe": "^2.0.5",
         "unpipe": "^1.0.0",
         "utils-merge": "^1.0.1",
+        "uuid": "^11.1.0",
         "vary": "^1.1.2",
         "webidl-conversions": "^7.0.0",
         "whatwg-url": "^14.1.0"

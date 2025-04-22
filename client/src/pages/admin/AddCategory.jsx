@@ -141,32 +141,40 @@ const AddCategory = () => {
             <div className="buttons" style={{ display: "flex", gap: "8px" }}>
               <button 
                 className="edit-button" 
-                style={{ backgroundColor: "#4CAF50", color: "white", border: "none", padding: "6px 12px", cursor: "pointer", borderRadius: "4px", fontSize: "14px", fontWeight: "bold" }} 
+                style={{ 
+                  backgroundColor: "#4CAF50", 
+                  color: "white", 
+                  border: "none", 
+                  padding: "6px 12px", 
+                  cursor: "pointer", 
+                  borderRadius: "0", // Changed here
+                  fontSize: "14px", 
+                  fontWeight: "bold" 
+                }} 
                 onClick={() => handleEdit(category._id)}
               >
                 Edit
               </button>
               <button 
-  className="delete-button" 
-  style={{ 
-    backgroundColor: "#E74C3C", 
-    color: "white", 
-    border: "none", 
-    padding: "6px 12px", 
-    cursor: "pointer", 
-    borderRadius: "4px", 
-    fontSize: "14px", 
-    fontWeight: "bold" 
-  }} 
-  onClick={() => {
-    if (window.confirm("Do you want to remove category?")) {
-      handleDelete(category._id);
-    }
-  }}
->
-  Delete
-</button>
-
+                className="delete-button" 
+                style={{ 
+                  backgroundColor: "#E74C3C", 
+                  color: "white", 
+                  border: "none", 
+                  padding: "6px 12px", 
+                  cursor: "pointer", 
+                  borderRadius: "0", // Changed here
+                  fontSize: "14px", 
+                  fontWeight: "bold" 
+                }} 
+                onClick={() => {
+                  if (window.confirm("Do you want to remove category?")) {
+                    handleDelete(category._id);
+                  }
+                }}
+              >
+                Delete
+              </button>
             </div>
           </li>
         ))}
@@ -174,30 +182,28 @@ const AddCategory = () => {
 
       {/* Edit Category Modal */}
       <Modal
-  title="Edit Category"
-  open={isEditModalOpen}
-  onOk={handleUpdate}
-  onCancel={() => setIsEditModalOpen(false)}
-  footer={[
-    <Button key="cancel" onClick={() => setIsEditModalOpen(false)}>Cancel</Button>,
-    <Button key="update" type="primary" onClick={handleUpdate}>Update</Button>
-  ]}
-  centered
-  bodyStyle={{ maxHeight: '400px', overflowY: 'auto' }}
->
-  <label>Category Name</label>
-  <Input type="text" name="name" value={editingCategory?.name || ""} onChange={handleEditChange} />
-  <label>Short Description</label>
-  <Input.TextArea name="shortDescription" value={editingCategory?.shortDescription || ""} onChange={handleEditChange} />
-  <label>Detailed Description</label>
-  <ReactQuill
-    theme="snow"
-    value={editingCategory?.detailedDescription || ""}
-    onChange={(value) => setEditingCategory({ ...editingCategory, detailedDescription: value })}
-  />
-</Modal>
-
-
+        title="Edit Category"
+        open={isEditModalOpen}
+        onOk={handleUpdate}
+        onCancel={() => setIsEditModalOpen(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setIsEditModalOpen(false)}>Cancel</Button>,
+          <Button key="update" type="primary" onClick={handleUpdate}>Update</Button>
+        ]}
+        centered
+        bodyStyle={{ maxHeight: '400px', overflowY: 'auto' }}
+      >
+        <label>Category Name</label>
+        <Input type="text" name="name" value={editingCategory?.name || ""} onChange={handleEditChange} />
+        <label>Short Description</label>
+        <Input.TextArea name="shortDescription" value={editingCategory?.shortDescription || ""} onChange={handleEditChange} />
+        <label>Detailed Description</label>
+        <ReactQuill
+          theme="snow"
+          value={editingCategory?.detailedDescription || ""}
+          onChange={(value) => setEditingCategory({ ...editingCategory, detailedDescription: value })}
+        />
+      </Modal>
     </div>
   );
 };

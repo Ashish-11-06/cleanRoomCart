@@ -120,7 +120,7 @@ const Navbar = () => {
             {/* Top Header */}
             <Header className="navbar-top">
                 <div className="navbar-contact">
-                    <span style={{ marginRight: "40px" }}>Welcome, {name}!</span>
+                    <span style={{ marginRight: "40px" }}>Welcome, {name} !</span>
                     <Link style={{ textDecoration: "none", marginBottom: "10px" }} to="/contact_form">
                         <span>Contact Us</span>
                     </Link>
@@ -217,7 +217,7 @@ const Navbar = () => {
   <Input
     id="search-input"
     type="text"
-    placeholder="#Browse products"
+    placeholder="#𝘴𝘦𝘢𝘳𝘤𝘩 𝘱𝘳𝘰𝘥𝘶𝘤𝘵𝘴 𝘩𝘦𝘳𝘦"
     value={searchTerm}
     onChange={handleSearchChange}
     style={{

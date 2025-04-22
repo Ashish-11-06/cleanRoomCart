@@ -13,7 +13,8 @@ const InterestedUsers = () => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/api/admin/get/interested-users`);
-        setUsers(response.data);
+        const sortedUsers = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setUsers(sortedUsers);
       } catch (error) {
         console.error("Error fetching interested users:", error);
       } finally {
@@ -60,6 +61,13 @@ const InterestedUsers = () => {
       title: 'Date',
       dataIndex: 'date',
       key: 'date',
+      render: (date) => {
+        if (date) {
+          return new Date(date).toLocaleString(); // Format the date as desired
+        } else {
+          return 'N/A';
+        }
+      },
     }
   ];
 

@@ -218,7 +218,7 @@ const AddProduct = () => {
         padding: '15px',
         backgroundColor: '#F5F5F5', // Default background color (use from your palette if you want to replace)
         borderBottom: '2px solid #ddd',
-        borderRadius: '10px'
+        borderRadius: '0px'
     }}
 >
     <h1>Add Product</h1>
@@ -226,12 +226,12 @@ const AddProduct = () => {
 
 
       {/* Form for selecting Category and Subcategory */}
-      <div style={{ marginTop: "-25px", padding: "10px", borderRadius: "10px" ,alignItems: 'center'}}>
+      <div style={{ marginTop: "-15px", padding: "10px", borderRadius: "0px" ,alignItems: 'center',fontSize: '16px'}}>
       <h2 style={{ paddingLeft: '0px', color: '#7C444F', textAlign: 'center' }}>
-  Select Category and Subcategory
+      Select Category and Subcategory to add products.
 </h2>
 
-  <Form style={{ alignItems: 'center', width: '500px', margin: "auto", padding: "inherit", backgroundColor: '#F5F5F5', borderRadius: '10px', borderBottom: '2px solid #ddd'}}>
+  <Form style={{ alignItems: 'center', width: '500px', margin: "auto", padding: "inherit", backgroundColor: '#F5F5F5', borderRadius: '0px', borderBottom: '2px solid #ddd'}}>
 
     {/* Category Dropdown */}
     <Form.Item label="Select Category" style={{ padding: '20px 0px 0px 0px', height: '80px', color: '#9F5255' }}>
@@ -242,7 +242,7 @@ const AddProduct = () => {
         placeholder="Select a Category"
       >
         {categories.map((category) => (
-          <Select.Option key={category._id} value={category._id} style={{ color: '#7C444F' }}>
+          <Select.Option key={category._id} value={category._id} style={{ color: 'black' }}>
             {category.name}
           </Select.Option>
         ))}
@@ -250,7 +250,7 @@ const AddProduct = () => {
     </Form.Item>
 
     {/* Subcategory Dropdown */}
-    <Form.Item label="Select Subcategory" style={{ padding: '0px 0px 0px 0px', height: '60px', color: '#9F5255' }}>
+    <Form.Item label="Select Subcategory" style={{ padding: '0px 0px 0px 0px', height: '60px', color: 'black' }}>
       <Select
         style={{ width: '100%', borderColor: '#E16A54', color: '#7C444F' }}
         value={selectedSubcategory}
@@ -259,7 +259,7 @@ const AddProduct = () => {
         disabled={!selectedCategory} // Disable if no category selected
       >
         {subcategories.map((subcategory) => (
-          <Select.Option key={subcategory._id} value={subcategory._id} style={{ color: '#7C444F' }}>
+          <Select.Option key={subcategory._id} value={subcategory._id} style={{ color: 'black' }}>
             {subcategory.name}
           </Select.Option>
         ))}
@@ -271,7 +271,7 @@ const AddProduct = () => {
       <Button
         type="primary"
         onClick={toggleForm}
-        style={{ width: '48%', backgroundColor: '#E16A54', borderColor: '#E16A54' }}
+        style={{ width: '48%', backgroundColor: '#E16A54', borderColor: '#E16A54',color: '#ffffff' }}
         disabled={!selectedCategory || !selectedSubcategory}
       >
         {isFormVisible ? "Close Form" : "Add Product"}
@@ -280,10 +280,10 @@ const AddProduct = () => {
       <Button
         type="default"
         onClick={handleSeeProducts}
-        style={{ width: '48%', backgroundColor: '#F39E60', borderColor: '#F39E60', color: '#fff' }}
+        style={{ width: '48%', backgroundColor: '#E16A54', borderColor: '#F39E60', color: '#ffffff' }}
         disabled={!selectedCategory || !selectedSubcategory}
       >
-        See Products
+        Show Products
       </Button>
     </div>
   </Form>
@@ -384,77 +384,101 @@ const AddProduct = () => {
 
 
 {isFormVisible && (
-  <div style={{ marginTop: "20px", padding: "10px", borderRadius: "10px", border: "1px solid #ddd" }}>
-    <h2 style={{ color: "#7C444F" }}>Enter Product Details</h2>
-    <Form
-      style={{ marginLeft: '31px', padding: '21px' }}
-      layout="vertical"
-      onFinish={onFinish}
-      initialValues={{ category: selectedCategory, subcategory: selectedSubcategory }}
-    >
-      {/* Category */}
-      <Form.Item style={{ height: '60px' }} label={<span style={{ color: "#9F5255" }}>Select Category</span>} name="category">
-        <Select value={selectedCategory} onChange={handleCategoryChange} style={{ borderColor: "#E16A54", color: "#7C444F" }}>
-          {categories.map((category) => (
-            <Select.Option key={category._id} value={category._id}>
-              {category.name}
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
-
-      {/* Subcategory */}
-      <Form.Item style={{ height: '60px' }} label={<span style={{ color: "#9F5255" }}>Select Subcategory</span>} name="subcategory">
-        <Select value={selectedSubcategory} onChange={handleSubcategoryChange} disabled={!selectedCategory} style={{ borderColor: "#E16A54", color: "#7C444F" }}>
-          {subcategories.map((subcategory) => (
-            <Select.Option key={subcategory._id} value={subcategory._id}>
-              {subcategory.name}
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
-
-      {/* Product Name */}
-      <Form.Item style={{ height: '60px' }} label={<span style={{ color: "#9F5255" }}>Product Name</span>} name="productName" rules={[{ required: true, message: "Please enter product name" }]}>
-        <Input placeholder="Enter product name" style={{ borderColor: "#E16A54", color: "#7C444F" }} />
-      </Form.Item>
-
-      {/* Product Code */}
-      <Form.Item style={{ height: '60px' }} label={<span style={{ color: "#9F5255" }}>Product Code</span>} name="productCode" rules={[{ required: true, message: "Please enter product code" }]}>
-        <Input placeholder="Enter product code" style={{ borderColor: "#E16A54", color: "#7C444F" }} />
-      </Form.Item>
-
-      {/* Price */}
-      <Form.Item style={{ height: '60px' }} label={<span style={{ color: "#9F5255" }}>Price</span>} name="price" rules={[{ required: true, message: "Please enter product price" }]}>
-        <InputNumber placeholder="Enter product price" style={{ borderColor: "#E16A54", color: "#7C444F", width: '100%' }} />
-      </Form.Item>
-
-      {/* Description */}
-      <Form.Item style={{ height: '105px' }} label={<span style={{ color: "#9F5255" }}>Description</span>} name="description" rules={[{ required: true, message: "Please enter product description" }]}>
-        <TextArea rows={3} placeholder="Enter product description" style={{ borderColor: "#E16A54", color: "#7C444F" }} />
-      </Form.Item>
-
-      {/* Product Image */}
-      <Form.Item
-        label={<span style={{ color: "#9F5255" }}>Product Image</span>}
-        name="image"
-        rules={[{ required: true, message: "Please upload Image" }]}
+  <div
+    style={{
+      marginTop: "20px",
+      marginLeft: "15%",
+      padding: "10px",
+      borderRadius: "0px",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <div style={{ width: "100%", maxWidth: "600px" }}>
+      <h2 style={{ color: "#7C444F", textAlign: "center" ,      marginLeft: "-33%",
+}}>Enter Product Details</h2>
+      <Form
+        style={{ padding: '21px' }}
+        layout="vertical"
+        onFinish={onFinish}
+        initialValues={{ category: selectedCategory, subcategory: selectedSubcategory }}
       >
-        <Upload 
-          beforeUpload={() => false} 
-          listType="picture" 
-          onChange={(info) => console.log("Uploaded Image:", info)}
-        >
-          <Button icon={<UploadOutlined />} style={{ color: "#F39E60", borderColor: "#E16A54" }}>
-            Upload Image
-          </Button>
-        </Upload>
-      </Form.Item>
+        {/* Category */}
+        <Form.Item style={{ height: '60px' }} label={<span style={{ color: "#9F5255" }}>Select Category</span>} name="category">
+          <Select value={selectedCategory} onChange={handleCategoryChange} style={{ borderColor: "#E16A54", color: "#7C444F" }}>
+            {categories.map((category) => (
+              <Select.Option key={category._id} value={category._id}>
+                {category.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
 
-      <Button style={{ backgroundColor: '#E16A54', marginTop:'-60px', borderColor: '#E16A54', color: "#fff", width: "70%", marginLeft: '15%' }} type="primary" htmlType="submit">
-        Add Product
-      </Button>
-    </Form>
+        {/* Subcategory */}
+        <Form.Item style={{ height: '60px' }} label={<span style={{ color: "#9F5255" }}>Select Subcategory</span>} name="subcategory">
+          <Select value={selectedSubcategory} onChange={handleSubcategoryChange} disabled={!selectedCategory} style={{ borderColor: "#E16A54", color: "#7C444F" }}>
+            {subcategories.map((subcategory) => (
+              <Select.Option key={subcategory._id} value={subcategory._id}>
+                {subcategory.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        {/* Product Name */}
+        <Form.Item style={{ height: '60px' }} label={<span style={{ color: "#9F5255" }}>Product Name</span>} name="productName" rules={[{ required: true, message: "Please enter product name" }]}>
+          <Input placeholder="Enter product name" style={{ borderColor: "#E16A54", color: "#7C444F" }} />
+        </Form.Item>
+
+        {/* Product Code */}
+        <Form.Item style={{ height: '60px' }} label={<span style={{ color: "#9F5255" }}>Product Code</span>} name="productCode" rules={[{ required: true, message: "Please enter product code" }]}>
+          <Input placeholder="Enter product code" style={{ borderColor: "#E16A54", color: "#7C444F" }} />
+        </Form.Item>
+
+        {/* Price */}
+        <Form.Item style={{ height: '60px' }} label={<span style={{ color: "#9F5255" }}>Price</span>} name="price" rules={[{ required: true, message: "Please enter product price" }]}>
+          <InputNumber placeholder="Enter product price" style={{ borderColor: "#E16A54", color: "#7C444F", width: '100%' }} />
+        </Form.Item>
+
+        {/* Description */}
+        <Form.Item style={{ height: '105px' }} label={<span style={{ color: "#9F5255" }}>Description</span>} name="description" rules={[{ required: true, message: "Please enter product description" }]}>
+          <TextArea rows={3} placeholder="Enter product description" style={{ borderColor: "#E16A54", color: "#7C444F" }} />
+        </Form.Item>
+
+        {/* Product Image */}
+        <Form.Item
+          label={<span style={{ color: "#9F5255" }}>Product Image</span>}
+          name="image"
+          rules={[{ required: true, message: "Please upload Image" }]}
+        >
+          <Upload
+            beforeUpload={() => false}
+            listType="picture"
+            onChange={(info) => console.log("Uploaded Image:", info)}
+          >
+            <Button icon={<UploadOutlined />} style={{ color: "#F39E60", borderColor: "#E16A54" }}>
+              Upload Image
+            </Button>
+          </Upload>
+        </Form.Item>
+
+        <Button
+          style={{
+            backgroundColor: '#E16A54',
+            marginTop: '-60px',
+            borderColor: '#E16A54',
+            color: "#fff",
+            width: "70%",
+            marginLeft: '15%'
+          }}
+          type="primary"
+          htmlType="submit"
+        >
+          Add Product
+        </Button>
+      </Form>
+    </div>
   </div>
 )}
 
@@ -468,8 +492,9 @@ const AddProduct = () => {
 
 
 
+
 {products.length > 0 && (
-  <div style={{ marginTop: "20px", padding: "10px", borderRadius: "10px" }}>
+  <div style={{ marginTop: "20px", padding: "10px", borderRadius: "0px" }}>
     <h2 style={{ color: "#7C444F" }}>All Products</h2>
     <table style={{ width: "100%", borderCollapse: "collapse" }}>
       <thead>
@@ -525,13 +550,6 @@ const AddProduct = () => {
     </table>
   </div>
 )}
-
-
-
-
-
-
-
 
 
     </div>

@@ -1,3 +1,4 @@
+//Product Component
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -9,17 +10,15 @@ import {
     InputNumber,
     Image,
     Spin,
-    Tooltip,
     Modal,
     message,
-    Rate,
 } from "antd";
 import axios from "axios";
 import { useCart } from "../../context/CartContext";
 import { BASE_URL } from "../../API/BaseURL";
-import DOMPurify from 'dompurify';
+import ReviewProduct from "./ReviewProduct"; // Import the new component
 
-import "./Product.css"; // Import CSS here
+import "./Product.css";
 
 const { Title, Text } = Typography;
 
@@ -36,15 +35,8 @@ const Product = () => {
     const [filterError, setFilterError] = useState(false);
     const { addToCart } = useCart();
     const [hasOnlyPrice, setHasOnlyPrice] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [rating, setRating] = useState(0);
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [reviewSubject, setReviewSubject] = useState("");
-    const [comments, setComments] = useState("");
-    const [reviews, setReviews] = useState([]);
-    const [isReviewListOpen, setIsReviewListOpen] = useState(false);
-    const [averageRating, setAverageRating] = useState(0);
+    const [productCode, setProductCode] = useState('');
+
 
     const EXCLUDED_FIELDS = [
         "_id",
@@ -53,6 +45,7 @@ const Product = () => {
         "updatedAt",
         "__v",
         "name",
+        "price", //Exclude price from filter options
     ];
 
     useEffect(() => {
@@ -116,6 +109,11 @@ const Product = () => {
         findMatchingSubproduct();
     }, [selectedFilters, subProducts]);
 
+    useEffect(() => {
+        setProductCode(buildProductCode());
+    }, [selectedFilters, product]);
+
+
     const getAvailableFilters = () => {
         const filters = {};
         subProducts.forEach((sub) => {
@@ -156,29 +154,28 @@ const Product = () => {
 
         if (!user) {
             Modal.confirm({
-              title: "Login Required",
-              content: "Please log in to continue.",
-              okText: "Login",
-              cancelText: "Cancel",
-              onOk: () => navigate("/login"),
-              okButtonProps: {
-                style: {
-                  backgroundColor: "#40476D",
-                  color: "#fff",
-                  border: "none",
+                title: "Login Required",
+                content: "Please log in to continue.",
+                okText: "Login",
+                cancelText: "Cancel",
+                onOk: () => navigate("/login"),
+                okButtonProps: {
+                    style: {
+                        backgroundColor: "#40476D",
+                        color: "#fff",
+                        border: "none",
+                    },
                 },
-              },
-              cancelButtonProps: {
-                style: {
-                  backgroundColor: "#40476D",
-                  color: "#fff",
-                  border: "none",
+                cancelButtonProps: {
+                    style: {
+                        backgroundColor: "#40476D",
+                        color: "#fff",
+                        border: "none",
+                    },
                 },
-              },
             });
             return;
-          }
-          
+        }
 
         try {
             let finalPrice = product.price;
@@ -188,12 +185,13 @@ const Product = () => {
             }
 
             const cartItem = {
-                key: `${product._id}-${buildProductCode()}`,
+                key: `${product._id}-${productCode}`,
                 name: product.productName,
                 price: finalPrice,
                 filters: selectedFilters,
                 quantity,
                 userId: user._id,
+                productCode: productCode, // Include the generated product code
             };
 
             // Check if the product is already in the cart
@@ -207,8 +205,21 @@ const Product = () => {
                     content: "You have already marked this product. Do you want to add another one to your cart?",
                     okText: "Yes, Add Another",
                     cancelText: "No, Just Keep Marked",
+                    okButtonProps: {
+                        style: {
+                            backgroundColor: "#40476D",
+                            color: "#fff",
+                            borderColor: "#40476D"
+                        }
+                    },
+                    cancelButtonProps: {
+                        style: {
+                            backgroundColor: "#40476D",
+                            color: "#fff",
+                            borderColor: "#40476D"
+                        }
+                    },
                     onOk: async () => {
-                        // Increase quantity if user confirms
                         try {
                             await axios.post(`${BASE_URL}/api/cart/add`, {
                                 userId: user._id,
@@ -219,6 +230,9 @@ const Product = () => {
                                 quantity,
                                 size: selectedFilters.size || null,
                                 color: selectedFilters.color || null,
+                                height: selectedFilters.height || null,
+                                width: selectedFilters.width || null,
+                                productCode: productCode, // Include the generated product code
                             });
 
                             addToCart(cartItem);
@@ -250,6 +264,9 @@ const Product = () => {
                         quantity,
                         size: selectedFilters.size || null,
                         color: selectedFilters.color || null,
+                        height: selectedFilters.height || null,
+                        width: selectedFilters.width || null,
+                        productCode: productCode, // Include the generated product code
                     });
 
                     addToCart(cartItem);
@@ -262,68 +279,6 @@ const Product = () => {
         } catch (error) {
             message.error("An error occurred.");
         }
-    };
-
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const handleCancel = () => {
-        setIsModalOpen(false);
-        setRating(0);
-        setName("");
-        setEmail("");
-        setReviewSubject("");
-        setComments("");
-    };
-
-    const handleOk = async () => {
-        try {
-            await axios.post(`${BASE_URL}/api/reviews`, {
-                productId: id,
-                rating: rating,
-                name: DOMPurify.sanitize(name),
-                email: DOMPurify.sanitize(email),
-                reviewSubject: DOMPurify.sanitize(reviewSubject),
-                comments: DOMPurify.sanitize(comments),
-            });
-
-            message.success("Review submitted successfully!");
-            setIsModalOpen(false);
-            setRating(0);
-            setName("");
-            setEmail("");
-            setReviewSubject("");
-            setComments("");
-        } catch (error) {
-            message.error("Failed to submit review.");
-        }
-    };
-
-    const showReviews = async () => {
-        try {
-            const response = await axios.get(`${BASE_URL}/api/reviews/${id}`);
-            setReviews(response.data);
-            setIsReviewListOpen(true);
-
-            if (response.data && response.data.length > 0) {
-                const totalRating = response.data.reduce(
-                    (sum, review) => sum + review.rating,
-                    0
-                );
-                setAverageRating(totalRating / response.data.length);
-            } else {
-                setAverageRating(0);
-            }
-        } catch (error) {
-            message.error("Failed to fetch reviews.");
-            setAverageRating(0);
-            setReviews([]);
-        }
-    };
-
-    const closeReviewListModal = () => {
-        setIsReviewListOpen(false);
     };
 
     if (loading)
@@ -371,26 +326,10 @@ const Product = () => {
                             <Title level={4}>₹{product.price}</Title>
                         )}
 
-                        {/* Review Product and Average Rating */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                            {averageRating > 0 ? (
-                                <Rate
-                                    allowHalf
-                                    defaultValue={averageRating}
-                                    disabled
-                                    style={{ fontSize: "18px" }}
-                                />
-                            ) : (
-                                <span style={{ color: "#888" }}>★★★★★</span> // Placeholder for no reviews
-                            )}
-                            <span style={{ color: "#333", cursor: "pointer", textDecoration: "underline" }} onClick={showModal}>
-                                Review Product
-                            </span>
-                        </div>
-
-
+                        {/* Review Product Component */}
+                        <ReviewProduct productId={id} />
                         <Text>
-                            Product Code: <strong>{buildProductCode()}</strong>
+                            Product Code: <strong>{productCode}</strong>
                         </Text>
                         <br />
                         <br />
@@ -429,135 +368,42 @@ const Product = () => {
                                             ))}
                                         </Radio.Group>
                                     </div>
-                                    <br />
                                 </div>
                             ))}
-
-                        <Text>Quantity:</Text>
-                        <div>
-                            <InputNumber min={1} value={quantity} onChange={setQuantity} />
-                        </div>
-                        <br />
-                         {/* "I'm Interested" Button */}
-                         <div className="interested-button-container">
-                            <Tooltip
-                                title={
-                                    hasOnlyPrice
-                                        ? ""
-                                        : price
-                                            ? ""
-                                            : "Please select valid filter combinations"
-                                }
-                            >
-                                <Button
-                                    className="button"
-                                    style={{
-                                        backgroundColor: "#40476D",
-                                        width: "200px",
-                                    }}
-                                    type="primary"
-                                    onClick={handleCartClick}
-                                    disabled={filterError}
-                                >
-                                    I'm Interested
-                                </Button>
-                            </Tooltip>
+                        <div style={{ marginTop: "20px" }}>
+                            <Text>Quantity:</Text>
+                            <InputNumber
+                                min={1}
+                                defaultValue={1}
+                                value={quantity}
+                                onChange={(value) => setQuantity(value)}
+                                style={{ marginLeft: "10px" }}
+                            />
                         </div>
 
-                        {/* "See Reviews" Button */}
-                        <div className="review-button-container">
                         <Button
-    className="button"
-    style={{
-        backgroundColor: "#40476D",
-        width: "200px",
-        color: "#fff",
-        border: "none",
-        height: "40px",
-    }}
-    type="primary"
-    onClick={showReviews}
->
-    See Reviews
-</Button>
+                            type="primary"
+                            style={{
+                                marginTop: "20px",
+                                backgroundColor: "#40476D",
+                                border: "none",
+                                color: "#FFFFFF",         // White text
+                                borderRadius: "0px",      // Sharp edges
+                                width: "150px"            // Fixed width
+                            }}
+                            onClick={handleCartClick}
+                        >
+                            Add to Cart
+                        </Button>
 
-                        </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={24} style={{ marginTop: "20px" }}>
+                        <div dangerouslySetInnerHTML={{ __html: product.description }} />
                     </Col>
                 </Row>
             </div>
-
-            {/* Review Modal */}
-            <Modal
-                title="Submit a Review"
-                open={isModalOpen}
-                onOk={handleOk}
-                onCancel={handleCancel}
-            >
-                <label>Rating:</label>
-                <Rate onChange={setRating} value={rating} />
-
-                <label>Name:</label>
-                <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-
-                <label>Email:</label>
-                <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-
-                <label>Subject:</label>
-                <input
-                    type="text"
-                    value={reviewSubject}
-                    onChange={(e) => setReviewSubject(e.target.value)}
-                />
-
-                <label>Comments:</label>
-                <textarea
-                    value={comments}
-                    onChange={(e) => setComments(e.target.value)}
-                />
-            </Modal>
-
-            {/* Review List Modal */}
-            <Modal
-                title="Product Reviews"
-                open={isReviewListOpen}
-                onCancel={closeReviewListModal}
-                footer={[
-                    <Button key="back" onClick={closeReviewListModal}>
-                        Return
-                    </Button>,
-                ]}
-            >
-                {reviews.length > 0 ? (
-                    reviews.map((review) => (
-                        <div key={review._id} style={{ marginBottom: "15px", padding: "10px", border: "1px solid #ddd", borderRadius: "5px" }}>
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "5px" }}>
-                                <div>
-                                    <strong>{review.name}</strong>
-                                    <Rate
-                                        allowHalf
-                                        defaultValue={review.rating}
-                                        disabled
-                                        style={{ fontSize: "12px" }}
-                                    />
-                                </div>
-                                <small style={{ color: "#888" }}>{review.email}</small>
-                            </div>
-                            <p><strong>Subject:</strong> {review.reviewSubject}</p>
-                            <p>{review.comments}</p>
-                        </div>
-                    ))
-                ) : (
-                    <p>No reviews available for this product.</p>
-                )}
-            </Modal>
         </div>
     );
 };

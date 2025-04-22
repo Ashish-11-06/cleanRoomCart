@@ -108,7 +108,7 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <Row gutter={16}>
         {/* Total Customer Queries with Notification Badge */}
-        <Col span={12}>
+        <Col span={6}>
           <Badge count={newQueries} offset={[10, 0]} style={{ backgroundColor: "#f5222d" }}>
             <Card className="dashboard-card"  hoverable>
               <Title level={4} className="card-title">Total Customer Queries</Title>
@@ -118,7 +118,7 @@ const Dashboard = () => {
         </Col>
 
         {/* Total Users Count with Notification Badge */}
-        <Col span={12}>
+        <Col span={6}>
           <Badge count={newUsers} offset={[10, 0]} style={{ backgroundColor: "#52c41a" }}>
             <Card className="dashboard-card"  hoverable>
               <Title level={4} className="card-title">Total Registered Users</Title>
@@ -128,7 +128,7 @@ const Dashboard = () => {
         </Col>
 
         {/* Most Frequent User */}
-        {mostFrequentUser && (
+        {/* {mostFrequentUser && (
           <Col span={12}>
             <Card className="dashboard-card" hoverable>
               <Title level={4} className="card-title">Most Frequent User</Title>
@@ -136,7 +136,7 @@ const Dashboard = () => {
               <p>Marked {mostFrequentUser.count} products as interested</p>
             </Card>
           </Col>
-        )}
+        )} */}
 
         {/* Most Interested Product
         {mostInterestedProduct && (

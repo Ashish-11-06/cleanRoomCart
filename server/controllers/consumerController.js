@@ -123,19 +123,21 @@ exports.loginConsumer = async(req, res) => {
 // ✅ Fetch Consumers
 exports.getConsumers = async(req, res) => {
     try {
-        const consumers = await Consumer.find({}, 'firstName lastName email phoneNumber');
+        const consumers = await Consumer.find({}, 'firstName lastName email phoneNumber city zip');
 
         if (!consumers || consumers.length === 0) {
             return res.status(404).json({ message: "No consumers found" });
         }
 
-        console.log("Fetched Consumers:", consumers); // Debugging
+        console.log("Fetched Consumers:", consumers);
 
         const formattedConsumers = consumers.map(consumer => ({
             _id: consumer._id,
             fullName: `${consumer.firstName} ${consumer.lastName}`,
             email: consumer.email,
-            phoneNumber: consumer.phoneNumber
+            phoneNumber: consumer.phoneNumber,
+            city: consumer.city,
+            pincode: consumer.zip,
         }));
 
         console.log("Formatted Consumers:", formattedConsumers);
@@ -145,6 +147,8 @@ exports.getConsumers = async(req, res) => {
         return res.status(500).json({ message: 'Server error' });
     }
 };
+
+
 
 
 // Fetch Single Consumer Profile by ID
@@ -217,7 +221,7 @@ exports.forgotPassword = async(req, res) => {
             html: `
                 <p>Hello ${user.firstName || ''},</p>
                 <p>You recently requested to reset your password. Please click the link below to reset it:</p>
-                <a href="http://localhost:5173/reset-password/${token}" style="background-color:#40476D; color:white; width:120px; border-radius:3px; border:none; padding:10px; text-decoration:none;">Reset Password</a>
+                <a href="http:///reset-password/${token}" style="background-color:#40476D; color:white; width:120px; border-radius:3px; border:none; padding:10px; text-decoration:none;">Reset Password</a>
                 <p>This link will expire in 15 minutes. If you did not request a password reset, please ignore this email or contact our support team immediately.</p>
                 <p>Thank you,<br>Your Support Team</p>
             `,

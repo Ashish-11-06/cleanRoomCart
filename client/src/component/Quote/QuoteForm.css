@@ -5,7 +5,8 @@
     padding: 20px;
     background-color: #ffffff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    /* Removed border-radius */
+    border-radius: 0;
+    /* Explicitly set to 0 */
 }
 
 .quote-title {
@@ -27,7 +28,8 @@ input,
 textarea {
     padding: 10px;
     border: 1px solid #ccc;
-    /* Removed border-radius */
+    border-radius: 0;
+    /* Explicitly set to 0 */
     font-size: 14px;
     width: 100%;
     transition: border-color 0.3s ease;
@@ -55,7 +57,8 @@ textarea::placeholder {
     font-size: 16px;
     padding: 10px;
     border: none;
-    /* Removed border-radius */
+    border-radius: 0;
+    /* Explicitly set to 0 */
     cursor: pointer;
     width: 70%;
     margin: 0 auto;
@@ -70,4 +73,12 @@ textarea::placeholder {
 .form-wrapper {
     max-width: 450px;
     margin: 0 auto;
+}
+
+
+/* 👇 Added this to apply left and right margin to all form fields */
+
+.form-wrapper .ant-form-item {
+    margin-left: 25px;
+    margin-right: 25px;
 }

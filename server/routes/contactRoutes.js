@@ -1,5 +1,5 @@
 const express = require('express');
-const { addContact, getContacts, getContactById, deleteContact } = require('../controllers/contactController');
+const { addContact, getContacts, getContactById, deleteContact, resolveContact } = require('../controllers/contactController');
 
 const router = express.Router();
 
@@ -14,5 +14,9 @@ router.get('/:id', getContactById);
 
 // Route to delete a contact query
 router.delete('/:id', deleteContact);
+
+// Route to update contact status to resolved
+router.patch('/:id/resolve', resolveContact);
+
 
 module.exports = router;

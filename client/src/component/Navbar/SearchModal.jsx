@@ -10,7 +10,6 @@ const SearchModal = ({ searchQuery, visible, onCancel }) => {
     const [categories, setCategories] = useState({});
     const navigate = useNavigate();
 
-    // Fetch Products & Category Names
     const fetchResults = async () => {
         setLoading(true);
         try {
@@ -21,19 +20,16 @@ const SearchModal = ({ searchQuery, visible, onCancel }) => {
             if (response.data && response.data.products) {
                 setResults(response.data.products);
 
-                // Extract unique category IDs
                 const uniqueCategoryIds = [
                     ...new Set(response.data.products.map((product) => product.category)),
                 ];
 
-                // Fetch category names
                 const categoryResponses = await Promise.all(
                     uniqueCategoryIds.map((id) =>
                         axios.get(`${BASE_URL}/api/category/${id}`).catch(() => null)
                     )
                 );
 
-                // Map category ID to category name
                 const categoryMap = {};
                 categoryResponses.forEach((res, index) => {
                     if (res && res.data.category) {
@@ -62,19 +58,16 @@ const SearchModal = ({ searchQuery, visible, onCancel }) => {
         }
     }, [visible, searchQuery]);
 
-    // Navigate to category page
     const handleCategoryClick = (categoryId) => {
         onCancel();
         navigate(`/category/${categoryId}`);
     };
 
-    // Navigate to product page
     const handleProductClick = (productId) => {
         onCancel();
         navigate(`/product/${productId}`);
     };
 
-   // Close modal when clicking outside of it
    const handleOutsideClick = (e) => {
        if (e.target.classList.contains('ant-modal')) {
            onCancel();
@@ -88,8 +81,8 @@ const SearchModal = ({ searchQuery, visible, onCancel }) => {
            width={900}
            centered
            onCancel={onCancel}
-           maskClosable={true} // Allow closing by clicking outside
-           onMouseDown={handleOutsideClick} // Handle outside click event
+           maskClosable={true}
+           onMouseDown={handleOutsideClick}
        >
            {loading ? (
                <Spin size="large" style={{ display: "block", margin: "20px auto" }} />
@@ -97,7 +90,6 @@ const SearchModal = ({ searchQuery, visible, onCancel }) => {
                <Empty description="No products found" />
            ) : (
                <Row gutter={[16, 16]} style={{ height: "400px", overflowY: "auto" }}>
-                   {/* Left Section - Categories (25%) */}
                    <Col xs={6} style={{ borderRight: "1px solid #ddd", paddingRight: "10px" }}>
                        <h4 style={{ marginBottom: "10px" }}>Categories</h4>
                        <List
@@ -121,7 +113,6 @@ const SearchModal = ({ searchQuery, visible, onCancel }) => {
                        />
                    </Col>
 
-                   {/* Right Section - Products (75%) */}
                    <Col xs={18}>
                        <Row gutter={[8, 8]}>
                            {results.map((product) => (
@@ -136,7 +127,6 @@ const SearchModal = ({ searchQuery, visible, onCancel }) => {
                                            flexDirection: "column",
                                            textAlign: "center",
                                            padding: "5px",
-                                           borderRadius: "8px",
                                        }}
                                    >
                                        <div
@@ -146,7 +136,6 @@ const SearchModal = ({ searchQuery, visible, onCancel }) => {
                                                alignItems: "center",
                                                justifyContent: "center",
                                                overflow: "hidden",
-                                               borderRadius: "6px",
                                                backgroundColor: "#f8f8f8",
                                            }}
                                        >
@@ -156,19 +145,13 @@ const SearchModal = ({ searchQuery, visible, onCancel }) => {
                                                style={{
                                                    width: "100%",
                                                    maxHeight: "100%",
-                                                   objectFit: 'contain', // Ensures the image scales properly inside the box
-                                                   borderRadius:"6px"
+                                                   objectFit: 'contain',
                                                }}
                                            />
                                        </div>
                                        <div style={{ flex:"3", padding:"8px"}}>
-                                           <h4 style={{ fontSize:"11px", marginBottom:"2px"}}>{product.productName}</h4>
-                                           <p style={{ fontSize:"9px", color:"gray", marginBottom:"2px"}}>
-                                               <strong>Code:</strong> {product.productCode}
-                                           </p>
-                                           <p style={{ fontSize:"11px", fontWeight:"bold", color:"black"}}>
-                                               <strong>Price:</strong> {product.price !== undefined ? `${product.price.toFixed(2)}` : 'N/A'}
-                                           </p>
+                                           <h4 style={{ fontSize:"14px", marginBottom:"5px"}}>{product.productName}</h4>
+                                           
                                        </div>
                                    </Card>
                                </Col>

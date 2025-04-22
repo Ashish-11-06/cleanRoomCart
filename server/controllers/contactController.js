@@ -49,7 +49,7 @@ exports.addContact = async(req, res) => {
         await transporter.sendMail(mailOptions);
 
         console.log("Email sent successfully");
-        res.status(201).json({ message: "✅ Contact request submitted successfully we will reach you soon !!", contact });
+        res.status(201).json({ message: "Contact request submitted successfully we will reach you soon !!", contact });
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ message: "Server error", error });
@@ -89,6 +89,24 @@ exports.deleteContact = async(req, res) => {
         }
         res.status(200).json({ message: 'Contact request deleted successfully' });
     } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
+
+
+// Update contact status to resolved
+// Update contact status to Resolved
+exports.resolveContact = async(req, res) => {
+    try {
+        const contactId = req.params.id;
+        const { status } = req.body; // Get the status from the request body
+        const updatedContact = await Contact.findByIdAndUpdate(contactId, { status }, { new: true });
+        if (!updatedContact) {
+            return res.status(404).json({ message: 'Contact not found' });
+        }
+        res.json({ message: 'Contact status updated', updatedContact });
+    } catch (error) {
+        console.error("Error:", error);
         res.status(500).json({ message: 'Server error', error });
     }
 };

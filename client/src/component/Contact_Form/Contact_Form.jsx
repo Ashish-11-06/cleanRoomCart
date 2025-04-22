@@ -6,8 +6,10 @@ import { BASE_URL } from "../../API/BaseURL";
 import {
   FacebookFilled,
   InstagramFilled,
-  TwitterCircleFilled,
-  GlobalOutlined,
+  WhatsAppOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  EnvironmentOutlined,
 } from "@ant-design/icons";
 
 const { Title } = Typography;
@@ -94,13 +96,14 @@ const ContactForm = () => {
       <div className="info-section">
         <div className="info-box">
           <h3>Contact Details</h3>
-          <p>Email: info@cleanroomcart.com</p>
-          <p>Phone: +91 9876543210</p>
+          <p><MailOutlined className="icon" /> info@cleanroomcart.com</p>
+          <p><PhoneOutlined className="icon" /> +91 9876543210</p>
         </div>
 
         <div className="info-box">
           <h3>Address</h3>
           <p>
+            <EnvironmentOutlined className="icon" />
             A-302, Binawat Majestic,<br />
             Sasane Nagar Rd.,<br />
             Haveli, Hadapsar,<br />
@@ -123,10 +126,9 @@ const ContactForm = () => {
         <div className="info-box">
           <h3>Follow Us</h3>
           <div className="social-icons">
-            <GlobalOutlined />
-            <FacebookFilled />
-            <InstagramFilled />
-            <TwitterCircleFilled />
+            <FacebookFilled className="social-icon facebook" />
+            <InstagramFilled className="social-icon instagram" />
+            <WhatsAppOutlined className="social-icon whatsapp" />
           </div>
         </div>
       </div>

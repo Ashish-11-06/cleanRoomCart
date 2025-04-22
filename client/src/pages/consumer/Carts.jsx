@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Table, Typography, Button, InputNumber, Row, Col, Empty, Tooltip } from "antd";
+import {
+  Table,
+  Typography,
+  Button,
+  InputNumber,
+  Row,
+  Col,
+  Empty,
+  Tooltip,
+  Modal,
+} from "antd";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { ShoppingCartOutlined } from "@ant-design/icons";
@@ -9,39 +19,58 @@ import { BASE_URL } from "../../API/BaseURL";
 const { Title, Text } = Typography;
 
 const CartPage = () => {
-  const { cartItems, handleQuantityChange, handleRemoveItem, loading } = useCart();
+  const { cartItems, handleQuantityChange, handleRemoveItem, loading } =
+    useCart();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [productDetails, setProductDetails] = useState({});
   const [loadingProducts, setLoadingProducts] = useState(true);
   const navigate = useNavigate();
 
-  console.log("Cart Items:", cartItems);
+  // Add base font size state
+  const [baseFontSize, setBaseFontSize] = useState(16);
+  const actualFontSize = `${baseFontSize + 1}px`; // Increased by 1px
+
+  // Confirmation modal state
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [itemToRemove, setItemToRemove] = useState(null);
+
+  const showDeleteConfirm = (record) => {
+    setItemToRemove(record);
+    setIsModalVisible(true);
+  };
+
+  const handleConfirmRemove = () => {
+    handleRemoveItem(itemToRemove);
+    setIsModalVisible(false);
+  };
+
+  const handleCancelRemove = () => {
+    setIsModalVisible(false);
+  };
 
   // Fetch product details
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        console.log("Fetching product details for:", cartItems);
         const productPromises = cartItems.map((item) =>
           axios.get(`${BASE_URL}/api/product/get-by/${item.productId}`)
         );
-        console.log("Product Promises:", productPromises);
 
-        const responses = await Promise.allSettled(productPromises); // Use Promise.allSettled instead of Promise.all
-        console.log("Responses:", responses);
+        const responses = await Promise.allSettled(productPromises);
 
         const productsData = {};
         responses.forEach((response, index) => {
           if (response.status === "fulfilled") {
             const productId = cartItems[index].productId;
-            console.log(`Product ${productId} details:`, response.value.data.product);
             productsData[productId] = response.value.data.product;
           } else {
-            console.error(`Failed to fetch product ${cartItems[index].productId}:`, response.reason);
+            console.error(
+              `Failed to fetch product ${cartItems[index].productId}:`,
+              response.reason
+            );
           }
         });
 
-        console.log("Product Details:", productsData);
         setProductDetails(productsData);
       } catch (error) {
         console.error("Error fetching product details:", error);
@@ -57,68 +86,85 @@ const CartPage = () => {
     }
   }, [cartItems]);
 
-  // Loading state
   if (loading || loadingProducts) {
-    console.log("Loading...");
-    return <div style={{ textAlign: "center", padding: "50px" }}>Loading...</div>;
+    return (
+      <div
+        style={{ textAlign: "center", padding: "50px", fontSize: actualFontSize }}
+      >
+        Loading...
+      </div>
+    );
   }
 
-  // Calculate subtotal dynamically
   const calculateSubtotal = () => {
-    console.log("Calculating subtotal for selected items:", selectedRowKeys);
-    return selectedRowKeys.reduce(
-      (total, productId) =>
-        total + (productDetails[productId]?.price || 0) * (cartItems.find((item) => item.productId === productId)?.quantity || 0),
-      0
-    );
+    return selectedRowKeys.reduce((total, key) => {
+      const cartItem = cartItems.find((item) => item.productCode === key); // Use productCode here
+      const price = cartItem?.price || 0;
+      const quantity = cartItem?.quantity || 0;
+      return total + price * quantity;
+    }, 0);
   };
 
   const onSelectChange = (selectedKeys) => {
-    console.log("Selected row keys changed to:", selectedKeys);
     setSelectedRowKeys(selectedKeys);
   };
 
   const handleCheckout = () => {
-    console.log("Checkout initiated...");
     if (selectedRowKeys.length === 0) {
-      console.log("No items selected for checkout.");
       alert("Please select at least one product to proceed to checkout.");
       return;
     }
 
     const selectedProducts = cartItems
-      .filter((item) => selectedRowKeys.includes(item.productId))
+      .filter((item) => selectedRowKeys.includes(item.productCode)) // Use productCode here
       .map((item) => ({
         productId: item.productId,
         quantity: item.quantity,
+        productCode: item.productCode,
+        price: item.price,
       }));
 
-    console.log("Selected products for checkout:", selectedProducts);
     navigate("/checkout", { state: { selectedProducts } });
   };
 
-  // Table columns
+  // Table columns with updated font size
   const columns = [
     {
       title: "Image",
       dataIndex: "productId",
       render: (productId) => {
         const imageUrl = productDetails[productId]?.image;
-        if (!imageUrl) return <Text>No Image</Text>;
+        if (!imageUrl)
+          return <Text style={{ fontSize: actualFontSize }}>No Image</Text>;
 
-        const fullImageUrl = `${BASE_URL}/uploads/${imageUrl.replace("/uploads/", "")}`;
+        const fullImageUrl = `${BASE_URL}/uploads/${imageUrl.replace(
+          "/uploads/",
+          ""
+        )}`;
 
         return (
-          <Tooltip title={<img src={fullImageUrl} alt="Preview" style={{ width: "200px", height: "200px", objectFit: "contain" }} />}>
+          <Tooltip
+            title={
+              <img
+                src={fullImageUrl}
+                alt="Preview"
+                style={{
+                  width: "200px",
+                  height: "200px",
+                  objectFit: "contain",
+                }}
+              />
+            }
+          >
             <img
               src={fullImageUrl}
               alt="Product"
               style={{
-                width: "80px",
-                height: "80px",
+                width: "100px",
+                height: "100px",
                 objectFit: "contain",
                 border: "1px solid #ddd",
-                borderRadius: "5px",
+                borderRadius: "0px",
                 cursor: "pointer",
               }}
             />
@@ -127,17 +173,41 @@ const CartPage = () => {
       },
     },
     {
-      title: "Name",
+      title: <span style={{ fontSize: actualFontSize }}>Name</span>,
       dataIndex: "productId",
-      render: (productId) => <Text>{productDetails[productId]?.productName}</Text>,
+      render: (productId) => (
+        <Text
+          style={{
+            cursor: "pointer",
+            color: "#1890ff",
+            textDecoration: "underline",
+            fontSize: actualFontSize,
+          }}
+          onClick={() => navigate(`/product/${productId}`)}
+        >
+          {productDetails[productId]?.productName}
+        </Text>
+      ),
     },
     {
-      title: "Price",
-      dataIndex: "productId",
-      render: (productId) => `₹${productDetails[productId]?.price}`,
+      title: <span style={{ fontSize: actualFontSize }}>Product Code</span>,
+      dataIndex: "productCode",
+      render: (productCode) => (
+        <Text style={{ fontSize: actualFontSize }}>{productCode || "N/A"}</Text>
+      ),
     },
     {
-      title: "Quantity",
+      title: <span style={{ fontSize: actualFontSize }}>Price</span>,
+      dataIndex: "price",
+      render: (price) => (
+        <Text style={{ fontSize: actualFontSize }}>
+          ₹{price !== undefined ? price : "N/A"}
+        </Text>
+      ),
+    },
+
+    {
+      title: <span style={{ fontSize: actualFontSize }}>Quantity</span>,
       dataIndex: "quantity",
       render: (quantity, record) => (
         <InputNumber
@@ -149,24 +219,30 @@ const CartPage = () => {
       ),
     },
     {
-      title: "Total",
-      render: (_, record) => `₹${(productDetails[record.productId]?.price || 0) * record.quantity}`,
+      title: <span style={{ fontSize: actualFontSize }}>Total</span>,
+      render: (_, record) => (
+        <Text style={{ fontSize: actualFontSize }}>
+          ₹{(record.price || 0) * (record.quantity || 0)}
+        </Text>
+      ),
     },
+
     {
       title: "Action",
       render: (_, record) => (
         <Button
           type="link"
           danger
-          onClick={() => handleRemoveItem(record)}
+          onClick={() => showDeleteConfirm(record)}
           style={{
-            border: "2px solid #a0b3d6", // Faint navy blue
-            color: "#2c3e50", // Deep but soft blue for text
+            border: "2px solid #a0b3d6",
+            color: "#2c3e50",
             padding: "5px 10px",
-            borderRadius: "5px",
+            borderRadius: "0px",
             transition: "0.3s",
+            fontSize: actualFontSize,
           }}
-          onMouseOver={(e) => (e.target.style.color = "#1a2942")} // Darker blue on hover
+          onMouseOver={(e) => (e.target.style.color = "#1a2942")}
           onMouseOut={(e) => (e.target.style.color = "#2c3e50")}
         >
           Remove
@@ -174,36 +250,47 @@ const CartPage = () => {
       ),
     },
   ];
-
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ padding: "20px", fontSize: actualFontSize }}>
       {cartItems.length === 0 ? (
-        <Empty description={<Title level={4}>Your cart is empty</Title>} />
+        <Empty
+          description={
+            <Title level={4} style={{ fontSize: actualFontSize }}>
+              Your cart is empty
+            </Title>
+          }
+        />
       ) : (
         <>
-          <Title level={2}>Your Cart ({cartItems.length} items)</Title>
+          <Title level={2} style={{ fontSize: "27px" }}>
+            Your Cart ({cartItems.length} items)
+          </Title>
           <Table
             dataSource={cartItems.map((item) => ({
               ...item,
-              key: item.productId,
+              key: item.productCode, // Use productCode as the key
             }))}
             columns={columns}
             rowSelection={{
               selectedRowKeys,
               onChange: onSelectChange,
+              getCheckboxProps: (record) => ({
+                // Make sure the correct key is used here as well
+                name: record.productCode,
+              }),
             }}
             pagination={false}
           />
-          {/* Row for buttons */}
+
           <Row justify="space-between" style={{ marginTop: "30px" }}>
-            {/* Continue Shopping Button */}
             <Col>
               <Button
                 style={{
                   backgroundColor: "#40476D",
                   color: "white",
                   width: "180px",
-                  borderRadius: "5px",
+                  borderRadius: "0px",
+                  fontSize: actualFontSize,
                 }}
                 type="primary"
                 size="large"
@@ -213,24 +300,23 @@ const CartPage = () => {
                 Continue Shopping
               </Button>
             </Col>
-
-            {/* Checkout Button and Subtotal */}
             <Col>
               <div style={{ textAlign: "right" }}>
-                {/* Subtotal Section */}
                 <div style={{ marginBottom: "10px" }}>
-                  <Text strong style={{ fontSize: "18px" }}>
+                  <Text strong style={{ fontSize: actualFontSize }}>
                     Subtotal:
                   </Text>{" "}
-                  ₹{calculateSubtotal()}
+                  <Text style={{ fontSize: actualFontSize }}>
+                    ₹{calculateSubtotal()}
+                  </Text>
                 </div>
-                {/* Checkout Button */}
                 <Button
                   style={{
                     backgroundColor: "#40476D",
                     color: "white",
                     width: "150px",
-                    borderRadius: "5px",
+                    borderRadius: "0px",
+                    fontSize: actualFontSize,
                   }}
                   type="primary"
                   size="large"
@@ -241,6 +327,35 @@ const CartPage = () => {
               </div>
             </Col>
           </Row>
+
+          <Modal
+            title="Confirm Removal"
+            visible={isModalVisible}
+            onOk={handleConfirmRemove}
+            onCancel={handleCancelRemove}
+            okText="Yes"
+            cancelText="No"
+            okButtonProps={{
+              style: {
+                backgroundColor: "#525a83", // Slightly faint of #40476D
+                color: "#F8F8F8",
+                borderRadius: 0,
+                border: "none",
+              },
+            }}
+            cancelButtonProps={{
+              style: {
+                backgroundColor: "#525a83",
+                color: "#F8F8F8",
+                borderRadius: 0,
+                border: "none",
+              },
+            }}
+          >
+            <p style={{ fontSize: actualFontSize }}>
+              Do you want to remove this item from your cart?
+            </p>
+          </Modal>
         </>
       )}
     </div>

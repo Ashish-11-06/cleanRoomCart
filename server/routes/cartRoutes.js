@@ -10,9 +10,13 @@ router.post("/add", addCart);
 router.get("/get/:userId", getCart);
 
 // Update quantity
-router.put("/update/:userId/:productId/:size/:color", updateQuantity);
+router.put("/update/:userId/:productId", updateQuantity);
+
 
 // Delete cart item
-router.delete("/remove/:userId/:productId", deleteCart);
+router.delete("/remove/:userId", deleteCart);
+
+// Delete cart item (now requires variant details)
+
 
 module.exports = router;

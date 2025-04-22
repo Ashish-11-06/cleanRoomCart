@@ -166,7 +166,6 @@ const SubcategoryPage = () => {
                     }}>
                         Showing {resultCount} results
                     </p>
-
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
                         <Select defaultValue="price_asc" style={{ width: 200 }} onChange={handleSortChange}>
                             <Option value="price_asc">Price: Low to High</Option>
@@ -243,9 +242,9 @@ const SubcategoryPage = () => {
                                                         marginBottom: 0,
                                                         fontWeight: 'bold'
                                                     }}>
-                                                       <p style={{ margin: "1px", fontSize: "16px", fontWeight: "normal", color: "#333" }}>
-    Starting at <span style={{ fontWeight: "bold", color: "#2b2b83" }}>₹{product.price}</span>
-</p>
+                                                        <p style={{ margin: "1px", fontSize: "16px", fontWeight: "normal", color: "#333" }}>
+                                                            Starting at <span style={{ fontWeight: "bold", color: "#2b2b83" }}>₹{product.price}</span>
+                                                        </p>
                                                     </p>
                                                 </div>
                                             }
@@ -280,7 +279,7 @@ const SubcategoryPage = () => {
                             <Button key="cancel" onClick={() => setIsFilterModalVisible(false)}>
                                 Cancel
                             </Button>,
-                            <Button key="apply" type="primary" onClick={applyFilters}>
+                            <Button key="apply" type="primary" onClick={applyFilters} style={{borderRadius: '0px'}}>
                                 Apply
                             </Button>,
                         ]}

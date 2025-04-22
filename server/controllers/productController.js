@@ -33,8 +33,8 @@ exports.addProduct = async(req, res) => {
         await newProduct.save();
         res.status(201).json({ success: true, newProduct, message: "Product added successfully" });
     } catch (error) {
-        console.error("Error adding product:", error);
-        res.status(500).json({ success: false, message: "Error adding product" });
+        console.error("Product code already exists", error);
+        res.status(500).json({ success: false, message: "Product code already exists" });
     }
 };
 

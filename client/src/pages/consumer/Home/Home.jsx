@@ -257,27 +257,6 @@ const Home = () => {
                 </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
               </div>
             ))}
           </div>
@@ -363,64 +342,75 @@ const Home = () => {
 
       {/* Featured Products Section */}
       <div
-        style={{
-          padding: "30px",
-          textAlign: "center",
-          backgroundColor: "#f8f8f8",
-        }}
-      >
-        <h2 className="featured-title">Featured Products</h2>
-        <Carousel
-          autoplay
-          autoplaySpeed={1000}
-          dots={false}
-          slidesToShow={Math.min(4, featuredProducts.length)}
-          slidesToScroll={1}
-          infinite
-        >
-          {featuredProducts.length > 0 ? (
-            featuredProducts.map((product) => (
-              <div key={product._id} className="product-card">
-                <Card
-                  hoverable
-                  className="featured-product-card"
-                  cover={
-                    <img
-                      alt={product.productName || "Product"}
-                      src={
-                        product.image
-                          ? `${BASE_URL}/uploads/${product.image.replace(
-                              "/uploads/",
-                              ""
-                            )}`
-                          : "/default.jpg"
-                      }
-                      onError={(e) => (e.target.src = "/default.jpg")}
-                      style={{
-                        width: "100%",
-                        height: "200px",
-                        objectFit: "contain",
-                        padding: "10px",
-                        backgroundColor: "white",
-                      }}
-                    />
-                  }
-                >
-                  <Meta
-                    title={product.productName}
-                    description={`Price: RS ${product.price || "N/A"}`}
-                  />
-                  <p style={{ fontSize: "14px", color: "#555", marginTop: "5px" }}>
-                    {product.description || "No description available."}
-                  </p>
-                </Card>
-              </div>
-            ))
-          ) : (
-            <p>No featured products found.</p>
-          )}
-        </Carousel>
-      </div>
+  style={{
+    padding: "30px",
+    textAlign: "center",
+    backgroundColor: "#f8f8f8",
+  }}
+>
+  <h2 className="featured-title">Featured Products</h2>
+  <Carousel
+    autoplay
+    autoplaySpeed={2000}
+    dots={false}
+    slidesToShow={Math.min(4, featuredProducts.length)}
+    slidesToScroll={1}
+    infinite
+    speed={600}
+    cssEase="ease-in-out"
+  >
+    {featuredProducts.length > 0 ? (
+      featuredProducts.map((product) => (
+        <div key={product._id} className="product-card">
+          <Card
+            hoverable
+            className="featured-product-card"
+            style={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
+            cover={
+              <img
+                alt={product.productName || "Product"}
+                src={
+                  product.image
+                    ? `${BASE_URL}/uploads/${product.image.replace(
+                        "/uploads/",
+                        ""
+                      )}`
+                    : "/default.jpg"
+                }
+                onError={(e) => (e.target.src = "/default.jpg")}
+                style={{
+                  width: "100%",
+                  height: "200px",
+                  objectFit: "contain",
+                  padding: "10px",
+                  backgroundColor: "white",
+                }}
+              />
+            }
+          >
+            <Meta
+              title={product.productName}
+              description={`Price: ₹${product.price || "N/A"}`}
+            />
+            <p className="product-description">
+              {product.description || "No description available."}
+            </p>
+          </Card>
+        </div>
+      ))
+    ) : (
+      <p>No featured products found.</p>
+    )}
+  </Carousel>
+</div>
+
+
+
     </div>
   );
 };

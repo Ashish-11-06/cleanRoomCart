@@ -22,6 +22,8 @@ const quoteRoutes = require('./routes/quoteRoutes');
 
 // New imports for reviews
 const reviewRoutes = require('./routes/reviewRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -60,6 +62,7 @@ app.use('/api/address', addressRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use("/api", paymentRoutes);
 app.use("/api/quote", quoteRoutes);
+app.use('/api/order', orderRoutes);
 
 // Ensure the advertise route is correctly set up
 // This part is already done correctly

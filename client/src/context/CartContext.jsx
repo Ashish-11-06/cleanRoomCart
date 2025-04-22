@@ -1,4 +1,4 @@
-// Cart Context (CartContext.jsx)
+// CartContext.js
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { BASE_URL } from "../API/BaseURL";
@@ -31,19 +31,21 @@ export const CartProvider = ({ children }) => {
   }, [user, userId]);
 
   const addToCart = async (item) => {
-    const response = await axios.post(`${BASE_URL}/api/cart/add`, item);
-    fetchCartItems(); // Update cart items after adding a new item
+    try {
+      await axios.post(`${BASE_URL}/api/cart/add`, item);
+      fetchCartItems(); // Refresh cart after adding
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
   };
 
   const handleQuantityChange = async (value, record) => {
     try {
-      const response = await axios.put(
+      await axios.put(
         `${BASE_URL}/api/cart/update/${userId}/${record.productId}`,
-        {
-          quantity: value,
-        }
+        { quantity: value }
       );
-      fetchCartItems(); // Update cart items after changing quantity
+      fetchCartItems(); // Refresh cart after quantity update
     } catch (error) {
       console.error("Error updating quantity:", error);
     }
@@ -51,13 +53,10 @@ export const CartProvider = ({ children }) => {
 
   const handleRemoveItem = async (record) => {
     try {
-      const response = await axios.delete(
-        `${BASE_URL}/api/cart/remove/${userId}/${record.productId}`
-      );
-      fetchCartItems(); // Update cart items after removing an item
+      await axios.delete(`${BASE_URL}/api/cart/remove/${userId}?productCode=${record.productCode}`);
+      fetchCartItems(); // Refresh cart after removing
     } catch (error) {
       console.error("Error removing item:", error);
-      alert("Failed to remove item. Please try again.");
     }
   };
 
